@@ -9,10 +9,10 @@ int main()
 	NESConsole test_console;
 	test_console.RunTests();
 
-	NESConsole console;
-	console.LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
+	//NESConsole console;
+	//console.LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
 
-	console.RunROM();
+	//console.RunROM();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

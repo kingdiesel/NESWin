@@ -145,7 +145,7 @@ public:
 		flagstream << "CYC:" << std::dec << std::setfill(' ') << std::setw(3) << std::right << cpu.GetCycles();
 
 		log_string.append(flagstream.str());
-		//std::cout << cpu.GetInstructionCount() << " " << log_string << std::endl;
+		std::cout << cpu.GetInstructionCount() << " " << log_string << std::endl;
 	}
 
 	template<typename _instruction>

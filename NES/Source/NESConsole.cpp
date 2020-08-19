@@ -109,7 +109,7 @@ bool NESConsole::RunNesTest()
 		}
 		else
 		{
-			std::cout << m_cpu.GetInstructionCount() - 1 << " " << log_string << std::endl;
+			//std::cout << m_cpu.GetInstructionCount() - 1 << " " << log_string << std::endl;
 		}
 
 		if (m_cpu.GetInstructionCount() == 5003)
