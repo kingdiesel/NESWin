@@ -13,10 +13,10 @@ template<typename _derived_addressing, int _operand_length>
 class BaseAddressingStrategy
 {
 public:
-	void SetMemoryByteValue(CPU &cpu, Memory &memory, uint8_t value)
+	void SetMemoryByteValue(CPU &cpu, uint8_t value)
 	{
 		uint16_t address = static_cast<_derived_addressing *>(this)->GetSetAddress(cpu, cpu.GetMemory());
-		memory.SetByte(address, value);
+		cpu.GetMemory().SetByte(address, value);
 	}
 
 	int GetAddressingCycles() const
@@ -162,7 +162,7 @@ public:
 
 	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	void SetMemoryByteValue(CPU &cpu, Memory &memory, uint8_t value) const;
+	void SetMemoryByteValue(CPU &cpu, uint8_t value) const;
 
 	int GetAddressingCycles() const
 	{

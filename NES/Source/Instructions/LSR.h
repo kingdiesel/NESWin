@@ -24,7 +24,7 @@ public:
 		value &= (uint8_t) 0x7F;
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
-		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetMemory(), value);
+		this->GetAddressingMode().SetMemoryByteValue(cpu, value);
 	}
 };
 

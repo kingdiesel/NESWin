@@ -406,7 +406,7 @@ uint8_t AccumulatorAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const 
 	return cpu.GetRegisterA();
 }
 
-void AccumulatorAddressingStrategy::SetMemoryByteValue(CPU &cpu, Memory &memory, uint8_t value) const
+void AccumulatorAddressingStrategy::SetMemoryByteValue(CPU &cpu, uint8_t value) const
 {
 	cpu.SetRegisterA(value);
 }

@@ -17,7 +17,7 @@ public:
 
 	void ExecuteImplementation(CPU &cpu)
 	{
-		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetMemory(), cpu.GetRegisterA());
+		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetRegisterA());
 	}
 };
 

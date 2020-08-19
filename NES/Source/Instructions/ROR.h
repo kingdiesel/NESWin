@@ -33,7 +33,7 @@ public:
 		cpu.SetCarryFlag(bit_zero != 0);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
-		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetMemory(), value);
+		this->GetAddressingMode().SetMemoryByteValue(cpu, value);
 
 
 	}

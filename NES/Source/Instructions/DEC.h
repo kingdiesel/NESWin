@@ -19,7 +19,7 @@ public:
 	{
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
 		value -= (uint8_t) 1;
-		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetMemory(), value);
+		this->GetAddressingMode().SetMemoryByteValue(cpu, value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 	}
