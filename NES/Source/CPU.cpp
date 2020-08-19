@@ -1,5 +1,5 @@
 #include "CPU.h"
-#include "Memory.h"
+#include "NESConsole.h"
 #include "Instructions/JMP.h"
 #include "Instructions/LDX.h"
 #include "Instructions/STX.h"
@@ -56,12 +56,9 @@
 class VariadicInstructionMap
 {
 public:
-	VariadicInstructionMap()
-	{
+	VariadicInstructionMap() = default;
 
-	}
-
-	void InitializeInstructionTypes(CPU &cpu, Memory &memory)
+	void InitializeInstructionTypes(CPU &cpu)
 	{
 		InitializeArray<JMPAbsolute, JSR, LDXAbsolute, LDXImmediate, LDXAbsolute, LDXAbsoluteY, LDXZeroPage, LDXZeroPageY,
 				STXZeroPage, STXAbsolute, STXZeroPageY, NOP, NOP1A, NOP3A, NOP5A, NOPDA, NOPFA,
@@ -82,11 +79,11 @@ public:
 				RORZeroPage, RORZeroPageX, ROLAccumulator, ROLAbsolute, ROLAbsoluteX, ROLZeroPage, ROLZeroPageX, STYAbsolute, STYZeroPage,
 				STYZeroPageX, INCAbsolute, INCAbsoluteX, INCZeroPage, INCZeroPageX, DECAbsolute, DECAbsoluteX, DECZeroPage, DECZeroPageX,
 				JMPIndirect>
-				(cpu, memory);
+				(cpu);
 	}
 
 	template<class _first_instruction>
-	void PrintLogString(CPU &cpu, Memory &memory)
+	void PrintLogString(CPU &cpu)
 	{
 		if (!cpu.GetLoggingEnabled())
 		{
@@ -108,7 +105,7 @@ public:
 			}
 			else
 			{
-				uint8_t operand_byte = cpu.GetMemory()->GetByte(cpu.GetRegisterProgramCounterPlus(i));
+				uint8_t operand_byte = cpu.GetMemory().GetByte(cpu.GetRegisterProgramCounterPlus(i));
 				opos << std::hex << std::uppercase << std::right << std::setfill('0') << std::setw(2)
 					 << (int) operand_byte;
 			}
@@ -125,7 +122,7 @@ public:
 		log_string.append(namestream.str());
 
 
-		instruction.ToString(cpu, *cpu.GetMemory(), log_string);
+		instruction.ToString(cpu, cpu.GetMemory(), log_string);
 		std::ostringstream flagstream;
 		flagstream << "A:" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase
 				   << (int) cpu.GetRegisterA()
@@ -149,15 +146,15 @@ public:
 	}
 
 	template<typename _instruction>
-	void InitializeArrayEntry(CPU &cpu, Memory &memory)
+	void InitializeArrayEntry(CPU &cpu)
 	{
 		arr[_instruction::OP_CODE] = new _instruction();
-		auto func = [this, &cpu, &memory]()
+		auto func = [this, &cpu]()
 		{
 			_instruction &instruction = *static_cast<_instruction *>(arr[_instruction::OP_CODE]);
-			PrintLogString<_instruction>(cpu, memory);
+			PrintLogString<_instruction>(cpu);
 
-			instruction.Execute(cpu, memory);
+			instruction.Execute(cpu);
 			if (instruction.GetIncrementsProgramCounter())
 			{
 				cpu.IncrementProgramCounter(instruction.GetProgramCounterIncrement());
@@ -169,19 +166,19 @@ public:
 	}
 
 	template<class _first_instruction>
-	void InitializeArray(CPU &cpu, Memory &memory)
+	void InitializeArray(CPU &cpu)
 	{
-		InitializeArrayEntry<_first_instruction>(cpu, memory);
+		InitializeArrayEntry<_first_instruction>(cpu);
 	}
 
 	template<class _first_instruction, class _second_instruction, class ... Rest>
-	void InitializeArray(CPU &cpu, Memory &memory)
+	void InitializeArray(CPU &cpu)
 	{
-		InitializeArrayEntry<_first_instruction>(cpu, memory);
-		InitializeArray<_second_instruction, Rest...>(cpu, memory);
+		InitializeArrayEntry<_first_instruction>(cpu);
+		InitializeArray<_second_instruction, Rest...>(cpu);
 	}
 
-	void ExecuteInstruction(uint8_t op_code, CPU &cpu, Memory &memory)
+	void ExecuteInstruction(uint8_t op_code, CPU &cpu)
 	{
 		if (farr[op_code] != nullptr)
 		{
@@ -206,11 +203,15 @@ CPU::CPU()
 {
 }
 
-void CPU::SetMemory(class Memory *memory)
+class Memory& CPU::GetMemory() const
 {
-	assert(m_memory == nullptr);
-	m_memory = memory;
-	map.InitializeInstructionTypes(*this, *m_memory);
+	return m_console->GetMemory();
+}
+void CPU::SetConsole(class NESConsole *console)
+{
+	assert(m_console == nullptr);
+	m_console = console;
+	map.InitializeInstructionTypes(*this);
 }
 
 void CPU::PowerUp()
@@ -233,10 +234,10 @@ uint16_t CPU::GetRegisterProgramCounterPlus(const uint16_t value) const
 
 void CPU::HandleOpCode(const uint8_t op_code)
 {
-	map.ExecuteInstruction(op_code, *this, *m_memory);
+	map.ExecuteInstruction(op_code, *this);
 }
 void CPU::ExecuteInstruction()
 {
-	uint8_t op_code = m_memory->GetByte(m_reg_pc);
+	uint8_t op_code = m_console->GetMemory().GetByte(m_reg_pc);
 	HandleOpCode(op_code);
 }

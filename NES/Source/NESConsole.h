@@ -19,6 +19,16 @@ public:
 
 	int RunNesTestTiming(int times, int &out_cycles);
 
+	CPU& GetCPU()
+	{
+		return m_cpu;
+	}
+
+	Memory& GetMemory()
+	{
+		return m_memory;
+	}
+
 private:
 	CPU m_cpu;
 	Memory m_memory;

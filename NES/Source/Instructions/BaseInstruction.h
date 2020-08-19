@@ -2,11 +2,7 @@
 #define NES_BASEINSTRUCTION_H
 
 #include <string>
-
-class CPU;
-
-class Memory;
-
+#include "../CPU.h"
 template<class _addressing_mode, class _execute, int _op_code>
 class BaseInstruction
 {
@@ -22,9 +18,9 @@ public:
 
 	}
 
-	void Execute(CPU &cpu, Memory &memory)
+	void Execute(CPU &cpu)
 	{
-		static_cast<_execute *>(this)->ExecuteImplementation(cpu, memory);
+		static_cast<_execute *>(this)->ExecuteImplementation(cpu, cpu.GetMemory());
 	}
 
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
