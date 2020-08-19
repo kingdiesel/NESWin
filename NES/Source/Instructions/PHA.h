@@ -14,9 +14,9 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
-		memory.SetByte(cpu.GetFullStackAddress(), cpu.GetRegisterA());
+		cpu.GetMemory().SetByte(cpu.GetFullStackAddress(), cpu.GetRegisterA());
 		cpu.DecrementStackPointer();
 	}
 };

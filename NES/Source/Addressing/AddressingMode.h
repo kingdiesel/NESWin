@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream>
 #include "../Memory.h"
-
+#include "../CPU.h"
 
 class CPU;
 class Memory;
@@ -15,7 +15,7 @@ class BaseAddressingStrategy
 public:
 	void SetMemoryByteValue(CPU &cpu, Memory &memory, uint8_t value)
 	{
-		uint16_t address = static_cast<_derived_addressing *>(this)->GetSetAddress(cpu, memory);
+		uint16_t address = static_cast<_derived_addressing *>(this)->GetSetAddress(cpu, cpu.GetMemory());
 		memory.SetByte(address, value);
 	}
 

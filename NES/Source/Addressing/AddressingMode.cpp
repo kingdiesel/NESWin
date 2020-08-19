@@ -9,8 +9,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AbsoluteAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
-	uint16_t destination = GetMemoryByte(cpu, memory);
-	uint8_t value = GetMemoryByteValue(cpu, memory);
+	uint16_t destination = GetMemoryByte(cpu, cpu.GetMemory());
+	uint8_t value = GetMemoryByteValue(cpu, cpu.GetMemory());
 	std::ostringstream os;
 	os << "$" << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << std::right << destination;
 	os << " = " << std::setw(2) << std::setfill('0') << std::right << (int) value;
@@ -27,12 +27,12 @@ uint16_t AbsoluteAddressingStrategy::GetMemoryByte(const CPU &cpu, const Memory 
 
 uint8_t AbsoluteAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	return memory.GetByte(GetMemoryByte(cpu, memory));
+	return memory.GetByte(GetMemoryByte(cpu, cpu.GetMemory()));
 }
 
 uint16_t AbsoluteAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +78,7 @@ uint8_t AbsoluteYAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Me
 
 uint16_t AbsoluteYAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AbsoluteXAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
@@ -123,13 +123,13 @@ uint8_t AbsoluteXAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Me
 
 uint16_t AbsoluteXAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void RelativeAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
-	uint16_t destination = GetMemoryByteValue(cpu, memory);
+	uint16_t destination = GetMemoryByteValue(cpu, cpu.GetMemory());
 	std::ostringstream os;
 	os << std::hex << "$" << std::uppercase << std::setw(27) << std::left << (int) destination;
 	out_string.append(os.str());
@@ -142,7 +142,7 @@ uint8_t RelativeAddressingStrategy::GetMemoryByte(const CPU &cpu, const Memory &
 
 uint16_t RelativeAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	uint8_t data_byte = GetMemoryByte(cpu, memory);
+	uint8_t data_byte = GetMemoryByte(cpu, cpu.GetMemory());
 	uint16_t destination = cpu.GetRegisterProgramCounterPlus(2) + (uint16_t) data_byte;
 	return destination;
 }
@@ -150,7 +150,7 @@ uint16_t RelativeAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Me
 void JMPAbsoluteAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
 	std::ostringstream os;
-	os << std::hex << "$" << std::uppercase << std::setw(27) << std::left << GetMemoryByte(cpu, memory);
+	os << std::hex << "$" << std::uppercase << std::setw(27) << std::left << GetMemoryByte(cpu, cpu.GetMemory());
 	out_string.append(os.str());
 }
 
@@ -161,14 +161,14 @@ uint16_t JMPAbsoluteAddressingStrategy::GetMemoryByte(const CPU &cpu, const Memo
 
 uint8_t JMPAbsoluteAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	return memory.GetByte(GetMemoryByte(cpu, memory));
+	return memory.GetByte(GetMemoryByte(cpu, cpu.GetMemory()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ZeroPageAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
-	uint8_t data_byte = GetMemoryByte(cpu, memory);
-	uint8_t data_value = GetMemoryByteValue(cpu, memory);
+	uint8_t data_byte = GetMemoryByte(cpu, cpu.GetMemory());
+	uint8_t data_value = GetMemoryByteValue(cpu, cpu.GetMemory());
 	std::ostringstream os;
 	os << "$" << std::uppercase << std::setw(2) << std::right << std::setfill('0') << std::hex << (int) data_byte
 	   << " = " << std::setw(2) << (int) data_value;
@@ -185,14 +185,14 @@ uint8_t ZeroPageAddressingStrategy::GetMemoryByte(const CPU &cpu, const Memory &
 
 uint8_t ZeroPageAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	uint8_t zero_page_address = GetMemoryByte(cpu, memory);
+	uint8_t zero_page_address = GetMemoryByte(cpu, cpu.GetMemory());
 	uint8_t zero_page_value = memory.GetByte((uint16_t) zero_page_address);
 	return zero_page_value;
 }
 
 uint16_t ZeroPageAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ZeroPageXAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
@@ -230,7 +230,7 @@ uint8_t ZeroPageXAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Me
 
 uint16_t ZeroPageXAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ZeroPageYAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
@@ -268,13 +268,13 @@ uint8_t ZeroPageYAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Me
 
 uint16_t ZeroPageYAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void IndexedIndirectAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
-	uint8_t lsb_location = GetMemoryByte(cpu, memory);
+	uint8_t lsb_location = GetMemoryByte(cpu, cpu.GetMemory());
 	std::ostringstream lsbstream;
 	lsbstream << "($";
 	lsbstream << std::uppercase << std::hex << std::right << std::setfill('0') << std::setw(2) << (int) lsb_location;
@@ -305,13 +305,13 @@ uint8_t IndexedIndirectAddressingStrategy::GetMemoryByte(const CPU &cpu, const M
 
 uint8_t IndexedIndirectAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	uint16_t full_address = GetValueAddress(cpu, memory);
+	uint16_t full_address = GetValueAddress(cpu, cpu.GetMemory());
 	return memory.GetByte(full_address);
 }
 
 uint16_t IndexedIndirectAddressingStrategy::GetValueAddress(const CPU &cpu, const Memory &memory) const
 {
-	uint8_t lsb_location = GetMemoryByte(cpu, memory);
+	uint8_t lsb_location = GetMemoryByte(cpu, cpu.GetMemory());
 	lsb_location += cpu.GetRegisterX();
 	uint8_t msb_location = lsb_location + (uint8_t) 1;
 	uint16_t lsb = memory.GetByte((uint16_t) lsb_location);
@@ -322,13 +322,13 @@ uint16_t IndexedIndirectAddressingStrategy::GetValueAddress(const CPU &cpu, cons
 
 uint16_t IndexedIndirectAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetValueAddress(cpu, memory);
+	return GetValueAddress(cpu, cpu.GetMemory());
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void IndirectIndexedAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
-	uint8_t lsb_location = GetMemoryByte(cpu, memory);
+	uint8_t lsb_location = GetMemoryByte(cpu, cpu.GetMemory());
 	std::ostringstream lsbstream;
 	lsbstream << "($";
 	lsbstream << std::uppercase << std::hex << std::right << std::setfill('0') << std::setw(2) << (int) lsb_location;
@@ -360,13 +360,13 @@ uint8_t IndirectIndexedAddressingStrategy::GetMemoryByte(const CPU &cpu, const M
 
 uint8_t IndirectIndexedAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	uint16_t full_address = GetValueAddress(cpu, memory);
+	uint16_t full_address = GetValueAddress(cpu, cpu.GetMemory());
 	return memory.GetByte(full_address);
 }
 
 uint16_t IndirectIndexedAddressingStrategy::GetValueAddress(const CPU &cpu, const Memory &memory) const
 {
-	uint8_t lsb_location = GetMemoryByte(cpu, memory);
+	uint8_t lsb_location = GetMemoryByte(cpu, cpu.GetMemory());
 	uint8_t msb_location = (uint8_t) lsb_location + (uint8_t) 1;
 	uint16_t lsb = memory.GetByte(lsb_location);
 	uint16_t msb = memory.GetByte(msb_location);
@@ -385,7 +385,7 @@ uint16_t IndirectIndexedAddressingStrategy::GetValueAddress(const CPU &cpu, cons
 
 uint16_t IndirectIndexedAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetValueAddress(cpu, memory);
+	return GetValueAddress(cpu, cpu.GetMemory());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void AccumulatorAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
@@ -415,7 +415,7 @@ void AccumulatorAddressingStrategy::SetMemoryByteValue(CPU &cpu, Memory &memory,
 void ImmediateAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
 	std::ostringstream os;
-	os << std::hex << "#$" << std::uppercase << std::setw(2) << std::setfill('0') << (int) GetMemoryByte(cpu, memory);
+	os << std::hex << "#$" << std::uppercase << std::setw(2) << std::setfill('0') << (int) GetMemoryByte(cpu, cpu.GetMemory());
 	os << std::setfill(' ') << std::setw(24) << " ";
 	out_string.append(os.str());
 }
@@ -427,18 +427,18 @@ uint8_t ImmediateAddressingStrategy::GetMemoryByte(const CPU &cpu, const Memory 
 
 uint8_t ImmediateAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 
 uint16_t ImmediateAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void IndirectAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
 {
-	uint16_t value = GetMemoryByte(cpu, memory);
-	uint16_t full_address = GetMemoryByteValue(cpu, memory);
+	uint16_t value = GetMemoryByte(cpu, cpu.GetMemory());
+	uint16_t full_address = GetMemoryByteValue(cpu, cpu.GetMemory());
 	std::ostringstream os;
 	os << std::right << std::hex << "($" << std::uppercase << std::setw(4) << std::setfill('0') << value << ")";
 	os << std::setfill(' ') << std::setw(0) << " = ";
@@ -457,7 +457,7 @@ uint16_t IndirectAddressingStrategy::GetMemoryByte(const CPU &cpu, const Memory 
 
 uint16_t IndirectAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 {
-	uint16_t value = GetMemoryByte(cpu, memory);
+	uint16_t value = GetMemoryByte(cpu, cpu.GetMemory());
 	uint8_t lsb = memory.GetByte(value);
 	uint16_t msb = 0x0000;
 	if ((value & 0x00FF) == 0xFF)
@@ -474,7 +474,7 @@ uint16_t IndirectAddressingStrategy::GetMemoryByteValue(const CPU &cpu, const Me
 
 uint16_t IndirectAddressingStrategy::GetSetAddress(const CPU &cpu, const Memory &memory) const
 {
-	return GetMemoryByte(cpu, memory);
+	return GetMemoryByte(cpu, cpu.GetMemory());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ImpliedAddressingStrategy::ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const

@@ -15,11 +15,11 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
-		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
 		value += (uint8_t) 1;
-		this->GetAddressingMode().SetMemoryByteValue(cpu, memory, value);
+		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetMemory(), value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 	}

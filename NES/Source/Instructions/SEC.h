@@ -15,7 +15,7 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
 		cpu.SetCarryFlag(true);
 	}

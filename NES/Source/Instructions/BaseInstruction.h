@@ -20,7 +20,7 @@ public:
 
 	void Execute(CPU &cpu)
 	{
-		static_cast<_execute *>(this)->ExecuteImplementation(cpu, cpu.GetMemory());
+		static_cast<_execute *>(this)->ExecuteImplementation(cpu);
 	}
 
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const

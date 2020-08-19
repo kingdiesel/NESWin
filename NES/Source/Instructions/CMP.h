@@ -15,9 +15,9 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
-		uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
 		uint8_t compare_value = static_cast<_execute *>(this)->GetCompareValue(cpu);
 		uint8_t value = compare_value - memory_value;
 		cpu.SetCarryFlag(compare_value >= memory_value);

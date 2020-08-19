@@ -14,11 +14,11 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
 		uint8_t flags = cpu.GetRegisterFlag();
 		flags |= 0x30;
-		memory.SetByte(cpu.GetFullStackAddress(), flags);
+		cpu.GetMemory().SetByte(cpu.GetFullStackAddress(), flags);
 		cpu.DecrementStackPointer();
 	}
 };

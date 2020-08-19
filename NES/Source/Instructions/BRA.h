@@ -18,12 +18,12 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
 		this->m_increments_program_counter = true;
-		if (static_cast<_execute *>(this)->ShouldBranch(cpu, memory))
+		if (static_cast<_execute *>(this)->ShouldBranch(cpu, cpu.GetMemory()))
 		{
-			uint16_t destination = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+			uint16_t destination = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
 			cpu.SetRegisterProgramCounter(destination);
 			this->m_increments_program_counter = false;
 			this->m_cycles = 3;

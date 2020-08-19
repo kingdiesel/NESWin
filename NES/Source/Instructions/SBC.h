@@ -17,7 +17,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -31,7 +31,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -45,7 +45,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -59,7 +59,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -73,7 +73,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -87,7 +87,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -101,7 +101,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -115,7 +115,7 @@ public:
 
 	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()) ^ (uint8_t) 0xFF;
 	}
 };
 

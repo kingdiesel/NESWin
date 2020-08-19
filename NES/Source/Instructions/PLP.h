@@ -14,10 +14,10 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
 		cpu.IncrementStackPointer();
-		uint8_t data_byte = memory.GetByte(cpu.GetFullStackAddress());
+		uint8_t data_byte = cpu.GetMemory().GetByte(cpu.GetFullStackAddress());
 		data_byte &= 0xCF;
 		data_byte |= 0x20;
 		cpu.SetRegisterFlag(data_byte);

@@ -14,7 +14,7 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
 		cpu.SetRegisterY(cpu.GetRegisterY() + (uint8_t) 1);
 		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);

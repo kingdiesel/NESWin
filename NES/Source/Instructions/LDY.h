@@ -15,9 +15,9 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu, Memory &memory)
+	void ExecuteImplementation(CPU &cpu)
 	{
-		cpu.SetRegisterY(this->GetAddressingMode().GetMemoryByteValue(cpu, memory));
+		cpu.SetRegisterY(this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()));
 		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
 	}
