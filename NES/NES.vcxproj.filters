@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Addressing">
+      <UniqueIdentifier>{e7304f31-265f-453c-b14c-d6fbe2dc8e98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Instructions">
+      <UniqueIdentifier>{430a9396-659b-4e57-8379-c544d1449526}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="NES.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Addressing\AddressingMode.cpp">
+      <Filter>Source Files\Addressing</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Instructions\BaseInstruction.cpp">
+      <Filter>Source Files\Instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\CPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Memory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NESConsole.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RAM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ROM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Addressing\AddressingMode.h">
+      <Filter>Source Files\Addressing</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\ADC.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\AND.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\ASL.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\BaseInstruction.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\BIT.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\BRA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\CLC.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\CLD.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\CLV.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\CMP.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\DEC.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\DEX.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\DEY.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\EOR.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\INC.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\INX.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\INY.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\JMP.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\LDA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\LDX.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\LDY.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\LSR.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\NOP.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\ORA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\PHA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\PHP.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\PLA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\PLP.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\ROL.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\ROR.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\RTI.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\RTS.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\SBC.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\SEC.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\SED.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\SEI.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\STA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\STX.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\STY.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\TAX.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\TAY.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\TSX.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\TXA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\TXS.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Instructions\TYA.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CPU.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Memory.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NESConsole.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RAM.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ROM.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
