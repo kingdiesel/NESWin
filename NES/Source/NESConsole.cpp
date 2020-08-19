@@ -84,6 +84,8 @@ bool NESConsole::RunNesTest()
 	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
 	m_cpu.SetMemory(&m_memory);
 	m_cpu.PowerUp();
+	// Start execution at $C000 to run "all tests", these will generate log output
+	// that will be compared to a working emulator
 	m_cpu.SetRegisterProgramCounter(0xC000);
 	m_cpu.SetLoggingEnabled(true);
 	while (true)

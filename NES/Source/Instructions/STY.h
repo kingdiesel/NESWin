@@ -12,7 +12,7 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class STYBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	STYBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STY")
+	STYBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STY")
 	{
 	}
 

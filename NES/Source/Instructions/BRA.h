@@ -12,7 +12,7 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class BRABase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	BRABase(unsigned char cycles,
+	BRABase(uint8_t cycles,
 			const std::string &name) :
 			BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, name)
 	{
@@ -23,7 +23,7 @@ public:
 		this->m_increments_program_counter = true;
 		if (static_cast<_execute *>(this)->ShouldBranch(cpu, memory))
 		{
-			unsigned short destination = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+			uint16_t destination = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
 			cpu.SetRegisterProgramCounter(destination);
 			this->m_increments_program_counter = false;
 			this->m_cycles = 3;

@@ -12,23 +12,23 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class RORBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	RORBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ROR")
+	RORBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ROR")
 	{
 	}
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
-		unsigned char bit_zero = value & (unsigned char) 0x01;
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t bit_zero = value & (uint8_t) 0x01;
 		bool carry_flag = cpu.IsCarryFlagSet();
 		value = value >> 1;
 		if (carry_flag)
 		{
-			value |= (unsigned char) 0x80;
+			value |= (uint8_t) 0x80;
 		}
 		else
 		{
-			value &= (unsigned char) 0x7F;
+			value &= (uint8_t) 0x7F;
 		}
 		cpu.SetCarryFlag(bit_zero != 0);
 		cpu.SetZeroFlag(value == 0);

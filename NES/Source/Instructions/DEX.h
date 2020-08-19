@@ -16,7 +16,7 @@ public:
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		cpu.SetRegisterX(cpu.GetRegisterX() - (unsigned char) 1);
+		cpu.SetRegisterX(cpu.GetRegisterX() - (uint8_t) 1);
 		cpu.SetZeroFlag(cpu.GetRegisterX() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
 	}

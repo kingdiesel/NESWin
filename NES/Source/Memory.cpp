@@ -3,7 +3,7 @@
 #include <iomanip>
 #include "Memory.h"
 
-unsigned char Memory::GetByte(const unsigned short position) const
+uint8_t Memory::GetByte(const uint16_t position) const
 {
 	if (position <= 0x07FF)
 	{
@@ -22,7 +22,7 @@ unsigned char Memory::GetByte(const unsigned short position) const
 	assert(false);
 }
 
-unsigned short Memory::GetShort(const unsigned short position) const
+uint16_t Memory::GetShort(const uint16_t position) const
 {
 	if (position <= 0x07FF)
 	{
@@ -36,7 +36,7 @@ unsigned short Memory::GetShort(const unsigned short position) const
 	return 0;
 }
 
-void Memory::SetByte(const unsigned short position, unsigned char value)
+void Memory::SetByte(const uint16_t position, uint8_t value)
 {
 	assert(!(position <= 0xFFFF && position >= 0x4020));
 	m_ram.SetByte(position, value);

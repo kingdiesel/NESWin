@@ -17,12 +17,12 @@ public:
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
 		cpu.IncrementStackPointer();
-		unsigned char flags = memory.GetByte(cpu.GetFullStackAddress());
+		uint8_t flags = memory.GetByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		unsigned short low_byte = memory.GetByte(cpu.GetFullStackAddress());
+		uint16_t low_byte = memory.GetByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		unsigned short high_byte = memory.GetByte(cpu.GetFullStackAddress());;
-		unsigned short address = (low_byte | (high_byte << (unsigned short) 8)) - (unsigned short) 1;
+		uint16_t high_byte = memory.GetByte(cpu.GetFullStackAddress());;
+		uint16_t address = (low_byte | (high_byte << (uint16_t) 8)) - (uint16_t) 1;
 		cpu.SetRegisterProgramCounter(address);
 		flags &= 0xCF;
 		flags |= 0x20;

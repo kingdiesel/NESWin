@@ -12,23 +12,23 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class ROLBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	ROLBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ROL")
+	ROLBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ROL")
 	{
 	}
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
-		unsigned char bit_seven = value & (unsigned char) 0x80;
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t bit_seven = value & (uint8_t) 0x80;
 		bool carry_flag = cpu.IsCarryFlagSet();
 		value = value << 1;
 		if (carry_flag)
 		{
-			value |= (unsigned char) 0x01;
+			value |= (uint8_t) 0x01;
 		}
 		else
 		{
-			value &= (unsigned char) ~0x01;
+			value &= (uint8_t) ~0x01;
 		}
 		cpu.SetCarryFlag(bit_seven != 0);
 		cpu.SetZeroFlag(value == 0);

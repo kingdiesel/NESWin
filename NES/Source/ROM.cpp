@@ -13,7 +13,7 @@ void ROM::Load(const std::string &path)
 	input_stream.seekg(0, ios::end);
 	const auto file_length = static_cast<int>(input_stream.tellg());
 	input_stream.seekg(0, ios::beg);
-	m_rom_buffer = new unsigned char[file_length];
+	m_rom_buffer = new uint8_t[file_length];
 	input_stream.read((char *) m_rom_buffer, file_length);
 	input_stream.close();
 
@@ -32,10 +32,10 @@ void ROM::Load(const std::string &path)
 	//HEADER_SIZE + (16 * KB_SIZE * self.num_prg_blocks
 	const int KB = 1024;
 	m_prg_size = (16 * KB * m_header_data.prg_rom_size_16);
-	m_prg_buffer = new unsigned char[m_prg_size];
+	m_prg_buffer = new uint8_t[m_prg_size];
 	std::memcpy(m_prg_buffer, &m_rom_buffer[HEADER_SIZE], m_prg_size);
 	m_chr_size = 8 * KB * m_header_data.chr_rom_size_8;
-	m_chr_buffer = new unsigned char[m_chr_size];
+	m_chr_buffer = new uint8_t[m_chr_size];
 	std::memcpy(m_chr_buffer, &m_rom_buffer[HEADER_SIZE + m_prg_size], m_chr_size);
 	assert(m_header_data.prg_ram_size_8 == 0);
 	assert(m_header_data.prg_rom_size_16 == 1);
@@ -52,7 +52,7 @@ void ROM::Reset()
 	memset(m_header_data.raw_data, 0, 16);
 }
 
-unsigned short ROM::GetMappedPosition(const unsigned short position) const
+uint16_t ROM::GetMappedPosition(const uint16_t position) const
 {
 	// https://wiki.nesdev.com/w/index.php/NROM
 	// CPU $6000-$7FFF: Family Basic only: PRG RAM, mirrored as necessary to fill entire 8 KiB window, write protectable with an external switch
@@ -69,27 +69,27 @@ unsigned short ROM::GetMappedPosition(const unsigned short position) const
 	else */
 	if (position >= 0xC000 && position <= 0xFFFF)
 	{
-		return position - (unsigned short) 0xC000;
+		return position - (uint16_t) 0xC000;
 	}
 	return position;
 }
 
-unsigned char ROM::GetByte(const unsigned short position) const
+uint8_t ROM::GetByte(const uint16_t position) const
 {
 	assert(position >= 0 && position <= 0xFFFF);
 	assert(m_prg_buffer != nullptr);
 	// https://wiki.nesdev.com/w/index.php/NROM
-	const unsigned short mapped_position = GetMappedPosition(position);
+	const uint16_t mapped_position = GetMappedPosition(position);
 	assert(mapped_position < m_prg_size);
 	return m_prg_buffer[mapped_position];
 }
 
-unsigned short ROM::GetShort(const unsigned short position) const
+uint16_t ROM::GetShort(const uint16_t position) const
 {
 	assert(position >= 0 && position <= 0xFFFF);
 	assert(m_prg_buffer != nullptr);
-	unsigned short return_value = 0x0000;
-	const unsigned short mapped_position = GetMappedPosition(position);
+	uint16_t return_value = 0x0000;
+	const uint16_t mapped_position = GetMappedPosition(position);
 	assert(mapped_position < m_prg_size);
 	return_value = m_prg_buffer[mapped_position + 1];
 	return_value = return_value << 8;
@@ -102,7 +102,7 @@ const iNESHeader &ROM::GetHeaderData() const
 	return m_header_data;
 }
 
-void ROM::GetTile(const unsigned short position, unsigned char *tile_data, const int tile_data_size) const
+void ROM::GetTile(const uint16_t position, uint8_t *tile_data, const int tile_data_size) const
 {
 	assert(tile_data_size == 16 && tile_data != nullptr);
 	// https://wiki.nesdev.com/w/index.php/PPU_pattern_tables

@@ -7,11 +7,11 @@
 class Memory
 {
 public:
-	unsigned char GetByte(const unsigned short position) const;
+	uint8_t GetByte(const uint16_t position) const;
 
-	unsigned short GetShort(const unsigned short position) const;
+	uint16_t GetShort(const uint16_t position) const;
 
-	void SetByte(const unsigned short position, unsigned char value);
+	void SetByte(const uint16_t position, uint8_t value);
 
 	ROM &GetROM()
 	{

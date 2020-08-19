@@ -45,10 +45,10 @@ public:
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned short jump_address = GetAddressingMode().GetMemoryByte(cpu, memory);
-		unsigned short return_memory_address = cpu.GetRegisterProgramCounterPlus(3 - 1);
-		unsigned char return_memory_high = static_cast<unsigned char>((return_memory_address & 0xFF00) >> 8);
-		unsigned char return_memory_low = static_cast<unsigned char>(return_memory_address & 0x00FF);
+		uint16_t jump_address = GetAddressingMode().GetMemoryByte(cpu, memory);
+		uint16_t return_memory_address = cpu.GetRegisterProgramCounterPlus(3 - 1);
+		uint8_t return_memory_high = static_cast<uint8_t>((return_memory_address & 0xFF00) >> 8);
+		uint8_t return_memory_low = static_cast<uint8_t>(return_memory_address & 0x00FF);
 		memory.SetByte(cpu.GetFullStackAddress(), return_memory_high);
 		cpu.DecrementStackPointer();
 		memory.SetByte(cpu.GetFullStackAddress(), return_memory_low);

@@ -13,9 +13,9 @@ template<typename _derived_addressing, int _operand_length>
 class BaseAddressingStrategy
 {
 public:
-	void SetMemoryByteValue(CPU &cpu, Memory &memory, unsigned char value)
+	void SetMemoryByteValue(CPU &cpu, Memory &memory, uint8_t value)
 	{
-		unsigned short address = static_cast<_derived_addressing *>(this)->GetSetAddress(cpu, memory);
+		uint16_t address = static_cast<_derived_addressing *>(this)->GetSetAddress(cpu, memory);
 		memory.SetByte(address, value);
 	}
 
@@ -38,11 +38,11 @@ class AbsoluteAddressingStrategy : public BaseAddressingStrategy<AbsoluteAddress
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned short GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class RelativeAddressingStrategy : public BaseAddressingStrategy<RelativeAddressingStrategy, 1>
@@ -50,9 +50,9 @@ class RelativeAddressingStrategy : public BaseAddressingStrategy<RelativeAddress
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 };
 
 class AbsoluteYAddressingStrategy : public BaseAddressingStrategy<AbsoluteYAddressingStrategy, 2>
@@ -60,11 +60,11 @@ class AbsoluteYAddressingStrategy : public BaseAddressingStrategy<AbsoluteYAddre
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned short GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class AbsoluteXAddressingStrategy : public BaseAddressingStrategy<AbsoluteXAddressingStrategy, 2>
@@ -72,11 +72,11 @@ class AbsoluteXAddressingStrategy : public BaseAddressingStrategy<AbsoluteXAddre
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned short GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class ZeroPageAddressingStrategy : public BaseAddressingStrategy<ZeroPageAddressingStrategy, 1>
@@ -84,11 +84,11 @@ class ZeroPageAddressingStrategy : public BaseAddressingStrategy<ZeroPageAddress
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class ZeroPageXAddressingStrategy : public BaseAddressingStrategy<ZeroPageXAddressingStrategy, 1>
@@ -96,11 +96,11 @@ class ZeroPageXAddressingStrategy : public BaseAddressingStrategy<ZeroPageXAddre
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class ZeroPageYAddressingStrategy : public BaseAddressingStrategy<ZeroPageYAddressingStrategy, 1>
@@ -108,11 +108,11 @@ class ZeroPageYAddressingStrategy : public BaseAddressingStrategy<ZeroPageYAddre
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class IndexedIndirectAddressingStrategy : public BaseAddressingStrategy<IndexedIndirectAddressingStrategy, 1>
@@ -120,13 +120,13 @@ class IndexedIndirectAddressingStrategy : public BaseAddressingStrategy<IndexedI
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetValueAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetValueAddress(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class IndirectIndexedAddressingStrategy : public BaseAddressingStrategy<IndirectIndexedAddressingStrategy, 1>
@@ -134,13 +134,13 @@ class IndirectIndexedAddressingStrategy : public BaseAddressingStrategy<Indirect
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetValueAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetValueAddress(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class JMPAbsoluteAddressingStrategy : public BaseAddressingStrategy<JMPAbsoluteAddressingStrategy, 2>
@@ -148,9 +148,9 @@ class JMPAbsoluteAddressingStrategy : public BaseAddressingStrategy<JMPAbsoluteA
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned short GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 };
 
 class AccumulatorAddressingStrategy
@@ -158,11 +158,11 @@ class AccumulatorAddressingStrategy
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	void SetMemoryByteValue(CPU &cpu, Memory &memory, unsigned char value) const;
+	void SetMemoryByteValue(CPU &cpu, Memory &memory, uint8_t value) const;
 
 	int GetAddressingCycles() const
 	{
@@ -183,11 +183,11 @@ class ImmediateAddressingStrategy : public BaseAddressingStrategy<ImmediateAddre
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned char GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class IndirectAddressingStrategy : public BaseAddressingStrategy<IndirectAddressingStrategy, 2>
@@ -195,11 +195,11 @@ class IndirectAddressingStrategy : public BaseAddressingStrategy<IndirectAddress
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned short GetMemoryByte(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByte(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const;
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const;
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const;
 };
 
 class ImpliedAddressingStrategy : public BaseAddressingStrategy<ImpliedAddressingStrategy, 0>
@@ -207,13 +207,13 @@ class ImpliedAddressingStrategy : public BaseAddressingStrategy<ImpliedAddressin
 public:
 	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const;
 
-	unsigned short GetMemoryByte(const CPU &cpu, const Memory &memory) const
+	uint16_t GetMemoryByte(const CPU &cpu, const Memory &memory) const
 	{ return 0; };;
 
-	unsigned char GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
+	uint8_t GetMemoryByteValue(const CPU &cpu, const Memory &memory) const
 	{ return 0; };
 
-	unsigned short GetSetAddress(const CPU &cpu, const Memory &memory) const
+	uint16_t GetSetAddress(const CPU &cpu, const Memory &memory) const
 	{ return 0; };
 };
 

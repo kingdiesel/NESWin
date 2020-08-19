@@ -15,9 +15,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -29,9 +29,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -43,9 +43,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -57,9 +57,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -71,9 +71,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -85,9 +85,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -99,9 +99,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 
@@ -113,9 +113,9 @@ public:
 		m_name = "SBC";
 	}
 
-	unsigned char GetAddValue(CPU &cpu, Memory &memory)
+	uint8_t GetAddValue(CPU &cpu, Memory &memory)
 	{
-		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (unsigned char) 0xFF;
+		return this->GetAddressingMode().GetMemoryByteValue(cpu, memory) ^ (uint8_t) 0xFF;
 	}
 };
 

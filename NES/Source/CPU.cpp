@@ -100,7 +100,7 @@ public:
 		opos << std::hex << std::uppercase << std::right << std::setfill('0') << std::setw(4)
 			 << cpu.GetRegisterProgramCounter() << "  ";
 		//	print op code and operand
-		for (unsigned short i = 0; i < 3; ++i)
+		for (uint16_t i = 0; i < 3; ++i)
 		{
 			if (i > (instruction.GetOperandLength() + instruction.GetOpCodeLength() - 1))
 			{
@@ -108,7 +108,7 @@ public:
 			}
 			else
 			{
-				unsigned char operand_byte = cpu.GetMemory()->GetByte(cpu.GetRegisterProgramCounterPlus(i));
+				uint8_t operand_byte = cpu.GetMemory()->GetByte(cpu.GetRegisterProgramCounterPlus(i));
 				opos << std::hex << std::uppercase << std::right << std::setfill('0') << std::setw(2)
 					 << (int) operand_byte;
 			}
@@ -181,7 +181,7 @@ public:
 		InitializeArray<_second_instruction, Rest...>(cpu, memory);
 	}
 
-	void ExecuteInstruction(unsigned char op_code, CPU &cpu, Memory &memory)
+	void ExecuteInstruction(uint8_t op_code, CPU &cpu, Memory &memory)
 	{
 		if (farr[op_code] != nullptr)
 		{
@@ -225,10 +225,10 @@ void CPU::PowerUp()
 	m_reg_p.Register = 0x24;
 }
 
-unsigned short CPU::GetRegisterProgramCounterPlus(unsigned int value) const
+uint16_t CPU::GetRegisterProgramCounterPlus(const uint16_t value) const
 {
 	assert(value >= 0 && value <= 0xFFFF);
-	return m_reg_pc + (unsigned short) value;
+	return m_reg_pc + (uint16_t) value;
 }
 
 void CPU::HandleOpCode(const uint8_t op_code)
@@ -237,6 +237,6 @@ void CPU::HandleOpCode(const uint8_t op_code)
 }
 void CPU::ExecuteInstruction()
 {
-	unsigned char op_code = m_memory->GetByte(m_reg_pc);
+	uint8_t op_code = m_memory->GetByte(m_reg_pc);
 	HandleOpCode(op_code);
 }

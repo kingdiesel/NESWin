@@ -14,7 +14,7 @@ public:
 	BaseInstruction();
 
 	BaseInstruction(
-			unsigned char cycles,
+			uint8_t cycles,
 			const std::string &name) :
 			m_cycles(cycles),
 			m_name(name)
@@ -32,19 +32,19 @@ public:
 		m_addressing_mode.ToString(cpu, memory, out_string);
 	}
 
-	unsigned char GetOpCode() const
+	uint8_t GetOpCode() const
 	{
 		return _op_code;
 	}
 
-	unsigned char GetOperandLength() const
+	uint8_t GetOperandLength() const
 	{
 		return m_addressing_mode.GetOperandLength();
 	}
 
-	unsigned char GetOpCodeLength() const
+	uint8_t GetOpCodeLength() const
 	{
-		return (unsigned char) 0x01;
+		return (uint8_t) 0x01;
 	}
 
 	int GetCycles() const
@@ -52,13 +52,13 @@ public:
 		return m_cycles + m_addressing_mode.GetAddressingCycles();
 	}
 
-	unsigned short GetProgramCounterIncrement() const
+	uint16_t GetProgramCounterIncrement() const
 	{
 		if (GetIncrementsProgramCounter())
 		{
-			return (unsigned short) GetOpCodeLength() + (unsigned short) GetOperandLength();
+			return (uint16_t) GetOpCodeLength() + (uint16_t) GetOperandLength();
 		}
-		return (unsigned short) 0;
+		return (uint16_t) 0;
 	}
 
 	const _addressing_mode &GetAddressingMode() const

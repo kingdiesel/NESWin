@@ -11,13 +11,13 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class ANDBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	ANDBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "AND")
+	ANDBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "AND")
 	{
 	}
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
 		cpu.SetRegisterA(value & cpu.GetRegisterA());
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterA());

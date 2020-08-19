@@ -16,7 +16,7 @@ public:
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char flags = cpu.GetRegisterFlag();
+		uint8_t flags = cpu.GetRegisterFlag();
 		flags |= 0x30;
 		memory.SetByte(cpu.GetFullStackAddress(), flags);
 		cpu.DecrementStackPointer();

@@ -11,14 +11,14 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class DECBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	DECBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "DEC")
+	DECBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "DEC")
 	{
 	}
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
-		value -= (unsigned char) 1;
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		value -= (uint8_t) 1;
 		this->GetAddressingMode().SetMemoryByteValue(cpu, memory, value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);

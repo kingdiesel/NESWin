@@ -17,7 +17,7 @@ public:
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
 		cpu.IncrementStackPointer();
-		unsigned char data_byte = memory.GetByte(cpu.GetFullStackAddress());
+		uint8_t data_byte = memory.GetByte(cpu.GetFullStackAddress());
 		cpu.SetRegisterA(data_byte);
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterA());

@@ -12,17 +12,17 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class ASLBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	ASLBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ASL")
+	ASLBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ASL")
 	{
 	}
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
-		unsigned char bit_seven = value & (unsigned char) 0x80;
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t bit_seven = value & (uint8_t) 0x80;
 		cpu.SetCarryFlag(bit_seven != 0);
 		value = value << 1;
-		value &= (unsigned char) 0xFE;
+		value &= (uint8_t) 0xFE;
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 		this->GetAddressingMode().SetMemoryByteValue(cpu, memory, value);

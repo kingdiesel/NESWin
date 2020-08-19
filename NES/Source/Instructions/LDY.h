@@ -11,7 +11,7 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class LDYBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	LDYBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "LDY")
+	LDYBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "LDY")
 	{
 	}
 

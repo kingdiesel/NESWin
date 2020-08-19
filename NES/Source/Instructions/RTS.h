@@ -18,10 +18,10 @@ public:
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
 		cpu.IncrementStackPointer();
-		unsigned short low_byte = memory.GetByte(cpu.GetFullStackAddress());
+		uint16_t low_byte = memory.GetByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		unsigned short high_byte = memory.GetByte(cpu.GetFullStackAddress());
-		unsigned short return_address = ((high_byte << 8) | low_byte) + 1;
+		uint16_t high_byte = memory.GetByte(cpu.GetFullStackAddress());
+		uint16_t return_address = ((high_byte << 8) | low_byte) + 1;
 		cpu.SetRegisterProgramCounter(return_address);
 	}
 };

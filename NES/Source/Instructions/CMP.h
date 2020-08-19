@@ -11,15 +11,15 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class CMPBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	CMPBase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "CMP")
+	CMPBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "CMP")
 	{
 	}
 
 	void ExecuteImplementation(CPU &cpu, Memory &memory)
 	{
-		unsigned char memory_value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
-		unsigned char compare_value = static_cast<_execute *>(this)->GetCompareValue(cpu);
-		unsigned char value = compare_value - memory_value;
+		uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue(cpu, memory);
+		uint8_t compare_value = static_cast<_execute *>(this)->GetCompareValue(cpu);
+		uint8_t value = compare_value - memory_value;
 		cpu.SetCarryFlag(compare_value >= memory_value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
@@ -34,7 +34,7 @@ public:
 		m_name = "CPX";
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterX();
 	}
@@ -48,7 +48,7 @@ public:
 		m_name = "CPX";
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterX();
 	}
@@ -62,7 +62,7 @@ public:
 		m_name = "CPX";
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterX();
 	}
@@ -76,7 +76,7 @@ public:
 		m_name = "CPY";
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterY();
 	}
@@ -90,7 +90,7 @@ public:
 		m_name = "CPY";
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterY();
 	}
@@ -104,7 +104,7 @@ public:
 		m_name = "CPY";
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterY();
 	}
@@ -117,7 +117,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -130,7 +130,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -143,7 +143,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -156,7 +156,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -169,7 +169,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -182,7 +182,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -195,7 +195,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}
@@ -208,7 +208,7 @@ public:
 	{
 	}
 
-	unsigned char GetCompareValue(CPU &cpu)
+	uint8_t GetCompareValue(CPU &cpu)
 	{
 		return cpu.GetRegisterA();
 	}

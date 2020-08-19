@@ -11,7 +11,7 @@ template<typename _addressing_mode, typename _execute, int _op_code>
 class STABase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
 public:
-	STABase(unsigned char cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STA")
+	STABase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STA")
 	{
 	}
 

@@ -1,21 +1,21 @@
 #ifndef NES_RAM_H
 #define NES_RAM_H
-
+#include <cstdint>
 
 class RAM
 {
 public:
 	RAM();
 
-	unsigned char GetByte(const unsigned short position) const;
+	uint8_t GetByte(const uint16_t position) const;
 
-	unsigned short GetShort(const unsigned short position) const;
+	uint16_t GetShort(const uint16_t position) const;
 
-	void SetByte(const unsigned short position, unsigned char value);
+	void SetByte(const uint16_t position, uint8_t value);
 
 	void Reset();
 private:
-	unsigned char *m_ram_buffer = nullptr;
+	uint8_t *m_ram_buffer = nullptr;
 };
 
 

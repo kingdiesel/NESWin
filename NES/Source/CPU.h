@@ -74,7 +74,7 @@ public:
 		m_reg_s = value;
 	}
 
-	unsigned short GetRegisterProgramCounter() const
+	uint16_t GetRegisterProgramCounter() const
 	{
 		return m_reg_pc;
 	}
@@ -89,117 +89,66 @@ public:
 		m_reg_s += 1;
 	}
 
-	unsigned short GetRegisterProgramCounterPlus(unsigned int value) const;
+	uint16_t GetRegisterProgramCounterPlus(const uint16_t value) const;
 
-	unsigned short GetFullStackAddress() const
+	uint16_t GetFullStackAddress() const
 	{
-		return (unsigned short) (0x0100 | (unsigned short) m_reg_s);
+		return (uint16_t) (0x0100 | (uint16_t) m_reg_s);
 	}
 
 	inline bool IsDecimalFlagSet() const
 	{
-		return (m_reg_p.Register & 0x08) != 0;
+		return m_reg_p.Status.m_decimal != 0;
 	}
 
 	inline bool IsZeroFlagSet() const
 	{
-		return (m_reg_p.Register & 0x02) != 0;
+		return m_reg_p.Status.m_zero != 0;
 	}
 
 	inline bool IsNegativeFlagSet() const
 	{
 		return m_reg_p.Status.m_negative != 0;
-		//return (m_reg_p.Register & 0x80) != 0;
 	}
 
 	inline bool IsOverflowFlagSet() const
 	{
-		return (m_reg_p.Register & 0x40) != 0;
+		return m_reg_p.Status.m_overflow != 0;
 	}
 
 	inline bool IsCarryFlagSet() const
 	{
-		return (m_reg_p.Register & 0x01) != 0;
+		return m_reg_p.Status.m_carry != 0;
 	}
 
 	void SetNegativeFlagForValue(const uint8_t value)
 	{
-		if (value & 0x80)
-		{
-			m_reg_p.Status.m_negative = 1;
-		}
-		else
-		{
-			m_reg_p.Status.m_negative = 0;
-		}
-		//if (value & 0x80)
-		//{
-		//	m_reg_p.Register |= 0x80;
-		//}
-		//else
-		//{
-		//	m_reg_p.Register &= ~0x80;
-		//}
+		m_reg_p.Status.m_negative = value & 0x80 ? 1 : 0;
 	}
 
 	void SetDecimalFlag(const bool state)
 	{
-		if (!state)
-		{
-			m_reg_p.Register &= ~0x08;
-		}
-		else
-		{
-			m_reg_p.Register |= 0x08;
-		}
+		m_reg_p.Status.m_decimal = state ? 1 : 0;
 	}
 
 	void SetZeroFlag(const bool state)
 	{
-		if (state)
-		{
-			m_reg_p.Register |= 0x02;
-		}
-		else
-		{
-			m_reg_p.Register &= ~0x02;
-		}
+		m_reg_p.Status.m_zero = state ? 1 : 0;
 	}
 
 	void SetInterruptFlag(const bool state)
 	{
-		if (!state)
-		{
-			m_reg_p.Register &= ~0x04;
-		}
-		else
-		{
-			m_reg_p.Register |= 0x04;
-		}
+		m_reg_p.Status.m_interrupt_disable = state ? 1 : 0;
 	}
 
 	void SetOverflowFlag(const bool state)
 	{
-		if (!state)
-		{
-			m_reg_p.Register &= ~0x40;
-		}
-		else
-		{
-			m_reg_p.Register |= 0x40;
-		}
+		m_reg_p.Status.m_overflow = state ? 1 : 0;
 	}
 
 	void SetCarryFlag(const bool state)
 	{
-		if (!state)
-		{
-			m_reg_p.Register &= ~0x01;
-		}
-		else
-		{
-			m_reg_p.Register |= 0x01;
-		}
+		m_reg_p.Status.m_carry = state ? 1 : 0;
 	}
 
 	class Memory *GetMemory() const
