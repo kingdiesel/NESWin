@@ -15,7 +15,7 @@ uint8_t Memory::GetByte(const uint16_t position) const
 	}
 	else
 	{
-		std::cout << "Unkonown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+		std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 				  << position << std::endl;
 		exit(1);
 	}
