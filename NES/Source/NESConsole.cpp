@@ -4,6 +4,14 @@
 #include <cstring>
 #include <assert.h>
 #include "NESConsole.h"
+std::shared_ptr<NESConsole> NESConsole::NESConsoleSingleton(nullptr);
+std::once_flag NESConsole::NESConsoleOnceFlag;
+
+std::shared_ptr<NESConsole> NESConsole::GetInstance(void)
+{
+	std::call_once(NESConsoleOnceFlag, []() { NESConsoleSingleton.reset(new NESConsole); });
+	return NESConsoleSingleton;
+}
 
 void NESConsole::LoadROM(const std::string &path)
 {

@@ -6,8 +6,8 @@
 
 int main()
 {
-	NESConsole test_console;
-	test_console.RunTests();
+	
+	NESConsole::GetInstance()->RunTests();
 
 	//NESConsole console;
 	//console.LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");

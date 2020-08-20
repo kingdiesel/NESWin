@@ -1,12 +1,15 @@
 #ifndef NES_NESCONSOLE_H
 #define NES_NESCONSOLE_H
 
+#include <memory>
+#include <mutex>
 #include "CPU.h"
 #include "Memory.h"
 
 class NESConsole
 {
 public:
+	static std::shared_ptr<NESConsole> GetInstance(void);
 	void LoadROM(const std::string &path);
 
 	void RunROM();
@@ -36,6 +39,9 @@ private:
 
 	//	testing
 	std::vector<std::string> m_nestest_log;
+
+	static std::shared_ptr<NESConsole> NESConsoleSingleton;
+	static std::once_flag NESConsoleOnceFlag;
 };
 
 
