@@ -15,9 +15,11 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		this->GetAddressingMode().SetMemoryByteValue(cpu, cpu.GetRegisterX());
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		this->GetAddressingMode().SetMemoryByteValue(cpu.GetRegisterX());
 	}
 };
 

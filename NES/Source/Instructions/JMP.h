@@ -15,9 +15,11 @@ public:
 		m_increments_program_counter = false;
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		cpu.SetRegisterProgramCounter(GetAddressingMode().GetMemoryByte(cpu, cpu.GetMemory()));
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		cpu.SetRegisterProgramCounter(GetAddressingMode().GetMemoryByte());
 	}
 };
 
@@ -29,9 +31,11 @@ public:
 		m_increments_program_counter = false;
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		cpu.SetRegisterProgramCounter(GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()));
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		cpu.SetRegisterProgramCounter(GetAddressingMode().GetMemoryByteValue());
 	}
 };
 
@@ -43,15 +47,17 @@ public:
 		m_increments_program_counter = false;
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		uint16_t jump_address = GetAddressingMode().GetMemoryByte(cpu, cpu.GetMemory());
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		uint16_t jump_address = GetAddressingMode().GetMemoryByte();
 		uint16_t return_memory_address = cpu.GetRegisterProgramCounterPlus(3 - 1);
 		uint8_t return_memory_high = static_cast<uint8_t>((return_memory_address & 0xFF00) >> 8);
 		uint8_t return_memory_low = static_cast<uint8_t>(return_memory_address & 0x00FF);
-		cpu.GetMemory().SetByte(cpu.GetFullStackAddress(), return_memory_high);
+		memory.SetByte(cpu.GetFullStackAddress(), return_memory_high);
 		cpu.DecrementStackPointer();
-		cpu.GetMemory().SetByte(cpu.GetFullStackAddress(), return_memory_low);
+		memory.SetByte(cpu.GetFullStackAddress(), return_memory_low);
 		cpu.DecrementStackPointer();
 		cpu.SetRegisterProgramCounter(jump_address);
 	}

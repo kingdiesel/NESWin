@@ -20,12 +20,12 @@ public:
 
 	void Execute(CPU &cpu)
 	{
-		static_cast<_execute *>(this)->ExecuteImplementation(cpu);
+		static_cast<_execute *>(this)->ExecuteImplementation();
 	}
 
-	void ToString(const CPU &cpu, const Memory &memory, std::string &out_string) const
+	void ToString(std::string &out_string) const
 	{
-		m_addressing_mode.ToString(cpu, memory, out_string);
+		m_addressing_mode.ToString(out_string);
 	}
 
 	uint8_t GetOpCode() const

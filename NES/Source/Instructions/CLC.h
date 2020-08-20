@@ -15,8 +15,10 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetCarryFlag(false);
 	}
 };

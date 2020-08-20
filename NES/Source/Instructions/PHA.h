@@ -14,9 +14,11 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		cpu.GetMemory().SetByte(cpu.GetFullStackAddress(), cpu.GetRegisterA());
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		memory.SetByte(cpu.GetFullStackAddress(), cpu.GetRegisterA());
 		cpu.DecrementStackPointer();
 	}
 };

@@ -14,11 +14,13 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t flags = cpu.GetRegisterFlag();
 		flags |= 0x30;
-		cpu.GetMemory().SetByte(cpu.GetFullStackAddress(), flags);
+		memory.SetByte(cpu.GetFullStackAddress(), flags);
 		cpu.DecrementStackPointer();
 	}
 };

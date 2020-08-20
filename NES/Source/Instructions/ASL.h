@@ -16,16 +16,18 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t bit_seven = value & (uint8_t) 0x80;
 		cpu.SetCarryFlag(bit_seven != 0);
 		value = value << 1;
 		value &= (uint8_t) 0xFE;
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
-		this->GetAddressingMode().SetMemoryByteValue(cpu, value);
+		this->GetAddressingMode().SetMemoryByteValue(value);
 	}
 };
 

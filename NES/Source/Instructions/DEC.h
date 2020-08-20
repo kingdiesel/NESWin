@@ -15,11 +15,13 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		value -= (uint8_t) 1;
-		this->GetAddressingMode().SetMemoryByteValue(cpu, value);
+		this->GetAddressingMode().SetMemoryByteValue(value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 	}

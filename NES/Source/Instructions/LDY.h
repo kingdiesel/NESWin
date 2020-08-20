@@ -15,9 +15,11 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		cpu.SetRegisterY(this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory()));
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		cpu.SetRegisterY(this->GetAddressingMode().GetMemoryByteValue());
 		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
 	}

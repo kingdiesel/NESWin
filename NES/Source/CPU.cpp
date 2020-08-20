@@ -58,7 +58,7 @@ class VariadicInstructionMap
 public:
 	VariadicInstructionMap() = default;
 
-	void InitializeInstructionTypes(CPU &cpu)
+	void InitializeInstructionTypes()
 	{
 		InitializeArray<JMPAbsolute, JSR, LDXAbsolute, LDXImmediate, LDXAbsolute, LDXAbsoluteY, LDXZeroPage, LDXZeroPageY,
 				STXZeroPage, STXAbsolute, STXZeroPageY, NOP, NOP1A, NOP3A, NOP5A, NOPDA, NOPFA,
@@ -78,17 +78,19 @@ public:
 				LSRZeroPageX, ASLAccumulator, ASLAbsolute, ASLAbsoluteX, ASLZeroPage, ASLZeroPageX, RORAccumulator, RORAbsolute, RORAbsoluteX,
 				RORZeroPage, RORZeroPageX, ROLAccumulator, ROLAbsolute, ROLAbsoluteX, ROLZeroPage, ROLZeroPageX, STYAbsolute, STYZeroPage,
 				STYZeroPageX, INCAbsolute, INCAbsoluteX, INCZeroPage, INCZeroPageX, DECAbsolute, DECAbsoluteX, DECZeroPage, DECZeroPageX,
-				JMPIndirect>
-				(cpu);
+				JMPIndirect>();
 	}
 
 	template<class _first_instruction>
-	void PrintLogString(CPU &cpu)
+	void PrintLogString()
 	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		if (!cpu.GetLoggingEnabled())
 		{
 			return;
 		}
+		
 		_first_instruction &instruction = *static_cast<_first_instruction *>(arr[_first_instruction::OP_CODE]);
 		std::string &log_string = cpu.GetLastInstructionStr();
 		log_string.clear();
@@ -105,7 +107,7 @@ public:
 			}
 			else
 			{
-				uint8_t operand_byte = cpu.GetMemory().GetByte(cpu.GetRegisterProgramCounterPlus(i));
+				uint8_t operand_byte = memory.GetByte(cpu.GetRegisterProgramCounterPlus(i));
 				opos << std::hex << std::uppercase << std::right << std::setfill('0') << std::setw(2)
 					 << (int) operand_byte;
 			}
@@ -122,7 +124,7 @@ public:
 		log_string.append(namestream.str());
 
 
-		instruction.ToString(cpu, cpu.GetMemory(), log_string);
+		instruction.ToString(log_string);
 		std::ostringstream flagstream;
 		flagstream << "A:" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase
 				   << (int) cpu.GetRegisterA()
@@ -146,13 +148,14 @@ public:
 	}
 
 	template<typename _instruction>
-	void InitializeArrayEntry(CPU &cpu)
+	void InitializeArrayEntry()
 	{
 		arr[_instruction::OP_CODE] = new _instruction();
-		auto func = [this, &cpu]()
+		auto func = [this]()
 		{
+			CPU& cpu = NESConsole::GetInstance()->GetCPU();
 			_instruction &instruction = *static_cast<_instruction *>(arr[_instruction::OP_CODE]);
-			PrintLogString<_instruction>(cpu);
+			PrintLogString<_instruction>();
 
 			instruction.Execute(cpu);
 			if (instruction.GetIncrementsProgramCounter())
@@ -166,19 +169,19 @@ public:
 	}
 
 	template<class _first_instruction>
-	void InitializeArray(CPU &cpu)
+	void InitializeArray()
 	{
-		InitializeArrayEntry<_first_instruction>(cpu);
+		InitializeArrayEntry<_first_instruction>();
 	}
 
 	template<class _first_instruction, class _second_instruction, class ... Rest>
-	void InitializeArray(CPU &cpu)
+	void InitializeArray()
 	{
-		InitializeArrayEntry<_first_instruction>(cpu);
-		InitializeArray<_second_instruction, Rest...>(cpu);
+		InitializeArrayEntry<_first_instruction>();
+		InitializeArray<_second_instruction, Rest...>();
 	}
 
-	void ExecuteInstruction(uint8_t op_code, CPU &cpu)
+	void ExecuteInstruction(uint8_t op_code)
 	{
 		if (farr[op_code] != nullptr)
 		{
@@ -201,17 +204,7 @@ VariadicInstructionMap map;
 
 CPU::CPU()
 {
-}
-
-class Memory& CPU::GetMemory() const
-{
-	return m_console->GetMemory();
-}
-void CPU::SetConsole(class NESConsole *console)
-{
-	assert(m_console == nullptr);
-	m_console = console;
-	map.InitializeInstructionTypes(*this);
+	map.InitializeInstructionTypes();
 }
 
 void CPU::PowerUp()
@@ -234,10 +227,10 @@ uint16_t CPU::GetRegisterProgramCounterPlus(const uint16_t value) const
 
 void CPU::HandleOpCode(const uint8_t op_code)
 {
-	map.ExecuteInstruction(op_code, *this);
+	map.ExecuteInstruction(op_code);
 }
 void CPU::ExecuteInstruction()
 {
-	uint8_t op_code = m_console->GetMemory().GetByte(m_reg_pc);
+	uint8_t op_code = NESConsole::GetInstance()->GetMemory().GetByte(m_reg_pc);
 	HandleOpCode(op_code);
 }

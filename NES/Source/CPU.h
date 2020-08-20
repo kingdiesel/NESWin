@@ -12,8 +12,6 @@ public:
 
 	void ExecuteInstruction();
 
-	void SetConsole(class NESConsole* console);
-
 	void SetRegisterProgramCounter(const uint16_t counter)
 	{
 		m_reg_pc = counter;
@@ -151,8 +149,6 @@ public:
 		m_reg_p.Status.m_carry = state ? 1 : 0;
 	}
 
-	class Memory& GetMemory() const;
-
 	int GetCycles() const
 	{
 		return m_cycles;
@@ -217,7 +213,6 @@ private:
 	};
 
 	PRegister m_reg_p;
-	class NESConsole *m_console = nullptr;
 	int m_instruction_count = 0;
 	int m_cycles = 0;
 	std::string m_last_instruction_str;

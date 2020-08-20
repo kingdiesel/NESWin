@@ -21,7 +21,6 @@ void NESConsole::LoadROM(const std::string &path)
 
 void NESConsole::RunROM()
 {
-	m_cpu.SetConsole(this);
 	m_cpu.PowerUp();
 	m_cpu.SetLoggingEnabled(true);
 	m_cpu.SetRegisterProgramCounter(m_memory.GetShort(0xFFFC));
@@ -90,7 +89,6 @@ bool NESConsole::RunNesTest()
 	}
 
 	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
-	m_cpu.SetConsole(this);
 	m_cpu.PowerUp();
 	// Start execution at $C000 to run "all tests", these will generate log output
 	// that will be compared to a working emulator

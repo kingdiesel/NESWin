@@ -16,9 +16,11 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		uint8_t value = this->GetAddressingMode().GetMemoryByteValue(cpu, cpu.GetMemory());
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t bit_zero = value & (uint8_t) 0x01;
 		bool carry_flag = cpu.IsCarryFlagSet();
 		value = value >> 1;
@@ -33,7 +35,7 @@ public:
 		cpu.SetCarryFlag(bit_zero != 0);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
-		this->GetAddressingMode().SetMemoryByteValue(cpu, value);
+		this->GetAddressingMode().SetMemoryByteValue(value);
 
 
 	}

@@ -14,14 +14,16 @@ public:
 	{
 	}
 
-	void ExecuteImplementation(CPU &cpu)
+	void ExecuteImplementation()
 	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.IncrementStackPointer();
-		uint8_t flags = cpu.GetMemory().GetByte(cpu.GetFullStackAddress());
+		uint8_t flags = memory.GetByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		uint16_t low_byte = cpu.GetMemory().GetByte(cpu.GetFullStackAddress());
+		uint16_t low_byte = memory.GetByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		uint16_t high_byte = cpu.GetMemory().GetByte(cpu.GetFullStackAddress());;
+		uint16_t high_byte = memory.GetByte(cpu.GetFullStackAddress());;
 		uint16_t address = (low_byte | (high_byte << (uint16_t) 8)) - (uint16_t) 1;
 		cpu.SetRegisterProgramCounter(address);
 		flags &= 0xCF;
