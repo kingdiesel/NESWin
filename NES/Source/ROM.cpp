@@ -23,8 +23,8 @@ void ROM::Load(const std::string &path)
 	std::memcpy(m_header_data.raw_data, m_rom_buffer, HEADER_SIZE);
 	m_header_data.prg_rom_size_16 = (int) m_header_data.raw_data[4];
 	m_header_data.chr_rom_size_8 = (int) m_header_data.raw_data[5];
-	m_header_data.flags_6 = m_header_data.raw_data[6];
-	m_header_data.flags_7 = m_header_data.raw_data[7];
+	m_header_data.m_flags_6.Flag = m_header_data.raw_data[6];
+	m_header_data.m_flags_7.Flag = m_header_data.raw_data[7];
 	m_header_data.prg_ram_size_8 = (int) m_header_data.raw_data[8];
 	m_header_data.flags_9 = m_header_data.raw_data[9];
 	m_header_data.flags_10 = m_header_data.raw_data[10];
@@ -37,8 +37,6 @@ void ROM::Load(const std::string &path)
 	m_chr_size = 8 * KB * m_header_data.chr_rom_size_8;
 	m_chr_buffer = new uint8_t[m_chr_size];
 	std::memcpy(m_chr_buffer, &m_rom_buffer[HEADER_SIZE + m_prg_size], m_chr_size);
-	assert(m_header_data.prg_ram_size_8 == 0);
-	assert(m_header_data.prg_rom_size_16 == 1);
 }
 
 void ROM::Reset()
