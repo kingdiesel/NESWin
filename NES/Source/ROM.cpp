@@ -2,6 +2,8 @@
 #include <fstream>
 #include <cstring>
 #include <assert.h>
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -52,24 +54,47 @@ void ROM::Reset()
 
 uint16_t ROM::GetMappedPosition(const uint16_t position) const
 {
+	//std::cout << "Getting 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << position << std::endl;
 	// https://wiki.nesdev.com/w/index.php/NROM
-	// CPU $6000-$7FFF: Family Basic only: PRG RAM, mirrored as necessary to fill entire 8 KiB window, write protectable with an external switch
-	// CPU $8000-$BFFF: First 16 KB of ROM.
-	// CPU $C000-$FFFF: Last 16 KB of ROM (NROM-256) or mirror of $8000-$BFFF (NROM-128).
-	if (position > 0x6000 && position <= 0x7FFF)
+	if (m_header_data.GetMapperNumber() == 0)
 	{
-		assert(false);
+		// CPU $6000-$7FFF: Family Basic only: PRG RAM, mirrored as necessary to 
+		//				fill entire 8 KiB window, write protectable with an external switch
+		// CPU $8000-$BFFF: First 16 KB of ROM.
+		// CPU $C000-$FFFF: Last 16 KB of ROM (NROM-256) or mirror of $8000-$BFFF (NROM-128).
+
+		// m_header_data.prg_rom_size_16
+
+		if (position > 0x6000 && position <= 0x7FFF)
+		{
+			// no PRG RAM on mapper 000
+			assert(false);
+		}
+		if (position >= 0x8000 && position <= 0xBFFF)
+		{
+			return position - 0x8000;
+		}
+		else if (position >= 0xC000 && position <= 0xFFFF)
+		{
+			// mirrored
+			if (m_header_data.prg_rom_size_16 == 1)
+			{
+				return position - (uint16_t)0xC000;
+			}
+			else
+			{
+				// 32k not implemented yet
+				assert(false);
+			}
+		}
+		return position;
 	}
-	/*if (position >= 0x8000 && position <= 0xBFFF)
+	else
 	{
-		return position - 0x8000;
+		std::cout << "Unknown mapper type: " << m_header_data.GetMapperNumber() << std::endl;
+		exit(1);
 	}
-	else */
-	if (position >= 0xC000 && position <= 0xFFFF)
-	{
-		return position - (uint16_t) 0xC000;
-	}
-	return position;
+	return 0;
 }
 
 uint8_t ROM::GetByte(const uint16_t position) const

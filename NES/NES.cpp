@@ -10,6 +10,7 @@ int main(int argv, char** args)
 {
 	
 	//NESConsole::GetInstance()->RunTests();
+	//return 0;
 
 	//NESConsole console;
 	NESConsole::GetInstance()->LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
