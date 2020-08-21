@@ -118,10 +118,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\aspiv\source\repos\NES\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\aspiv\source\repos\NES\SDL2-2.0.12\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +150,7 @@
     <ClCompile Include="Source\Instructions\BaseInstruction.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
     <ClCompile Include="Source\NESConsole.cpp" />
+    <ClCompile Include="Source\PatternTableTile.cpp" />
     <ClCompile Include="Source\RAM.cpp" />
     <ClCompile Include="Source\ROM.cpp" />
   </ItemGroup>
@@ -200,6 +204,7 @@
     <ClInclude Include="Source\Instructions\TYA.h" />
     <ClInclude Include="Source\Memory.h" />
     <ClInclude Include="Source\NESConsole.h" />
+    <ClInclude Include="Source\PatternTableTile.h" />
     <ClInclude Include="Source\RAM.h" />
     <ClInclude Include="Source\ROM.h" />
   </ItemGroup>
