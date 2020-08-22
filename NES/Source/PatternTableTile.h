@@ -13,9 +13,9 @@ public:
 
 	~PatternTableTile();
 
-	unsigned char *GetTileData();
+	uint8_t *GetTileData();
 
-	const unsigned char *GetTileData() const;
+	const uint8_t *GetTileData() const;
 
 	struct SDL_Texture *GetTileTexture();
 
@@ -25,7 +25,7 @@ public:
 private:
 	PatternTableTile(const PatternTableTile &other)
 	{}
-	unsigned char m_tile_data[TILE_SIZE];
+	uint8_t m_tile_data[TILE_SIZE];
 	uint32_t m_texture_tile_data[64];
 
 	struct SDL_Texture *m_tile_texture = nullptr;

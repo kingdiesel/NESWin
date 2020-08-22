@@ -5,6 +5,7 @@
 #include "Source/NESConsole.h"
 #include "Source/PatternTableTile.h"
 #include "SDL.h"
+#include <iomanip>
 
 int main(int argv, char** args)
 {
@@ -13,7 +14,10 @@ int main(int argv, char** args)
 	//return 0;
 
 	//NESConsole console;
-	NESConsole::GetInstance()->LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
+	NESConsole::GetInstance()->LoadROM(
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
+		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
+	);
 
 	//console.RunROM();
 	const int nes_resolution_x = 256;
@@ -46,29 +50,48 @@ int main(int argv, char** args)
 		nes_resolution_y * screen_scale
 	);
 
-	returnCode = SDL_SetRenderDrawColor(
-		renderer, 
-		0x00, 
-		0x00, 
-		0x00, 
-		0xFF
-	);
-
-	SDL_Texture* pattern_table_texture = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STREAMING,
-		nes_resolution_x,
-		nes_resolution_y
-	);
-
 	Uint32 format = SDL_PIXELFORMAT_ARGB8888;
 	SDL_PixelFormat* mapping_format = SDL_AllocFormat(format);
-
 	const ROM& rom = NESConsole::GetInstance()->GetROM();
+
+	// Palletes
+	/*
+		// https://wiki.nesdev.com/w/index.php/PPU_palettes
+		$3F00		Universal background color (16128)
+		$3F01-$3F03	Background palette 0
+		$3F05-$3F07	Background palette 1
+		$3F09-$3F0B	Background palette 2
+		$3F0D-$3F0F	Background palette 3
+		$3F11-$3F13	Sprite palette 0
+		$3F15-$3F17	Sprite palette 1
+		$3F19-$3F1B	Sprite palette 2
+		$3F1D-$3F1F	Sprite palette 3
+
+		Each palette has three colors
+		Each color takes up one byte
+
+		// https://en.wikipedia.org/wiki/8-bit_color
+		Bit    7  6  5  4  3  2  1  0
+		Data   R  R  R  G  G  G  B  B
+	*/
+	for (int i = 0x3F00; i <= 0x3F1f; ++i)
+	{
+		uint8_t color = rom.GetColor(i);
+		std::cout << "color: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+			<< color << std::endl;
+	}
+
+	// Pattern tables
 	const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
 	std::vector<PatternTableTile*> tiles;
 	tiles.resize(num_tiles);
+
+	//  $0000-$0FFF, nicknamed "left" 0 - 4095
+	//	$1000-$1FFF, nicknamed "right" 4096 - 8191
+
+	// this loops over the whole range (0-8191), out of laziness
+	// "left" and "right" will actually be displayed as "top"
+	// and "bottom"
 	int tile_count = 0;
 	for (int i = 0; i < num_tiles; i += 16, ++tile_count)
 	{
@@ -76,6 +99,14 @@ int main(int argv, char** args)
 		rom.GetTile(i, tiles[tile_count]->GetTileData(), PatternTableTile::TILE_SIZE);
 		tiles[tile_count]->CreateTextureFromTileData(renderer);
 	}
+
+	returnCode = SDL_SetRenderDrawColor(
+		renderer,
+		0x00,
+		0x00,
+		0x00,
+		0xFF
+	);
 
 	bool quit = false;
 	SDL_Event event;
@@ -101,7 +132,12 @@ int main(int argv, char** args)
 			dest_rect.y = ((i * 16) / nes_resolution_x) * 16;
 			dest_rect.h = 16;
 			dest_rect.w = 16;
-			SDL_RenderCopy(renderer, tiles[i]->GetTileTexture(), nullptr, &dest_rect);
+			SDL_RenderCopy(
+				renderer, 
+				tiles[i]->GetTileTexture(), 
+				nullptr, 
+				&dest_rect
+			);
 		}
 
 		SDL_RenderPresent(renderer);
@@ -114,7 +150,6 @@ int main(int argv, char** args)
 	}
 
 	SDL_FreeFormat(mapping_format);
-	SDL_DestroyTexture(pattern_table_texture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	return 0;

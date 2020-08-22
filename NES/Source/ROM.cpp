@@ -64,7 +64,6 @@ uint16_t ROM::GetMappedPosition(const uint16_t position) const
 		// CPU $C000-$FFFF: Last 16 KB of ROM (NROM-256) or mirror of $8000-$BFFF (NROM-128).
 
 		// m_header_data.prg_rom_size_16
-
 		if (position > 0x6000 && position <= 0x7FFF)
 		{
 			// no PRG RAM on mapper 000
@@ -123,6 +122,12 @@ uint16_t ROM::GetShort(const uint16_t position) const
 const iNESHeader &ROM::GetHeaderData() const
 {
 	return m_header_data;
+}
+
+uint8_t ROM::GetColor(uint16_t position) const
+{
+	assert(position >= 0x3F00 && position <= 0x3F1F);
+	return m_chr_buffer[position];
 }
 
 void ROM::GetTile(const uint16_t position, uint8_t *tile_data, const int tile_data_size) const

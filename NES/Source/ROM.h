@@ -58,7 +58,8 @@ public:
 	uint16_t GetShort(const uint16_t position) const;
 
 	void GetTile(uint16_t position, uint8_t *tile_data, int tile_data_size) const;
-
+	
+	uint8_t GetColor(uint16_t position) const;
 	void Reset();
 
 	const iNESHeader &GetHeaderData() const;

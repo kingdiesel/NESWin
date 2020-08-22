@@ -7,7 +7,7 @@
 
 PatternTableTile::PatternTableTile()
 {
-	memset(m_tile_data, 0x00, 16);
+	memset(m_tile_data, 0x00, TILE_SIZE);
 	memset(m_texture_tile_data, 0x00, sizeof(m_texture_tile_data));
 	m_tile_texture = nullptr;
 }
@@ -20,12 +20,12 @@ PatternTableTile::~PatternTableTile()
 	}
 }
 
-unsigned char *PatternTableTile::GetTileData()
+uint8_t *PatternTableTile::GetTileData()
 {
 	return m_tile_data;
 }
 
-const unsigned char *PatternTableTile::GetTileData() const
+const uint8_t *PatternTableTile::GetTileData() const
 {
 	return m_tile_data;
 }
@@ -48,13 +48,13 @@ void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
 
 	for (int row = 0; row < 8; ++row)
 	{
-		unsigned char plane_zero_row = m_tile_data[row];
-		unsigned char plane_one_row = m_tile_data[row + 8];
+		uint8_t plane_zero_row = m_tile_data[row];
+		uint8_t plane_one_row = m_tile_data[row + 8];
 		for (int bit = 7; bit >= 0; --bit)
 		{
-			unsigned char shifted_row_zero = (plane_zero_row >> bit) & (unsigned char) 0x01;
-			unsigned char shifted_row_one = (plane_one_row >> bit) & (unsigned char) 0x01;
-			unsigned char color_bit = shifted_row_zero + shifted_row_one;
+			uint8_t shifted_row_zero = (plane_zero_row >> bit) & (uint8_t) 0x01;
+			uint8_t shifted_row_one = (plane_one_row >> bit) & (uint8_t) 0x01;
+			uint8_t color_bit = shifted_row_zero + shifted_row_one;
 			assert(color_bit < 4);
 			m_texture_tile_data[row * 8 + (7 - bit)] = color_bit == 0 ? 0xFF000000 : 0xFF00FFFF;
 		}
