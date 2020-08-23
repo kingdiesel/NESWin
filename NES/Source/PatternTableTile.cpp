@@ -46,6 +46,15 @@ void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
 			8
 	);
 
+	static const int GRAYSCALE[4] =
+	{
+		0x000000,
+		0x676767,
+		0xb6b6b6,
+		0xffffff,
+		//0x4c4c4c,
+	};
+
 	for (int row = 0; row < 8; ++row)
 	{
 		uint8_t plane_zero_row = m_tile_data[row];
@@ -56,7 +65,7 @@ void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
 			uint8_t shifted_row_one = (plane_one_row >> bit) & (uint8_t) 0x01;
 			uint8_t color_bit = shifted_row_zero + shifted_row_one;
 			assert(color_bit < 4);
-			m_texture_tile_data[row * 8 + (7 - bit)] = color_bit == 0 ? 0xFF000000 : 0xFF00FFFF;
+			m_texture_tile_data[row * 8 + (7 - bit)] = GRAYSCALE[color_bit];
 		}
 	}
 

@@ -16,12 +16,15 @@ int main(int argv, char** args)
 	//NESConsole console;
 	NESConsole::GetInstance()->LoadROM(
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
-		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
+		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
 	//console.RunROM();
+	//const int nes_resolution_x = 256;
+	//const int nes_resolution_y = 240;
 	const int nes_resolution_x = 256;
-	const int nes_resolution_y = 240;
+	const int nes_resolution_y = 512;
 	const int fps = 60;
 	const int screen_scale = 1;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
