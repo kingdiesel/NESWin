@@ -18,7 +18,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t compare_value = static_cast<_execute *>(this)->GetCompareValue(cpu);
 		uint8_t value = compare_value - memory_value;

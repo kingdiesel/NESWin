@@ -40,6 +40,12 @@
     <ClCompile Include="Source\PatternTableTile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VRAM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Addressing\AddressingMode.h">
@@ -198,5 +204,7 @@
     <ClInclude Include="Source\PatternTableTile.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="PPU.h" />
+    <ClInclude Include="VRAM.h" />
   </ItemGroup>
 </Project>

@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="NES.cpp" />
+    <ClCompile Include="PPU.cpp" />
     <ClCompile Include="Source\Addressing\AddressingMode.cpp" />
     <ClCompile Include="Source\CPU.cpp" />
     <ClCompile Include="Source\Instructions\BaseInstruction.cpp" />
@@ -153,8 +154,10 @@
     <ClCompile Include="Source\PatternTableTile.cpp" />
     <ClCompile Include="Source\RAM.cpp" />
     <ClCompile Include="Source\ROM.cpp" />
+    <ClCompile Include="VRAM.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PPU.h" />
     <ClInclude Include="Source\Addressing\AddressingMode.h" />
     <ClInclude Include="Source\CPU.h" />
     <ClInclude Include="Source\Instructions\ADC.h" />
@@ -207,6 +210,7 @@
     <ClInclude Include="Source\PatternTableTile.h" />
     <ClInclude Include="Source\RAM.h" />
     <ClInclude Include="Source\ROM.h" />
+    <ClInclude Include="VRAM.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

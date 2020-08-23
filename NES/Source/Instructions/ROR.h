@@ -19,7 +19,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t bit_zero = value & (uint8_t) 0x01;
 		bool carry_flag = cpu.IsCarryFlagSet();

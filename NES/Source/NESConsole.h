@@ -27,14 +27,14 @@ public:
 		return m_cpu;
 	}
 
-	Memory& GetMemory()
+	CPUMemory& GetMemory()
 	{
 		return m_memory;
 	}
 
 private:
 	CPU m_cpu;
-	Memory m_memory;
+	CPUMemory m_memory;
 	bool m_rom_loaded = false;
 
 	//	testing

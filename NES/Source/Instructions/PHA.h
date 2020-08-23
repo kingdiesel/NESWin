@@ -17,8 +17,8 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		memory.SetByte(cpu.GetFullStackAddress(), cpu.GetRegisterA());
+		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		memory.WriteByte(cpu.GetFullStackAddress(), cpu.GetRegisterA());
 		cpu.DecrementStackPointer();
 	}
 };

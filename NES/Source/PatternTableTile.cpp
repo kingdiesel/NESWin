@@ -46,13 +46,13 @@ void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
 			8
 	);
 
+	// https://lospec.com/palette-list/2-bit-grayscale
 	static const int GRAYSCALE[4] =
 	{
 		0x000000,
 		0x676767,
 		0xb6b6b6,
 		0xffffff,
-		//0x4c4c4c,
 	};
 
 	for (int row = 0; row < 8; ++row)

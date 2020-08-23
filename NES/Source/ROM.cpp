@@ -106,19 +106,6 @@ uint8_t ROM::GetByte(const uint16_t position) const
 	return m_prg_buffer[mapped_position];
 }
 
-uint16_t ROM::GetShort(const uint16_t position) const
-{
-	assert(position >= 0 && position <= 0xFFFF);
-	assert(m_prg_buffer != nullptr);
-	uint16_t return_value = 0x0000;
-	const uint16_t mapped_position = GetMappedPosition(position);
-	assert(mapped_position < m_prg_size);
-	return_value = m_prg_buffer[mapped_position + 1];
-	return_value = return_value << 8;
-	return_value |= m_prg_buffer[mapped_position];
-	return return_value;
-}
-
 const iNESHeader &ROM::GetHeaderData() const
 {
 	return m_header_data;

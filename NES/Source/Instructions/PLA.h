@@ -17,9 +17,9 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.IncrementStackPointer();
-		uint8_t data_byte = memory.GetByte(cpu.GetFullStackAddress());
+		uint8_t data_byte = memory.ReadByte(cpu.GetFullStackAddress());
 		cpu.SetRegisterA(data_byte);
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterA());
