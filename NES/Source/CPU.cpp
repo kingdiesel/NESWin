@@ -85,7 +85,7 @@ public:
 	void PrintLogString()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		if (!cpu.GetLoggingEnabled())
 		{
 			return;
@@ -107,7 +107,7 @@ public:
 			}
 			else
 			{
-				uint8_t operand_byte = memory.ReadByte(cpu.GetRegisterProgramCounterPlus(i));
+				uint8_t operand_byte = memory.CPUReadByte(cpu.GetRegisterProgramCounterPlus(i));
 				opos << std::hex << std::uppercase << std::right << std::setfill('0') << std::setw(2)
 					 << (int) operand_byte;
 			}
@@ -231,6 +231,6 @@ void CPU::HandleOpCode(const uint8_t op_code)
 }
 void CPU::ExecuteInstruction()
 {
-	uint8_t op_code = NESConsole::GetInstance()->GetMemory().ReadByte(m_reg_pc);
+	uint8_t op_code = NESConsole::GetInstance()->GetMemory().CPUReadByte(m_reg_pc);
 	HandleOpCode(op_code);
 }

@@ -21,7 +21,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		this->m_increments_program_counter = true;
 		if (static_cast<_execute *>(this)->ShouldBranch())
 		{
@@ -49,7 +49,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsCarryFlagSet();
 	}
 };
@@ -64,7 +64,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return !cpu.IsNegativeFlagSet();
 	}
 };
@@ -79,7 +79,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return !cpu.IsZeroFlagSet();
 	}
 };
@@ -94,7 +94,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsZeroFlagSet();
 	}
 };
@@ -109,7 +109,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return !cpu.IsCarryFlagSet();
 	}
 };
@@ -124,7 +124,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsOverflowFlagSet();
 	}
 };
@@ -139,7 +139,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return !cpu.IsOverflowFlagSet();
 	}
 };
@@ -154,7 +154,7 @@ public:
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsNegativeFlagSet();
 	}
 };

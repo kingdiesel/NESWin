@@ -17,10 +17,10 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t flags = cpu.GetRegisterFlag();
 		flags |= 0x30;
-		memory.WriteByte(cpu.GetFullStackAddress(), flags);
+		memory.CPUWriteByte(cpu.GetFullStackAddress(), flags);
 		cpu.DecrementStackPointer();
 	}
 };

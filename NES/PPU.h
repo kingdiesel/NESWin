@@ -140,6 +140,7 @@ public:
 		m_reg_ppu_control.Register = value;
 	}
 private:
+	// https://wiki.nesdev.com/w/index.php/PPU_registers
 	PPUControlRegister m_reg_ppu_control;
 	PPUMaskRegister m_reg_ppu_mask;
 	PPUStatusRegister m_reg_status;

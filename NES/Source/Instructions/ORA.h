@@ -18,7 +18,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		cpu.SetRegisterA(value | cpu.GetRegisterA());
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);

@@ -23,7 +23,7 @@ void NESConsole::RunROM()
 {
 	m_cpu.PowerUp();
 	m_cpu.SetLoggingEnabled(true);
-	m_cpu.SetRegisterProgramCounter(m_memory.ReadShort(0xFFFC));
+	m_cpu.SetRegisterProgramCounter(m_memory.CPUReadShort(0xFFFC));
 	// nes test start address
 	while (true)
 	{

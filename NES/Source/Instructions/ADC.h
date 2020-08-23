@@ -18,7 +18,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = static_cast<_execute *>(this)->GetAddValue();
 		uint8_t carry_bit = 0x00;
 		if (cpu.IsCarryFlagSet())

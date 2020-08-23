@@ -17,13 +17,13 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.IncrementStackPointer();
-		uint8_t flags = memory.ReadByte(cpu.GetFullStackAddress());
+		uint8_t flags = memory.CPUReadByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		uint16_t low_byte = memory.ReadByte(cpu.GetFullStackAddress());
+		uint16_t low_byte = memory.CPUReadByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		uint16_t high_byte = memory.ReadByte(cpu.GetFullStackAddress());;
+		uint16_t high_byte = memory.CPUReadByte(cpu.GetFullStackAddress());;
 		uint16_t address = (low_byte | (high_byte << (uint16_t) 8)) - (uint16_t) 1;
 		cpu.SetRegisterProgramCounter(address);
 		flags &= 0xCF;

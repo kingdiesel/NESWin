@@ -17,7 +17,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterA(cpu.GetRegisterX());
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterA());

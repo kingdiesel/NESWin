@@ -18,11 +18,11 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.IncrementStackPointer();
-		uint16_t low_byte = memory.ReadByte(cpu.GetFullStackAddress());
+		uint16_t low_byte = memory.CPUReadByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
-		uint16_t high_byte = memory.ReadByte(cpu.GetFullStackAddress());
+		uint16_t high_byte = memory.CPUReadByte(cpu.GetFullStackAddress());
 		uint16_t return_address = ((high_byte << 8) | low_byte) + 1;
 		cpu.SetRegisterProgramCounter(return_address);
 	}

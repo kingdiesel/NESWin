@@ -2,16 +2,16 @@
 #define NES_MEMORY_H
 
 #include "ROM.h"
-#include "RAM.h"
 
-class CPUMemory
+class Memory
 {
 public:
-	uint8_t ReadByte(const uint16_t position) const;
+	Memory();
+	uint8_t CPUReadByte(const uint16_t position) const;
 
-	uint16_t ReadShort(const uint16_t position) const;
+	uint16_t CPUReadShort(const uint16_t position) const;
 
-	void WriteByte(const uint16_t position, uint8_t value);
+	void CPUWriteByte(const uint16_t position, uint8_t value);
 
 	ROM &GetROM()
 	{
@@ -27,7 +27,7 @@ public:
 
 private:
 	ROM m_rom;
-	RAM m_ram;
+	uint8_t* m_cpu_ram_buffer = nullptr;
 };
 
 

@@ -5,6 +5,7 @@
 #include <mutex>
 #include "CPU.h"
 #include "Memory.h"
+#include "../PPU.h"
 
 class NESConsole
 {
@@ -27,14 +28,20 @@ public:
 		return m_cpu;
 	}
 
-	CPUMemory& GetMemory()
+	PPU& GetPPU()
+	{
+		return m_ppu;
+	}
+
+	Memory& GetMemory()
 	{
 		return m_memory;
 	}
 
 private:
 	CPU m_cpu;
-	CPUMemory m_memory;
+	PPU m_ppu;
+	Memory m_memory;
 	bool m_rom_loaded = false;
 
 	//	testing

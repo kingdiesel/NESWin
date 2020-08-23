@@ -19,7 +19,7 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		this->GetAddressingMode().SetMemoryByteValue(cpu.GetRegisterY());
 	}
 };

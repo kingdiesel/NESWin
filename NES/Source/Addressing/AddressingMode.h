@@ -8,7 +8,7 @@
 #include "../NESConsole.h"
 
 class CPU;
-class CPUMemory;
+class Memory;
 
 template<typename _derived_addressing, int _operand_length>
 class BaseAddressingStrategy
@@ -17,9 +17,9 @@ public:
 	void SetMemoryByteValue(uint8_t value)
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		CPUMemory& memory = NESConsole::GetInstance()->GetMemory();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint16_t address = static_cast<_derived_addressing *>(this)->GetSetAddress();
-		memory.WriteByte(address, value);
+		memory.CPUWriteByte(address, value);
 	}
 
 	int GetAddressingCycles() const
