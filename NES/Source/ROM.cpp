@@ -110,17 +110,3 @@ const iNESHeader &ROM::GetHeaderData() const
 {
 	return m_header_data;
 }
-
-uint8_t ROM::GetColor(uint16_t position) const
-{
-	assert(position >= 0x3F00 && position <= 0x3F1F);
-	return m_chr_buffer[position];
-}
-
-void ROM::GetTile(const uint16_t position, uint8_t *tile_data, const int tile_data_size) const
-{
-	assert(tile_data_size == 16 && tile_data != nullptr);
-	// https://wiki.nesdev.com/w/index.php/PPU_pattern_tables
-	assert(position >= 0x0000 && position <= 0x1FFF);
-	memcpy(tile_data, &m_chr_buffer[position], tile_data_size);
-}

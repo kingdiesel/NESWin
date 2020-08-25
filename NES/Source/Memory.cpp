@@ -6,11 +6,19 @@
 
 Memory::Memory()
 {
-	/*
-		$0000-$07FF	$0800	2KB internal RAM (0-2047)
-	*/
+	
+	// $0000-$07FF	$0800	2KB internal RAM (0-2047)
+	// https://wiki.nesdev.com/w/index.php/CPU_memory_map
 	m_cpu_ram_buffer = new uint8_t[2 * 1024];
+
+	// The NES has 2KB of RAM dedicated to the PPU
+	// https://wiki.nesdev.com/w/index.php/PPU_memory_map
+	m_ppu_ram_buffer = new uint8_t[2 * 1024];
+	
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
+	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
+	memset(m_palette_buffer, 0x00, 32);
+	memset(m_object_attribute_memory, 0x00, 256);
 }
 
 uint8_t Memory::CPUReadByte(const uint16_t position) const
@@ -152,8 +160,67 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 	}
 }
 
+bool IsBackgroundFallthrough(const uint16_t position)
+{
+	if (position == 0x3F04
+		|| position == 0x3F08
+		|| position == 0x3F0C
+		|| position == 0x3F10
+		|| position == 0x3F14
+		|| position == 0x3F18
+		|| position == 0x3F1C
+		)
+	{
+		return true;
+	}
+	return false;
+}
+
+uint8_t Memory::PPUReadByte(const uint16_t position) const
+{
+	/*
+		$0000-$0FFF	$1000	Pattern table 0
+		$1000-$1FFF	$1000	Pattern table 1
+		$2000-$23FF	$0400	Nametable 0
+		$2400-$27FF	$0400	Nametable 1
+		$2800-$2BFF	$0400	Nametable 2
+		$2C00-$2FFF	$0400	Nametable 3
+		$3000-$3EFF	$0F00	Mirrors of $2000-$2EFF
+		$3F00-$3F1F	$0020	Palette RAM indexes
+		$3F20-$3FFF	$00E0	Mirrors of $3F00-$3F1F
+	*/
+	if (position >= 0x0000 && position <= 0x1FFF)
+	{
+		return m_rom.GetChrRom()[position];
+	}
+	else if (position >= 0x2000 && position <= 0x3EFF)
+	{
+		const uint16_t mirrored_position = position & 0x2FFF;
+		return m_ppu_ram_buffer[mirrored_position];
+	}
+	else if (position >= 0x3F00 && position <= 0x3FFF)
+	{
+		// https://wiki.nesdev.com/w/index.php/PPU_palettes
+		const uint16_t mirrored_position = position & 0x3F1F;
+		if (IsBackgroundFallthrough(mirrored_position))
+		{
+			return m_palette_buffer[0];
+		}
+		const int shifted_down = mirrored_position - 0x3F00;
+		return m_palette_buffer[shifted_down];
+	}
+	else
+	{
+		std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+			<< position << std::endl;
+		exit(1);
+	}
+	return 0;
+}
+
 void Memory::Reset()
 {
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
+	memset(m_ppu_ram_buffer, 0x00, 2 * 1024);
 	m_rom.Reset();
 }

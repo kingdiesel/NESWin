@@ -54,14 +54,12 @@ public:
 	void Load(const std::string &path);
 
 	uint8_t GetByte(const uint16_t position) const;
-
-	void GetTile(uint16_t position, uint8_t *tile_data, int tile_data_size) const;
-	
-	uint8_t GetColor(uint16_t position) const;
 	void Reset();
 
 	const iNESHeader &GetHeaderData() const;
 
+	uint8_t* GetChrRom() { return m_chr_buffer; }
+	const uint8_t* GetChrRom() const { return m_chr_buffer; }
 private:
 	uint16_t GetMappedPosition(const uint16_t position) const;
 

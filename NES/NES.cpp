@@ -9,14 +9,14 @@
 
 int main(int argv, char** args)
 {	
-	NESConsole::GetInstance()->RunTests();
-	return 0;
+	//NESConsole::GetInstance()->RunTests();
+	//return 0;
 
 	//NESConsole console;
 	NESConsole::GetInstance()->LoadROM(
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
+		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
-		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
 	//console.RunROM();
@@ -78,7 +78,7 @@ int main(int argv, char** args)
 	*/
 	for (int i = 0x3F00; i <= 0x3F1f; ++i)
 	{
-		uint8_t color = rom.GetColor(i);
+		uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
 		std::cout << "color: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 			<< color << std::endl;
 	}
@@ -98,7 +98,10 @@ int main(int argv, char** args)
 	for (int i = 0; i < num_tiles; i += 16, ++tile_count)
 	{
 		tiles[tile_count] = new PatternTableTile();
-		rom.GetTile(i, tiles[tile_count]->GetTileData(), PatternTableTile::TILE_SIZE);
+		for (int j = 0; j < 16; ++j)
+		{
+			tiles[tile_count]->GetTileData()[j] = NESConsole::GetInstance()->GetMemory().PPUReadByte(i + j);
+		}
 		tiles[tile_count]->CreateTextureFromTileData(renderer);
 	}
 

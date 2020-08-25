@@ -8,10 +8,10 @@ class Memory
 public:
 	Memory();
 	uint8_t CPUReadByte(const uint16_t position) const;
-
 	uint16_t CPUReadShort(const uint16_t position) const;
-
 	void CPUWriteByte(const uint16_t position, uint8_t value);
+
+	uint8_t PPUReadByte(const uint16_t position) const;
 
 	ROM &GetROM()
 	{
@@ -28,6 +28,9 @@ public:
 private:
 	ROM m_rom;
 	uint8_t* m_cpu_ram_buffer = nullptr;
+	uint8_t* m_ppu_ram_buffer = nullptr;
+	uint8_t m_palette_buffer[32];
+	uint8_t m_object_attribute_memory[256];
 };
 
 
