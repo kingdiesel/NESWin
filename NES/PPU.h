@@ -49,6 +49,7 @@ class PPU
 public:
 	void PowerUp();
 	void Reset();
+	void ResetWriteToggle() { m_write_toggle = 0; }
 
 	uint8_t GetOAMDMA()
 	{
@@ -77,7 +78,28 @@ public:
 
 	void SetAddress(const uint8_t value)
 	{
-		m_ppu_addr = value;
+		// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUADDR
+		if (m_write_toggle == 0)
+		{
+			m_write_toggle = 1;
+			m_ppu_addr = value;
+			const uint16_t high_address = m_ppu_addr << 8;
+			// clear high bits
+			m_ppu_full_addr &= 0x00FF;
+			// set high bits
+			m_ppu_full_addr |= high_address;
+			
+		}
+		else
+		{
+			m_write_toggle = 0;
+			m_ppu_addr = value;
+			// clear low bits
+			m_ppu_full_addr &= 0xFF00;
+			// set low bits
+			m_ppu_full_addr |= m_ppu_addr;
+		}
+		
 	}
 
 	uint8_t GetScroll()
@@ -87,7 +109,27 @@ public:
 
 	void SetScroll(const uint8_t value)
 	{
-		m_ppu_scroll = value;
+		// https://wiki.nesdev.com/w/index.php/PPU_registers#Scroll_.28.242005.29_.3E.3E_write_x2
+		if (m_write_toggle == 0)
+		{
+			m_write_toggle = 1;
+			m_ppu_scroll = value;
+			const uint16_t high_address = m_ppu_scroll << 8;
+			// clear high bits
+			m_ppu_full_scroll &= 0x00FF;
+			// set high bits
+			m_ppu_full_scroll |= high_address;
+
+		}
+		else
+		{
+			m_write_toggle = 0;
+			m_ppu_scroll = value;
+			// clear low bits
+			m_ppu_full_scroll &= 0xFF00;
+			// set low bits
+			m_ppu_full_scroll |= m_ppu_addr;
+		}
 	}
 
 	uint8_t GetOAMData()
@@ -147,8 +189,14 @@ private:
 	uint8_t m_reg_oam_addr = 0x00;
 	uint8_t m_reg_oam_data = 0x00;
 	uint8_t m_ppu_scroll = 0x00;
+	uint16_t m_ppu_full_scroll = 0x0000;
 	uint8_t m_ppu_addr = 0x00;
+	uint16_t m_ppu_full_addr = 0x0000;
 	uint8_t m_ppu_data = 0x00;
 	uint8_t m_oam_dma = 0x00;
+	// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUADDR
+	// determines if writing high bit or low bit
+	// to 0x2005 and 0x2006
+	uint8_t m_write_toggle = 0x00;
 };
 

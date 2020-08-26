@@ -165,7 +165,7 @@ uint16_t RelativeAddressingStrategy::GetMemoryByteValue() const
 {
 	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
-	uint8_t data_byte = GetMemoryByte();
+	int8_t data_byte = static_cast<int8_t>(GetMemoryByte());
 	uint16_t destination = cpu.GetRegisterProgramCounterPlus(2) + (uint16_t) data_byte;
 	return destination;
 }

@@ -49,6 +49,8 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 			case 0x2001:
 				return ppu.GetMaskRegister().Register;
 			case 0x2002:
+				// https://wiki.nesdev.com/w/index.php/PPU_scrolling#.242002_read
+				ppu.ResetWriteToggle();
 				return ppu.GetStatusRegister().Register;
 			case 0x2003:
 				return ppu.GetOAMAddress();
@@ -137,6 +139,14 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 			assert(false);
 		}
 	}
+	else if (position == 0x4014)
+	{
+		PPU& ppu = NESConsole::GetInstance()->GetPPU();
+		ppu.SetOAMDMA(value);
+		// TODO: if this occurs, need to copy stuff
+		// to sprite memory
+		// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
+	}
 	else if (position >= 0x4000 && position <= 0x4017)
 	{
 		// TODO: write to APU 
@@ -216,6 +226,50 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 		exit(1);
 	}
 	return 0;
+}
+
+void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
+{
+	/*
+		$0000-$0FFF	$1000	Pattern table 0
+		$1000-$1FFF	$1000	Pattern table 1
+		$2000-$23FF	$0400	Nametable 0
+		$2400-$27FF	$0400	Nametable 1
+		$2800-$2BFF	$0400	Nametable 2
+		$2C00-$2FFF	$0400	Nametable 3
+		$3000-$3EFF	$0F00	Mirrors of $2000-$2EFF
+		$3F00-$3F1F	$0020	Palette RAM indexes
+		$3F20-$3FFF	$00E0	Mirrors of $3F00-$3F1F
+	*/
+	if (position >= 0x0000 && position <= 0x1FFF)
+	{
+		// we're probably not writing to chr rom..yet
+		assert(false);
+	}
+	else if (position >= 0x2000 && position <= 0x3EFF)
+	{
+		const uint16_t mirrored_position = position & 0x2FFF;
+		m_ppu_ram_buffer[mirrored_position] = value;
+	}
+	else if (position >= 0x3F00 && position <= 0x3FFF)
+	{
+		// https://wiki.nesdev.com/w/index.php/PPU_palettes
+		const uint16_t mirrored_position = position & 0x3F1F;
+		if (IsBackgroundFallthrough(mirrored_position))
+		{
+			// is writing to the fallthrough byte supported?
+			// if so -- remove this assert
+			assert(false);
+		}
+		const int shifted_down = mirrored_position - 0x3F00;
+		m_palette_buffer[shifted_down] = value;
+	}
+	else
+	{
+		std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+			<< position << std::endl;
+		exit(1);
+	}
 }
 
 void Memory::Reset()

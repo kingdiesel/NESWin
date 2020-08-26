@@ -19,7 +19,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
-	//console.RunROM();
+	NESConsole::GetInstance()->RunROM();
 	//const int nes_resolution_x = 256;
 	//const int nes_resolution_y = 240;
 	const int nes_resolution_x = 256;
