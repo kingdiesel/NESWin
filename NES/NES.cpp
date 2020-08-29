@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Source/NESConsole.h"
 #include "Source/PatternTableTile.h"
+#include "Palette.h"
 #include "SDL.h"
 #include <iomanip>
 
@@ -55,27 +56,6 @@ int main(int argv, char** args)
 	Uint32 format = SDL_PIXELFORMAT_ARGB8888;
 	SDL_PixelFormat* mapping_format = SDL_AllocFormat(format);
 	const ROM& rom = NESConsole::GetInstance()->GetROM();
-
-	// Palletes
-	/*
-		// https://wiki.nesdev.com/w/index.php/PPU_palettes
-		$3F00		Universal background color (16128)
-		$3F01-$3F03	Background palette 0
-		$3F05-$3F07	Background palette 1
-		$3F09-$3F0B	Background palette 2
-		$3F0D-$3F0F	Background palette 3
-		$3F11-$3F13	Sprite palette 0
-		$3F15-$3F17	Sprite palette 1
-		$3F19-$3F1B	Sprite palette 2
-		$3F1D-$3F1F	Sprite palette 3
-
-		Each palette has three colors
-		Each color takes up one byte
-
-		// https://en.wikipedia.org/wiki/8-bit_color
-		Bit    7  6  5  4  3  2  1  0
-		Data   R  R  R  G  G  G  B  B
-	*/
 
 	// Pattern tables
 	const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;

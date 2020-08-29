@@ -155,6 +155,7 @@
     <ClCompile Include="Source\ROM.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Palette.h" />
     <ClInclude Include="PPU.h" />
     <ClInclude Include="Source\Addressing\AddressingMode.h" />
     <ClInclude Include="Source\CPU.h" />

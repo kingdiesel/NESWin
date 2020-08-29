@@ -198,5 +198,8 @@
     <ClInclude Include="PPU.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="Palette.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
