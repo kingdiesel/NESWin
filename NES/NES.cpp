@@ -24,7 +24,7 @@ int main(int argv, char** args)
 	//const int nes_resolution_x = 256;
 	//const int nes_resolution_y = 240;
 	const int nes_resolution_x = 256;
-	const int nes_resolution_y = 512;
+	const int nes_resolution_y = 512 + 128;
 	const int fps = 60;
 	const int screen_scale = 1;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
@@ -88,7 +88,7 @@ int main(int argv, char** args)
 	);
 
 	NESConsole::GetInstance()->GetCPU().PowerUp();
-	NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
+	//NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
 	NESConsole::GetInstance()->GetCPU().SetRegisterProgramCounter(
 		NESConsole::GetInstance()->GetMemory().CPUReadShort(0xFFFC)
 	);
@@ -101,6 +101,7 @@ int main(int argv, char** args)
 		const Uint32 frame_start = SDL_GetTicks();
 		bool n_pressed = false;
 		bool v_pressed = false;
+		bool l_pressed = false;
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type)
@@ -113,6 +114,10 @@ int main(int argv, char** args)
 				else if (event.key.keysym.sym == SDLK_p)
 				{
 					paused = !paused;
+				}
+				else if (event.key.keysym.sym == SDLK_l)
+				{
+					l_pressed = true;
 				}
 				else if (event.key.keysym.sym == SDLK_v)
 				{
@@ -141,6 +146,34 @@ int main(int argv, char** args)
 				&dest_rect
 			);
 		}
+
+		for (int i = 0; i < 4; ++i)
+		{
+			SDL_Rect palette_rect;
+			palette_rect.y = 512;
+			palette_rect.h = 128;
+			palette_rect.x = 64 * i;
+			palette_rect.w = 64;
+			uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(0x3F00 + i);
+			uint32_t palette_color = PaletteColors[color];
+
+			returnCode = SDL_SetRenderDrawColor(
+				renderer,
+				(palette_color & 0xFF0000) >> 16,
+				(palette_color & 0x00FF00) >> 8,
+				(palette_color & 0x0000FF),
+				0xFF
+			);
+			SDL_RenderFillRect(renderer, &palette_rect);
+		}
+
+		if (l_pressed)
+		{
+			const bool logging_enabled = NESConsole::GetInstance()->GetCPU().GetLoggingEnabled();
+			NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(!logging_enabled);
+			l_pressed = false;
+		}
+		
 		if (v_pressed)
 		{
 			PPUStatusRegister status = NESConsole::GetInstance()->GetPPU().GetStatusRegister();
@@ -156,7 +189,9 @@ int main(int argv, char** args)
 			{
 				uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
 				std::cout << "color: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
-					<< static_cast<uint16_t>(color) << std::endl;
+					<< static_cast<uint16_t>(color);// << std::endl;
+				std::cout << "(0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+					<< PaletteColors[color] << ")" << std::endl;
 			}
 		}
 		for (int i = 0; i < 600 && !paused; ++i)
