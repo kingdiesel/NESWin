@@ -19,7 +19,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
-	NESConsole::GetInstance()->RunROM();
+	//NESConsole::GetInstance()->RunROM();
 	//const int nes_resolution_x = 256;
 	//const int nes_resolution_y = 240;
 	const int nes_resolution_x = 256;
@@ -76,12 +76,6 @@ int main(int argv, char** args)
 		Bit    7  6  5  4  3  2  1  0
 		Data   R  R  R  G  G  G  B  B
 	*/
-	for (int i = 0x3F00; i <= 0x3F1f; ++i)
-	{
-		uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
-		std::cout << "color: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
-			<< color << std::endl;
-	}
 
 	// Pattern tables
 	const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
@@ -113,15 +107,38 @@ int main(int argv, char** args)
 		0xFF
 	);
 
+	NESConsole::GetInstance()->GetCPU().PowerUp();
+	NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
+	NESConsole::GetInstance()->GetCPU().SetRegisterProgramCounter(
+		NESConsole::GetInstance()->GetMemory().CPUReadShort(0xFFFC)
+	);
+
 	bool quit = false;
+	bool paused = false;
 	SDL_Event event;
 	while (!quit)
 	{
 		const Uint32 frame_start = SDL_GetTicks();
+		bool n_pressed = false;
+		bool v_pressed = false;
 		while (SDL_PollEvent(&event))
 		{
 			switch (event.type)
 			{
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_n)
+				{
+					n_pressed = true;
+				}
+				else if (event.key.keysym.sym == SDLK_p)
+				{
+					paused = !paused;
+				}
+				else if (event.key.keysym.sym == SDLK_v)
+				{
+					v_pressed = true;
+				}
+				break;
 			case SDL_QUIT:
 				quit = true;
 				break;
@@ -143,6 +160,28 @@ int main(int argv, char** args)
 				nullptr, 
 				&dest_rect
 			);
+		}
+		if (v_pressed)
+		{
+			PPUStatusRegister status = NESConsole::GetInstance()->GetPPU().GetStatusRegister();
+			status.Bits.m_vertical_blank_started = 
+				status.Bits.m_vertical_blank_started == 1 ? 0 : 1;
+			NESConsole::GetInstance()->GetPPU().SetStatusRegister(status.Register);
+			v_pressed = false;
+		}
+		if (n_pressed)
+		{
+			n_pressed = false;
+			for (int i = 0x3F00; i <= 0x3F1f; ++i)
+			{
+				uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
+				std::cout << "color: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+					<< static_cast<uint16_t>(color) << std::endl;
+			}
+		}
+		for (int i = 0; i < 600 && !paused; ++i)
+		{
+			NESConsole::GetInstance()->GetCPU().ExecuteInstruction();
 		}
 
 		SDL_RenderPresent(renderer);

@@ -66,10 +66,8 @@ public:
 		return m_ppu_data;
 	}
 
-	void SetData(const uint8_t value)
-	{
-		m_ppu_data = value;
-	}
+	void SetData(const uint8_t value);
+	
 
 	uint8_t GetAddress()
 	{

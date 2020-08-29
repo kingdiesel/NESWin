@@ -57,8 +57,10 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 			case 0x2004:
 				return ppu.GetOAMData();
 			case 0x2005:
+				// TODO: how does this work with latching
 				return ppu.GetScroll();
 			case 0x2006:
+				// TODO: how does this work with latching
 				return ppu.GetAddress();
 			case 0x2007:
 				return ppu.GetData();
@@ -69,12 +71,12 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 	else if (position >= 0x4000 && position <= 0x4017)
 	{
 		// TODO: read from APU 
-		assert(false);
+		return 0;
 	}
 	else if (position >= 0x4018 && position <= 0x401F)
 	{
 		// TODO: read from mystery APU
-		assert(false);
+		return 0;
 	}
 	else if (position >= 0x4020 && position <= 0xFFFF)
 	{
@@ -121,20 +123,28 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 		{
 		case 0x2000:
 			ppu.SetControlRegister(value);
+			break;
 		case 0x2001:
 			ppu.SetMaskRegister(value);
+			break;
 		case 0x2002:
 			ppu.SetStatusRegister(value);
+			break;
 		case 0x2003:
 			ppu.SetOAMAddress(value);
+			break;
 		case 0x2004:
 			ppu.SetOAMData(value);
+			break;
 		case 0x2005:
 			ppu.SetScroll(value);
+			break;
 		case 0x2006:
 			ppu.SetAddress(value);
+			break;
 		case 0x2007:
 			ppu.SetData(value);
+			break;
 		default:
 			assert(false);
 		}
@@ -150,12 +160,12 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 	else if (position >= 0x4000 && position <= 0x4017)
 	{
 		// TODO: write to APU 
-		assert(false);
+		//assert(false);
 	}
 	else if (position >= 0x4018 && position <= 0x401F)
 	{
 		// TODO: write to mystery APU
-		assert(false);
+		//assert(false);
 	}
 	else if (position >= 0x4020 && position <= 0xFFFF)
 	{
@@ -217,6 +227,7 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 			return m_palette_buffer[0];
 		}
 		const int shifted_down = mirrored_position - 0x3F00;
+		assert(shifted_down < 32);
 		return m_palette_buffer[shifted_down];
 	}
 	else
@@ -259,7 +270,7 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 		{
 			// is writing to the fallthrough byte supported?
 			// if so -- remove this assert
-			assert(false);
+			//assert(false);
 		}
 		const int shifted_down = mirrored_position - 0x3F00;
 		m_palette_buffer[shifted_down] = value;

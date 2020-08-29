@@ -1,6 +1,4 @@
-#ifndef NES_NESCONSOLE_H
-#define NES_NESCONSOLE_H
-
+#pragma once
 #include <memory>
 #include <mutex>
 #include "CPU.h"
@@ -50,6 +48,3 @@ private:
 	static std::shared_ptr<NESConsole> NESConsoleSingleton;
 	static std::once_flag NESConsoleOnceFlag;
 };
-
-
-#endif //NES_NESCONSOLE_H
