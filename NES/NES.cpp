@@ -23,8 +23,9 @@ int main(int argv, char** args)
 	//NESConsole::GetInstance()->RunROM();
 	//const int nes_resolution_x = 256;
 	//const int nes_resolution_y = 240;
+	const int palette_height = 32;
 	const int nes_resolution_x = 256;
-	const int nes_resolution_y = 512 + 128;
+	const int nes_resolution_y = 512 + palette_height;
 	const int fps = 60;
 	const int screen_scale = 1;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
@@ -146,15 +147,17 @@ int main(int argv, char** args)
 				&dest_rect
 			);
 		}
-
-		for (int i = 0; i < 4; ++i)
+		
+		for (int i = 0x3F00; i <= 0x3F1f; ++i)
 		{
+			static const int num_palettes = 0x3F1F - 0x3F00;
 			SDL_Rect palette_rect;
 			palette_rect.y = 512;
-			palette_rect.h = 128;
-			palette_rect.x = 64 * i;
-			palette_rect.w = 64;
-			uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(0x3F00 + i);
+			palette_rect.h = palette_height;
+			palette_rect.w = 256 / num_palettes;
+			palette_rect.x = (i - 0x3F00) * palette_rect.w;
+			
+			uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
 			uint32_t palette_color = PaletteColors[color];
 
 			returnCode = SDL_SetRenderDrawColor(
