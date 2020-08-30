@@ -9,6 +9,7 @@ class CPU
 public:
 	CPU();
 	void PowerUp();
+	void Run();
 
 	void ExecuteInstruction();
 

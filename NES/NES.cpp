@@ -10,7 +10,8 @@
 
 int main(int argv, char** args)
 {	
-	//NESConsole::GetInstance()->RunTests();
+	//NESConsole::GetInstance()->RunNesTestTiming();
+	//NESConsole::GetInstance()->RunNesTest();
 	//return 0;
 
 	//NESConsole console;
@@ -124,6 +125,10 @@ int main(int argv, char** args)
 				{
 					v_pressed = true;
 				}
+				else if (event.key.keysym.sym == SDLK_ESCAPE)
+				{
+					exit(1);
+				}
 				break;
 			case SDL_QUIT:
 				quit = true;
@@ -197,10 +202,8 @@ int main(int argv, char** args)
 					<< PaletteColors[color] << ")" << std::endl;
 			}
 		}
-		for (int i = 0; i < 600 && !paused; ++i)
-		{
-			NESConsole::GetInstance()->GetCPU().ExecuteInstruction();
-		}
+		
+		NESConsole::GetInstance()->GetCPU().Run();
 
 		SDL_RenderPresent(renderer);
 

@@ -219,6 +219,18 @@ void CPU::PowerUp()
 	m_reg_p.Register = 0x24;
 }
 
+void CPU::Run()
+{
+	const int CYCLES_PER_SECOND = 1790000;
+	const int FPS = 60;
+	const int CYCLES_PER_FRAME = CYCLES_PER_SECOND / FPS;
+	int cycles_at_start = GetCycles();
+	while (GetCycles() - cycles_at_start < CYCLES_PER_FRAME)
+	{
+		ExecuteInstruction();
+	}
+}
+
 uint16_t CPU::GetRegisterProgramCounterPlus(const uint16_t value) const
 {
 	assert(value >= 0 && value <= 0xFFFF);

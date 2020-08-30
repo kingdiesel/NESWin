@@ -36,47 +36,30 @@ const ROM &NESConsole::GetROM() const
 	return m_memory.GetROM();
 }
 
-void NESConsole::RunTests()
-{
-	bool passed = RunNesTest();
-	if (passed)
-	{
-		std::cout << "NESTEST PASSED" << std::endl;
-		return;
-	}
-	else
-	{
-		std::cout << "NESTEST FAILED" << std::endl;
-		exit(1);
-	}
-
-	m_memory.Reset();
-	int cycles = 0;
-	float nestest_time = static_cast<float>(RunNesTestTiming(1000, cycles));
-	int cycles_per_second = static_cast<int>(static_cast<float>(cycles) / (nestest_time / (1000.f)));
-	std::cout << "NESTEST " << cycles_per_second << " cycles per second" << std::endl;
-}
-
-int NESConsole::RunNesTestTiming(int times, int &out_cycles)
+void NESConsole::RunNesTestTiming()
 {
 	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
 	m_cpu.PowerUp();
 	m_cpu.SetRegisterProgramCounter(0xC000);
 	m_cpu.SetLoggingEnabled(false);
 	auto t1 = std::chrono::high_resolution_clock::now();
+	int times = 1000;
+	int cycles = 0;
 	while (times != 0)
 	{
 		m_cpu.ExecuteInstruction();
 		if (m_cpu.GetInstructionCount() == 5003)
 		{
-			out_cycles += m_cpu.GetCycles() / 3;
+			cycles += m_cpu.GetCycles();
 			m_cpu.PowerUp();
 			m_cpu.SetRegisterProgramCounter(0xC000);
 			times--;
 		}
 	}
 	auto t2 = std::chrono::high_resolution_clock::now();
-	return static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count());
+	const int elapsed_seconds = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count());
+
+	std::cout << "NESTEST " << cycles / elapsed_seconds << " cycles per second" << std::endl;
 }
 
 bool NESConsole::RunNesTest()

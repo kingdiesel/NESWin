@@ -15,11 +15,9 @@ public:
 
 	const ROM &GetROM() const;
 
-	void RunTests();
-
 	bool RunNesTest();
 
-	int RunNesTestTiming(int times, int &out_cycles);
+	void RunNesTestTiming();
 
 	CPU& GetCPU()
 	{
