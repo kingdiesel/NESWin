@@ -13,6 +13,9 @@ public:
 	
 	uint8_t PPUReadByte(const uint16_t position) const;
 	void PPUWriteByte(const uint16_t position, uint8_t value);
+
+	void PPUWriteOAM(const uint8_t index, const uint8_t value);
+	uint8_t PPUReadOAM(const uint8_t index);
 	
 	// helper function when we read two bytes in a row
 	// to construct a memory address
@@ -35,6 +38,7 @@ private:
 	uint8_t* m_cpu_ram_buffer = nullptr;
 	uint8_t* m_ppu_ram_buffer = nullptr;
 	uint8_t m_palette_buffer[32];
+	//	https://wiki.nesdev.com/w/index.php/PPU_OAM
 	uint8_t m_object_attribute_memory[256];
 };
 

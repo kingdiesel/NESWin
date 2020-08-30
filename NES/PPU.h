@@ -51,15 +51,7 @@ public:
 	void Reset();
 	void ResetWriteToggle() { m_write_toggle = 0; }
 
-	uint8_t GetOAMDMA()
-	{
-		return m_oam_dma;
-	}
-
-	void SetOAMDMA(const uint8_t value)
-	{
-		m_oam_dma = value;
-	}
+	void SetOAMDMA(const uint8_t value);
 
 	uint8_t GetData()
 	{
@@ -130,15 +122,8 @@ public:
 		}
 	}
 
-	uint8_t GetOAMData()
-	{
-		return m_reg_oam_data;
-	}
-
-	void SetOAMData(const uint8_t value)
-	{
-		m_reg_oam_data = value;
-	}
+	uint8_t GetOAMData();
+	void SetOAMData(const uint8_t value);
 	
 	uint8_t GetOAMAddress()
 	{
@@ -185,13 +170,11 @@ private:
 	PPUMaskRegister m_reg_ppu_mask;
 	PPUStatusRegister m_reg_status;
 	uint8_t m_reg_oam_addr = 0x00;
-	uint8_t m_reg_oam_data = 0x00;
 	uint8_t m_ppu_scroll = 0x00;
 	uint16_t m_ppu_full_scroll = 0x0000;
 	uint8_t m_ppu_addr = 0x00;
 	uint16_t m_ppu_full_addr = 0x0000;
 	uint8_t m_ppu_data = 0x00;
-	uint8_t m_oam_dma = 0x00;
 	// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUADDR
 	// determines if writing high bit or low bit
 	// to 0x2005 and 0x2006

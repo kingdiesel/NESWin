@@ -283,6 +283,16 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 	}
 }
 
+void Memory::PPUWriteOAM(const uint8_t index, const uint8_t value)
+{
+	m_object_attribute_memory[index] = value;
+}
+
+uint8_t Memory::PPUReadOAM(const uint8_t index)
+{
+	return m_object_attribute_memory[index];
+}
+
 void Memory::Reset()
 {
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
