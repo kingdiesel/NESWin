@@ -51,7 +51,13 @@ public:
 	void Reset();
 	void ResetWriteToggle() { m_write_toggle = 0; }
 
+	void Run();
+
 	void SetOAMDMA(const uint8_t value);
+
+	void ResetNMIRequest() { SetNMIRequest(false); }
+	void SetNMIRequest(const bool cpu_nmi) { m_cpu_nmi = cpu_nmi; }
+	bool GetNMIRequest() { return m_cpu_nmi; }
 
 	uint8_t GetData()
 	{
@@ -78,7 +84,6 @@ public:
 			m_ppu_full_addr &= 0x00FF;
 			// set high bits
 			m_ppu_full_addr |= high_address;
-			
 		}
 		else
 		{
@@ -89,7 +94,6 @@ public:
 			// set low bits
 			m_ppu_full_addr |= m_ppu_addr;
 		}
-		
 	}
 
 	uint8_t GetScroll()
@@ -179,5 +183,6 @@ private:
 	// determines if writing high bit or low bit
 	// to 0x2005 and 0x2006
 	uint8_t m_write_toggle = 0x00;
+	bool m_cpu_nmi = false;
 };
 

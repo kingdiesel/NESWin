@@ -49,9 +49,24 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 			case 0x2001:
 				return ppu.GetMaskRegister().Register;
 			case 0x2002:
+			{
 				// https://wiki.nesdev.com/w/index.php/PPU_scrolling#.242002_read
+				// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUSTATUS
+				// Reading the status register will clear bit 7 mentioned 
+				// above and also the address latch used by PPUSCROLL 
+				// and PPUADDR. It does not clear the sprite 0 hit 
+				// or overflow bit.
+				const uint8_t register_value = ppu.GetStatusRegister().Register;
+
+				// reset latch
 				ppu.ResetWriteToggle();
-				return ppu.GetStatusRegister().Register;
+
+				// clear vblank flag
+				ppu.SetStatusRegister(register_value & 0x80);
+
+				// return cached value with those bits still set?
+				return register_value;
+			}
 			case 0x2003:
 				return ppu.GetOAMAddress();
 			case 0x2004:

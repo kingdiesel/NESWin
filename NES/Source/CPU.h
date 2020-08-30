@@ -13,6 +13,21 @@ public:
 
 	void ExecuteInstruction();
 
+	union PRegister
+	{
+		struct StatusBits {
+			uint8_t m_carry : 1;
+			uint8_t m_zero : 1;
+			uint8_t m_interrupt_disable : 1;
+			uint8_t m_decimal : 1;
+			uint8_t m_bflag : 2;
+			uint8_t m_overflow : 1;
+			uint8_t m_negative : 1;
+
+		} Status;
+		uint8_t Register = 0x00;
+	};
+
 	void SetRegisterProgramCounter(const uint16_t counter)
 	{
 		m_reg_pc = counter;
@@ -71,6 +86,11 @@ public:
 	void SetRegisterStack(const uint8_t value)
 	{
 		m_reg_s = value;
+	}
+
+	PRegister GetRegisterP() const
+	{
+		return m_reg_p;
 	}
 
 	uint16_t GetRegisterProgramCounter() const
@@ -160,6 +180,11 @@ public:
 		m_cycles = cycles;
 	}
 
+	void IncrementCycles(const int cycles)
+	{
+		m_cycles += cycles;
+	}
+
 	int GetInstructionCount() const
 	{
 		return m_instruction_count;
@@ -192,26 +217,13 @@ public:
 
 private:
 	void HandleOpCode(const uint8_t op_code);
+	void HandleNMI();
 
 	uint16_t m_reg_pc = 0x0000;
 	uint8_t m_reg_x = 0x00;
 	uint8_t m_reg_y = 0x00;
 	uint8_t m_reg_a = 0x00;
 	uint8_t m_reg_s = 0x00;
-	union PRegister
-	{
-		struct StatusBits {
-			uint8_t m_carry : 1;
-			uint8_t m_zero : 1;
-			uint8_t m_interrupt_disable : 1;
-			uint8_t m_decimal : 1;
-			uint8_t m_bflag : 2;
-			uint8_t m_overflow : 1;
-			uint8_t m_negative : 1;
-
-		} Status;
-		uint8_t Register = 0x00;
-	};
 
 	PRegister m_reg_p;
 	int m_instruction_count = 0;

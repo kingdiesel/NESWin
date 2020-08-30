@@ -11,6 +11,15 @@ void PPU::Reset()
 	// https://wiki.nesdev.com/w/index.php/PPU_power_up_state
 }
 
+void PPU::Run()
+{
+	// if we are Generate an NMI at the start of the vertical blanking interval
+	if (GetControlRegister().Bits.m_generate_nmi == 1)
+	{
+
+	}
+}
+
 void PPU::SetOAMDMA(const uint8_t value)
 {
 	// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write

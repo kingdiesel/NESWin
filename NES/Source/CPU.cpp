@@ -225,9 +225,15 @@ void CPU::Run()
 	const int FPS = 60;
 	const int CYCLES_PER_FRAME = CYCLES_PER_SECOND / FPS;
 	int cycles_at_start = GetCycles();
+
+	PPU& ppu = NESConsole::GetInstance()->GetPPU();
 	while (GetCycles() - cycles_at_start < CYCLES_PER_FRAME)
 	{
 		ExecuteInstruction();
+		if (ppu.GetNMIRequest())
+		{
+			HandleNMI();
+		}
 	}
 }
 
@@ -235,6 +241,41 @@ uint16_t CPU::GetRegisterProgramCounterPlus(const uint16_t value) const
 {
 	assert(value >= 0 && value <= 0xFFFF);
 	return m_reg_pc + (uint16_t) value;
+}
+
+void CPU::HandleNMI()
+{
+	PPU& ppu = NESConsole::GetInstance()->GetPPU();
+	Memory& memory = NESConsole::GetInstance()->GetMemory();
+	ppu.ResetNMIRequest();
+
+	// https://wiki.nesdev.com/w/index.php/NMI
+	// When the CPU checks for interrupts and 
+	// find that the flip-flop is set, it pushes 
+	// the processor status register and return address 
+	// on the stack, reads the NMI handler's address from 
+	// $FFFA-$FFFB, clears the flip-flop, and jumps to this address.
+	const uint16_t program_counter = GetRegisterProgramCounter();
+	const uint8_t return_memory_high = program_counter >> 8;
+	const uint8_t return_memory_low = program_counter & 0x00FF;
+	const uint8_t status_register = GetRegisterP().Register;
+	// similar to JMP::ExecuteImplementation
+	memory.CPUWriteByte(GetFullStackAddress(), return_memory_high);
+	DecrementStackPointer();
+	memory.CPUWriteByte(GetFullStackAddress(), return_memory_low);
+	DecrementStackPointer();
+	memory.CPUWriteByte(GetFullStackAddress(), status_register);
+
+	const uint8_t jump_address_high = memory.CPUReadByte(0xFFFB);
+	const uint8_t jump_address_low = memory.CPUReadByte(0xFFFA);
+
+	uint16_t jump_address = jump_address_high;
+	jump_address = jump_address << 8;
+	jump_address &= jump_address_low;
+
+	SetRegisterProgramCounter(jump_address);
+	// http://www.6502.org/tutorials/interrupts.html#1.3
+	IncrementCycles(7);
 }
 
 void CPU::HandleOpCode(const uint8_t op_code)

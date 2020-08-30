@@ -165,13 +165,11 @@ int main(int argv, char** args)
 			uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
 			uint32_t palette_color = PaletteColors[color];
 
-			returnCode = SDL_SetRenderDrawColor(
-				renderer,
-				(palette_color & 0xFF0000) >> 16,
-				(palette_color & 0x00FF00) >> 8,
-				(palette_color & 0x0000FF),
-				0xFF
-			);
+			const uint8_t r = (palette_color & 0xFF0000) >> 16;
+			const uint8_t g = (palette_color & 0x00FF00) >> 8;
+			const uint8_t b = (palette_color & 0x0000FF);
+			const uint8_t a = 0xFF;
+			returnCode = SDL_SetRenderDrawColor(renderer, r, g, b, a);
 			SDL_RenderFillRect(renderer, &palette_rect);
 		}
 
