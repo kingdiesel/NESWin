@@ -66,6 +66,8 @@ public:
 
 	void SetData(const uint8_t value);
 	
+	bool GetFrameReady() const { return m_frame_ready; }
+	void ResetFrameReady() { m_frame_ready = false; }
 
 	uint8_t GetAddress()
 	{
@@ -169,6 +171,7 @@ public:
 		m_reg_ppu_control.Register = value;
 	}
 private:
+	void SetFrameReady(const bool frame_ready) { m_frame_ready = frame_ready; }
 	// https://wiki.nesdev.com/w/index.php/PPU_registers
 	PPUControlRegister m_reg_ppu_control;
 	PPUMaskRegister m_reg_ppu_mask;
@@ -184,5 +187,14 @@ private:
 	// to 0x2005 and 0x2006
 	uint8_t m_write_toggle = 0x00;
 	bool m_cpu_nmi = false;
+	// https://wiki.nesdev.com/w/index.php/PPU_frame_timing#Even.2FOdd_Frames
+	bool m_even_frame = true;
+	// cycles spent on this scanline
+	int cycles = 0;
+	// scanlines rendered this frame
+	int scanlines = 0;
+
+	// ppu has "filled the frame buffer"
+	bool m_frame_ready = false;
 };
 

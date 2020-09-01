@@ -11,7 +11,8 @@ public:
 	static std::shared_ptr<NESConsole> GetInstance(void);
 	void LoadROM(const std::string &path);
 
-	void RunROM();
+	void PowerUp();
+	void Run();
 
 	const ROM &GetROM() const;
 

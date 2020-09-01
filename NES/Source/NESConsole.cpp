@@ -19,16 +19,29 @@ void NESConsole::LoadROM(const std::string &path)
 	m_rom_loaded = true;
 }
 
-void NESConsole::RunROM()
+void NESConsole::PowerUp()
 {
-	m_cpu.PowerUp();
-	m_cpu.SetLoggingEnabled(true);
-	m_cpu.SetRegisterProgramCounter(m_memory.CPUReadShort(0xFFFC));
-	// nes test start address
-	while (true)
+	GetCPU().PowerUp();
+	GetPPU().PowerUp();
+	GetCPU().SetRegisterProgramCounter(GetMemory().CPUReadShort(0xFFFC));
+	//GetCPU().SetLoggingEnabled(true);
+}
+
+void NESConsole::Run()
+{
+	int cycles = 0;
+	while (!GetPPU().GetFrameReady())
 	{
-		m_cpu.ExecuteInstruction();
+		// https://wiki.nesdev.com/w/index.php/PPU_frame_timing#CPU-PPU_Clock_Alignment
+		// The NTSC PPU runs at 3 times the CPU clock rate
+		if (cycles % 3 == 0)
+		{
+			GetCPU().Run();
+		}
+		GetPPU().Run();
+		cycles++;
 	}
+	GetPPU().ResetFrameReady();
 }
 
 const ROM &NESConsole::GetROM() const

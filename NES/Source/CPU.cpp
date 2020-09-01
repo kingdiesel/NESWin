@@ -221,20 +221,22 @@ void CPU::PowerUp()
 
 void CPU::Run()
 {
-	const int CYCLES_PER_SECOND = 1790000;
-	const int FPS = 60;
-	const int CYCLES_PER_FRAME = CYCLES_PER_SECOND / FPS;
-	int cycles_at_start = GetCycles();
+	//const int CYCLES_PER_SECOND = 1790000;
+	//const int FPS = 60;
+	//const int CYCLES_PER_FRAME = CYCLES_PER_SECOND / FPS;
+	//int cycles_at_start = GetCycles();
 
 	PPU& ppu = NESConsole::GetInstance()->GetPPU();
-	while (GetCycles() - cycles_at_start < CYCLES_PER_FRAME)
-	{
-		ExecuteInstruction();
+	//while (GetCycles() - cycles_at_start < CYCLES_PER_FRAME)
+	//{
+	//	
 		if (ppu.GetNMIRequest())
 		{
+			//SetLoggingEnabled(true);
 			HandleNMI();
 		}
-	}
+		ExecuteInstruction();
+	//}
 }
 
 uint16_t CPU::GetRegisterProgramCounterPlus(const uint16_t value) const
@@ -265,13 +267,14 @@ void CPU::HandleNMI()
 	memory.CPUWriteByte(GetFullStackAddress(), return_memory_low);
 	DecrementStackPointer();
 	memory.CPUWriteByte(GetFullStackAddress(), status_register);
+	DecrementStackPointer();
 
 	const uint8_t jump_address_high = memory.CPUReadByte(0xFFFB);
 	const uint8_t jump_address_low = memory.CPUReadByte(0xFFFA);
 
 	uint16_t jump_address = jump_address_high;
 	jump_address = jump_address << 8;
-	jump_address &= jump_address_low;
+	jump_address |= jump_address_low;
 
 	SetRegisterProgramCounter(jump_address);
 	// http://www.6502.org/tutorials/interrupts.html#1.3

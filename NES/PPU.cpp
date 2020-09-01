@@ -13,11 +13,43 @@ void PPU::Reset()
 
 void PPU::Run()
 {
-	// if we are Generate an NMI at the start of the vertical blanking interval
-	if (GetControlRegister().Bits.m_generate_nmi == 1)
+	m_even_frame = !m_even_frame;
+	const bool show_background = GetMaskRegister().Bits.m_show_bkgrnd;
+	const bool show_sprites = GetMaskRegister().Bits.m_show_sprites;
+	const bool rendering_disabled = !(show_background && show_sprites);
+	// The PPU renders 262 scanlines per frame. Each scanline lasts for 
+	// 341 PPU clock cycles (113.667 CPU clock cycles; 1 CPU cycle = 3 PPU cycles), 
+	// with each clock cycle producing one pixel.
+
+	if (cycles > 340) 
 	{
+		cycles -= 341;
+		++scanlines;
+	}
+
+	if (0 <= scanlines && scanlines <= 239)
+	{ 
+		//  drawing
 
 	}
+	else if (scanlines == 241 && cycles == 1) 
+	{
+		// if we are Generate an NMI at the start of the vertical blanking interval
+		if (GetControlRegister().Bits.m_generate_nmi == 1)
+		{
+			m_cpu_nmi = true;
+			m_reg_status.Bits.m_vertical_blank_started = 1;
+		}
+	}
+	else if (scanlines == 261 && cycles == 1) 
+	{    
+		//  VBlank off / pre-render line
+		m_reg_status.Bits.m_vertical_blank_started = 1;
+		m_cpu_nmi = false;
+		scanlines = 0;
+		SetFrameReady(true);
+	}
+	cycles++;
 }
 
 void PPU::SetOAMDMA(const uint8_t value)

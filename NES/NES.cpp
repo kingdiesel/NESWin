@@ -89,11 +89,7 @@ int main(int argv, char** args)
 		0xFF
 	);
 
-	NESConsole::GetInstance()->GetCPU().PowerUp();
-	//NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
-	NESConsole::GetInstance()->GetCPU().SetRegisterProgramCounter(
-		NESConsole::GetInstance()->GetMemory().CPUReadShort(0xFFFC)
-	);
+	NESConsole::GetInstance()->PowerUp();
 
 	bool quit = false;
 	bool paused = false;
@@ -201,7 +197,7 @@ int main(int argv, char** args)
 			}
 		}
 		
-		NESConsole::GetInstance()->GetCPU().Run();
+		NESConsole::GetInstance()->Run();
 
 		SDL_RenderPresent(renderer);
 
