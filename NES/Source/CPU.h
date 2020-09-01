@@ -155,7 +155,7 @@ public:
 		m_reg_p.Status.m_zero = state ? 1 : 0;
 	}
 
-	void SetInterruptFlag(const bool state)
+	void SetInterruptDisableFlag(const bool state)
 	{
 		m_reg_p.Status.m_interrupt_disable = state ? 1 : 0;
 	}

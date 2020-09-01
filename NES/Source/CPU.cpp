@@ -308,7 +308,7 @@ void CPU::HandleIRQ()
 		jump_address &= jump_address_low;
 
 		// ignore IRQ while processing IRQ
-		SetInterruptFlag(true);
+		SetInterruptDisableFlag(true);
 
 		SetRegisterProgramCounter(jump_address);
 

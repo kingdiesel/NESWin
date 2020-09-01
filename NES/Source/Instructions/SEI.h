@@ -18,7 +18,7 @@ public:
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		cpu.SetInterruptFlag(true);
+		cpu.SetInterruptDisableFlag(true);
 	}
 };
 
