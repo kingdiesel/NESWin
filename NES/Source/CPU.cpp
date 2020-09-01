@@ -278,6 +278,42 @@ void CPU::HandleNMI()
 	IncrementCycles(7);
 }
 
+void CPU::HandleIRQ()
+{
+	// https://wiki.nesdev.com/w/index.php/Status_flags#I:_Interrupt_Disable
+	if (GetRegisterP().Status.m_interrupt_disable != 1)
+	{
+		// If the CPU's /IRQ input is 0 at the end of an instruction, 
+		// then the CPU pushes the program counter and the processor 
+		// status register, sets the I flag to ignore further IRQs, 
+		// and the Program Counter takes the value read at $fffe and $ffff.
+		// https://wiki.nesdev.com/w/index.php/IRQ
+		const uint16_t program_counter = GetRegisterProgramCounter();
+		const uint8_t return_memory_high = program_counter >> 8;
+		const uint8_t return_memory_low = program_counter & 0x00FF;
+		const uint8_t status_register = GetRegisterP().Register;
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		// similar to JMP::ExecuteImplementation
+		memory.CPUWriteByte(GetFullStackAddress(), return_memory_high);
+		DecrementStackPointer();
+		memory.CPUWriteByte(GetFullStackAddress(), return_memory_low);
+		DecrementStackPointer();
+		memory.CPUWriteByte(GetFullStackAddress(), status_register);
+
+		const uint8_t jump_address_high = memory.CPUReadByte(0xFFFF);
+		const uint8_t jump_address_low = memory.CPUReadByte(0xFFFE);
+
+		uint16_t jump_address = jump_address_high;
+		jump_address = jump_address << 8;
+		jump_address &= jump_address_low;
+
+		// ignore IRQ while processing IRQ
+		SetInterruptFlag(true);
+
+		SetRegisterProgramCounter(jump_address);
+	}
+}
+
 void CPU::HandleOpCode(const uint8_t op_code)
 {
 	map.ExecuteInstruction(op_code);

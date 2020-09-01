@@ -218,6 +218,7 @@ public:
 private:
 	void HandleOpCode(const uint8_t op_code);
 	void HandleNMI();
+	void HandleIRQ();
 
 	uint16_t m_reg_pc = 0x0000;
 	uint8_t m_reg_x = 0x00;
