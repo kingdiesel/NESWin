@@ -311,6 +311,9 @@ void CPU::HandleIRQ()
 		SetInterruptFlag(true);
 
 		SetRegisterProgramCounter(jump_address);
+
+		// http://www.6502.org/tutorials/interrupts.html#1.3
+		IncrementCycles(7);
 	}
 }
 
