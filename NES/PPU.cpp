@@ -27,24 +27,23 @@ void PPU::Run()
 		++scanlines;
 	}
 
-	if (0 <= scanlines && scanlines <= 239)
+	if (scanlines >=0 && scanlines <= 239)
 	{ 
 		//  drawing
 
 	}
 	else if (scanlines == 241 && cycles == 1) 
 	{
+		m_reg_status.Bits.m_vertical_blank_started = 1;
 		// if we are Generate an NMI at the start of the vertical blanking interval
 		if (GetControlRegister().Bits.m_generate_nmi == 1)
 		{
 			m_cpu_nmi = true;
-			m_reg_status.Bits.m_vertical_blank_started = 1;
 		}
 	}
 	else if (scanlines == 261 && cycles == 1) 
 	{    
-		//  VBlank off / pre-render line
-		m_reg_status.Bits.m_vertical_blank_started = 1;
+		m_reg_status.Bits.m_vertical_blank_started = 0;
 		m_cpu_nmi = false;
 		scanlines = 0;
 		SetFrameReady(true);
