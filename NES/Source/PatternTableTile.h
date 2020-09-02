@@ -17,6 +17,8 @@ public:
 
 	const uint8_t *GetTileData() const;
 
+	uint32_t* GetTextureTileData() { return m_texture_tile_data; }
+
 	struct SDL_Texture *GetTileTexture();
 
 	void CreateTextureFromTileData(struct SDL_Renderer *renderer);

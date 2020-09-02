@@ -41,7 +41,7 @@ void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
 	m_tile_texture = SDL_CreateTexture(
 			renderer,
 			SDL_PIXELFORMAT_ARGB8888,
-			SDL_TEXTUREACCESS_STREAMING,
+			SDL_TEXTUREACCESS_STATIC,
 			8,
 			8
 	);

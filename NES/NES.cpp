@@ -16,17 +16,19 @@ int main(int argv, char** args)
 
 	//NESConsole console;
 	NESConsole::GetInstance()->LoadROM(
-		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
+		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
 	//NESConsole::GetInstance()->RunROM();
-	//const int nes_resolution_x = 256;
-	//const int nes_resolution_y = 240;
-	const int palette_height = 32;
 	const int nes_resolution_x = 256;
-	const int nes_resolution_y = 512 + palette_height;
+	const int nes_resolution_y = 240;
+	const int pattern_render_area_x = 256;
+	const int pattern_render_area_y = 512;
+	const int palette_height = 32;
+	const int window_x = pattern_render_area_x + nes_resolution_x;
+	const int window_y = pattern_render_area_y + palette_height;
 	const int fps = 60;
 	const int screen_scale = 1;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
@@ -38,8 +40,8 @@ int main(int argv, char** args)
 		"Pattern Table",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		nes_resolution_x * screen_scale,
-		nes_resolution_y * screen_scale,
+		window_x * screen_scale,
+		window_y * screen_scale,
 		0
 	);
 
@@ -51,8 +53,8 @@ int main(int argv, char** args)
 
 	int returnCode = SDL_RenderSetLogicalSize(
 		renderer, 
-		nes_resolution_x * screen_scale, 
-		nes_resolution_y * screen_scale
+		window_x * screen_scale,
+		window_y * screen_scale
 	);
 
 	Uint32 format = SDL_PIXELFORMAT_ARGB8888;
@@ -60,9 +62,9 @@ int main(int argv, char** args)
 	const ROM& rom = NESConsole::GetInstance()->GetROM();
 
 	// Pattern tables
-	const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
-	std::vector<PatternTableTile*> tiles;
-	tiles.resize(num_tiles);
+	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
+	const int num_tiles = 8192; // 0x1FFF
+	PatternTableTile* tiles = new PatternTableTile[num_tiles];
 
 	//  $0000-$0FFF, nicknamed "left" 0 - 4095
 	//	$1000-$1FFF, nicknamed "right" 4096 - 8191
@@ -73,12 +75,12 @@ int main(int argv, char** args)
 	int tile_count = 0;
 	for (int i = 0; i < num_tiles; i += 16, ++tile_count)
 	{
-		tiles[tile_count] = new PatternTableTile();
 		for (int j = 0; j < 16; ++j)
 		{
-			tiles[tile_count]->GetTileData()[j] = NESConsole::GetInstance()->GetMemory().PPUReadByte(i + j);
+			tiles[tile_count].GetTileData()[j] = 
+				NESConsole::GetInstance()->GetMemory().PPUReadByte(i + j);
 		}
-		tiles[tile_count]->CreateTextureFromTileData(renderer);
+		tiles[tile_count].CreateTextureFromTileData(renderer);
 	}
 
 	returnCode = SDL_SetRenderDrawColor(
@@ -137,13 +139,13 @@ int main(int argv, char** args)
 		for (int i = 0; i < tile_count; ++i)
 		{
 			SDL_Rect dest_rect;
-			dest_rect.x = (i * 16) % nes_resolution_x;
-			dest_rect.y = ((i * 16) / nes_resolution_x) * 16;
+			dest_rect.x = (i * 16) % pattern_render_area_x;
+			dest_rect.y = ((i * 16) / pattern_render_area_x) * 16;
 			dest_rect.h = 16;
 			dest_rect.w = 16;
 			SDL_RenderCopy(
 				renderer, 
-				tiles[i]->GetTileTexture(), 
+				tiles[i].GetTileTexture(), 
 				nullptr, 
 				&dest_rect
 			);
@@ -153,9 +155,9 @@ int main(int argv, char** args)
 		{
 			static const int num_palettes = 0x3F1F - 0x3F00;
 			SDL_Rect palette_rect;
-			palette_rect.y = 512;
+			palette_rect.y = pattern_render_area_y;
 			palette_rect.h = palette_height;
-			palette_rect.w = 256 / num_palettes;
+			palette_rect.w = pattern_render_area_x / num_palettes;
 			palette_rect.x = (i - 0x3F00) * palette_rect.w;
 			
 			uint8_t color = NESConsole::GetInstance()->GetMemory().PPUReadByte(i);
