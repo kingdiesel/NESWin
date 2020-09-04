@@ -23,15 +23,15 @@ int main(int argv, char** args)
 	);
 
 	//NESConsole::GetInstance()->RunROM();
+	const int screen_scale = 1;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
-	const int pattern_render_area_x = 256;
-	const int pattern_render_area_y = 512;
-	const int palette_height = 32;
+	const int pattern_render_area_x = 128;
+	const int pattern_render_area_y = 256;
+	const int palette_height = 16;
 	const int window_x = pattern_render_area_x + nes_resolution_x;
 	const int window_y = pattern_render_area_y + palette_height;
 	const int fps = 60;
-	const int screen_scale = 1;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
@@ -131,8 +131,8 @@ int main(int argv, char** args)
 		SDL_Rect pattern_rect;
 		pattern_rect.x = 0;
 		pattern_rect.y = 0;
-		pattern_rect.h = 512;
-		pattern_rect.w = 256;
+		pattern_rect.h = 256;
+		pattern_rect.w = 128;
 		SDL_RenderCopy(
 			renderer,
 			pattern_table.GetTexture(),
