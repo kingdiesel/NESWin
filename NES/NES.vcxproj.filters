@@ -40,6 +40,9 @@
     <ClCompile Include="PPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PatternTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Addressing\AddressingMode.h">
@@ -201,5 +204,6 @@
     <ClInclude Include="Palette.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="PatternTable.h" />
   </ItemGroup>
 </Project>

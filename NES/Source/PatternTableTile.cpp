@@ -4,6 +4,8 @@
 #include <assert.h>
 #include "PatternTableTile.h"
 #include "SDL.h"
+#include "NESConsole.h"
+#include "../Palette.h"
 
 PatternTableTile::PatternTableTile()
 {
@@ -35,19 +37,10 @@ SDL_Texture *PatternTableTile::GetTileTexture()
 	return m_tile_texture;
 }
 
-void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
+void PatternTableTile::FillTextureData(bool use_palette)
 {
-	assert(m_tile_texture == nullptr);
-	m_tile_texture = SDL_CreateTexture(
-			renderer,
-			SDL_PIXELFORMAT_ARGB8888,
-			SDL_TEXTUREACCESS_STATIC,
-			8,
-			8
-	);
-
 	// https://lospec.com/palette-list/2-bit-grayscale
-	static const int GRAYSCALE[4] =
+	uint32_t COLOR_PALETTE[4] =
 	{
 		0x000000,
 		0x676767,
@@ -55,19 +48,28 @@ void PatternTableTile::CreateTextureFromTileData(SDL_Renderer *renderer)
 		0xffffff,
 	};
 
+	if (use_palette)
+	{
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		for (int i = 0x3F00; i <= 0x3F03; ++i)
+		{
+			uint8_t color = memory.PPUReadByte(0x3F00);
+			uint32_t palette_color = PaletteColors[color];
+			COLOR_PALETTE[i & 0x00FF] = palette_color;
+		}
+	}
+
 	for (int row = 0; row < 8; ++row)
 	{
 		uint8_t plane_zero_row = m_tile_data[row];
 		uint8_t plane_one_row = m_tile_data[row + 8];
 		for (int bit = 7; bit >= 0; --bit)
 		{
-			uint8_t shifted_row_zero = (plane_zero_row >> bit) & (uint8_t) 0x01;
-			uint8_t shifted_row_one = (plane_one_row >> bit) & (uint8_t) 0x01;
+			uint8_t shifted_row_zero = (plane_zero_row >> bit) & (uint8_t)0x01;
+			uint8_t shifted_row_one = (plane_one_row >> bit) & (uint8_t)0x01;
 			uint8_t color_bit = shifted_row_zero + shifted_row_one;
 			assert(color_bit < 4);
-			m_texture_tile_data[row * 8 + (7 - bit)] = GRAYSCALE[color_bit];
+			m_texture_tile_data[row * 8 + (7 - bit)] = COLOR_PALETTE[color_bit];
 		}
 	}
-
-	SDL_UpdateTexture(m_tile_texture, nullptr, m_texture_tile_data, 8 * sizeof(Uint32));
 }

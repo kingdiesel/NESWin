@@ -20,8 +20,7 @@ public:
 	uint32_t* GetTextureTileData() { return m_texture_tile_data; }
 
 	struct SDL_Texture *GetTileTexture();
-
-	void CreateTextureFromTileData(struct SDL_Renderer *renderer);
+	void FillTextureData(bool use_palette = false);
 
 	static const int TILE_SIZE = 16;
 private:

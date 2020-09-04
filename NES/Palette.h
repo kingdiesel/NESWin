@@ -3,7 +3,7 @@
 
 // did not feel like typing these out, so stolen from
 // https://emudev.de/nes-emulator/palettes-attribute-tables-and-sprites/
-uint32_t PaletteColors[64] = {
+static uint32_t PaletteColors[64] = {
         0x7C7C7C, 
         0x0000FC, 
         0x0000BC, 

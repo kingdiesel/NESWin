@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="NES.cpp" />
+    <ClCompile Include="PatternTable.cpp" />
     <ClCompile Include="PPU.cpp" />
     <ClCompile Include="Source\Addressing\AddressingMode.cpp" />
     <ClCompile Include="Source\CPU.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Palette.h" />
+    <ClInclude Include="PatternTable.h" />
     <ClInclude Include="PPU.h" />
     <ClInclude Include="Source\Addressing\AddressingMode.h" />
     <ClInclude Include="Source\CPU.h" />
