@@ -9,6 +9,12 @@ public:
 	void Run();
 	struct SDL_Texture* GetTexture() { return m_nametable_texture; }
 private:
+	uint8_t GetAttributeByte(const int row, const int col);
+	uint8_t GetPaletteIndexFromAttributeByte(
+		const int row, 
+		const int col, 
+		const uint8_t attribute_byte
+	);
 	struct SDL_Texture* m_nametable_texture = nullptr;
 	uint32_t* m_texture_nametable_data = nullptr;
 	uint8_t* m_attribute_table_data = nullptr;

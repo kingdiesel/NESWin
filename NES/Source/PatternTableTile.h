@@ -20,7 +20,7 @@ public:
 	uint32_t* GetTextureTileData() { return m_texture_tile_data; }
 	const uint32_t* GetTextureTileData() const { return m_texture_tile_data; }
 
-	void FillTextureData(bool use_palette = false);
+	void FillTextureData(int palette = -1);
 
 	static const int TILE_SIZE = 16;
 private:

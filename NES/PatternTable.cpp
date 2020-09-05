@@ -43,7 +43,7 @@ void PatternTable::Initialize(struct SDL_Renderer* renderer)
 	}
 }
 
-const PatternTableTile* PatternTable::GetTile(int index) const
+PatternTableTile* PatternTable::GetTile(int index)
 {
 	assert(index >= 0 && index < TILE_COUNT);
 	return &m_tiles[index];

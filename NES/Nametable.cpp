@@ -18,13 +18,6 @@ Nametable::Nametable(const uint16_t address, PatternTable* pattern_table) :
 void Nametable::Initialize(SDL_Renderer* renderer)
 {
 	assert(m_nametable_texture == nullptr);
-	//m_nametable_texture = SDL_CreateTexture(
-	//	renderer,
-	//	SDL_PIXELFORMAT_ARGB8888,
-	//	SDL_TEXTUREACCESS_STREAMING,
-	//	256,
-	//	240
-	//);
 	m_nametable_texture = SDL_CreateTexture(
 		renderer,
 		SDL_PIXELFORMAT_ARGB8888,
@@ -49,14 +42,6 @@ void Nametable::Run()
 		m_attribute_table_data[i - attribute_memory_start] = memory.PPUReadByte(i);
 	}
 
-	//uint32_t* pixels = nullptr;
-	//int pitch = 0;
-	//int return_code = SDL_LockTexture(m_nametable_texture,
-	//	nullptr,
-	//	reinterpret_cast<void**>(&pixels),
-	//	&pitch
-	//);
-	//int pixel_index = 0;
 	SDL_Rect dest_rect;
 	// https://wiki.nesdev.com/w/index.php/PPU_nametables
 	for (uint16_t i = m_base_address; i < attribute_memory_start; ++i)
@@ -65,9 +50,11 @@ void Nametable::Run()
 		int col = (i - m_base_address) % 32;
 		uint8_t tile_id = memory.PPUReadByte(i);
 		uint16_t tile_offset = pattern_table_id == 0 ? 0 : 256;
-		const PatternTableTile* tile = m_pattern_table->GetTile(tile_id + tile_offset);
+		PatternTableTile* tile = m_pattern_table->GetTile(tile_id + tile_offset);
+		uint8_t attribute_byte = GetAttributeByte(row, col);
+		uint8_t palette_index = GetPaletteIndexFromAttributeByte(row, col, attribute_byte);
+		tile->FillTextureData(palette_index);
 		const uint32_t* tile_texture_data = tile->GetTextureTileData();
-		//memcpy(&pixels[pixel_index], tile_texture_data, 64*4);
 		dest_rect.x = col * 8;
 		dest_rect.y = row * 8;
 		dest_rect.h = 8;
@@ -78,8 +65,22 @@ void Nametable::Run()
 			tile_texture_data,
 			8 * sizeof(Uint32)
 		);
-		//pixel_index += 64;
 	}
+}
 
-	//SDL_UnlockTexture(m_nametable_texture);
+uint8_t Nametable::GetAttributeByte(const int row, const int col)
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
+	int attribute_index = 32;
+	assert(attribute_index > 0 && attribute_index < 64);
+	return m_attribute_table_data[attribute_index];
+}
+
+uint8_t Nametable::GetPaletteIndexFromAttributeByte(
+	const int row, 
+	const int col, 
+	const uint8_t attribute_byte
+)
+{
+	return 0;
 }
