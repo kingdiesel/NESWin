@@ -161,7 +161,7 @@ public:
 		m_reg_ppu_mask.Register = value;
 	}
 	
-	PPUControlRegister& GetControlRegister()
+	const PPUControlRegister& GetControlRegister() const
 	{
 		return m_reg_ppu_control;
 	}

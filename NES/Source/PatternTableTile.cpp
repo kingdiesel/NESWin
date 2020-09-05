@@ -11,15 +11,10 @@ PatternTableTile::PatternTableTile()
 {
 	memset(m_tile_data, 0x00, TILE_SIZE);
 	memset(m_texture_tile_data, 0x00, sizeof(m_texture_tile_data));
-	m_tile_texture = nullptr;
 }
 
 PatternTableTile::~PatternTableTile()
 {
-	if (m_tile_texture != nullptr)
-	{
-		SDL_DestroyTexture(m_tile_texture);
-	}
 }
 
 uint8_t *PatternTableTile::GetTileData()
@@ -30,11 +25,6 @@ uint8_t *PatternTableTile::GetTileData()
 const uint8_t *PatternTableTile::GetTileData() const
 {
 	return m_tile_data;
-}
-
-SDL_Texture *PatternTableTile::GetTileTexture()
-{
-	return m_tile_texture;
 }
 
 void PatternTableTile::FillTextureData(bool use_palette)

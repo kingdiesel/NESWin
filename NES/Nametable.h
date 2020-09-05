@@ -1,0 +1,18 @@
+#pragma once
+#include <cstdint>
+
+class Nametable
+{
+public:
+	Nametable(const uint16_t address, class PatternTable* pattern_table);
+	void Initialize(struct SDL_Renderer* renderer);
+	void Run();
+	struct SDL_Texture* GetTexture() { return m_nametable_texture; }
+private:
+	struct SDL_Texture* m_nametable_texture = nullptr;
+	uint32_t* m_texture_nametable_data = nullptr;
+	uint8_t* m_attribute_table_data = nullptr;
+	uint16_t m_base_address = 0;
+	class PatternTable* m_pattern_table;
+};
+

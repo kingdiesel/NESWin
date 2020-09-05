@@ -18,8 +18,8 @@ public:
 	const uint8_t *GetTileData() const;
 
 	uint32_t* GetTextureTileData() { return m_texture_tile_data; }
+	const uint32_t* GetTextureTileData() const { return m_texture_tile_data; }
 
-	struct SDL_Texture *GetTileTexture();
 	void FillTextureData(bool use_palette = false);
 
 	static const int TILE_SIZE = 16;
@@ -28,8 +28,6 @@ private:
 	{}
 	uint8_t m_tile_data[TILE_SIZE];
 	uint32_t m_texture_tile_data[64];
-
-	struct SDL_Texture *m_tile_texture = nullptr;
 };
 
 #endif //NES_PATTERNTABLETILE_H

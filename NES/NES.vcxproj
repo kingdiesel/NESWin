@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Nametable.cpp" />
     <ClCompile Include="NES.cpp" />
     <ClCompile Include="PatternTable.cpp" />
     <ClCompile Include="PPU.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Source\ROM.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Nametable.h" />
     <ClInclude Include="Palette.h" />
     <ClInclude Include="PatternTable.h" />
     <ClInclude Include="PPU.h" />

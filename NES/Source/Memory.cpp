@@ -254,6 +254,17 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 	return 0;
 }
 
+const uint8_t* Memory::PPUGetRawPtr(const uint16_t position) const
+{
+	if (position >= 0x2000 && position <= 0x3EFF)
+	{
+		const uint16_t mirrored_position = position & 0x2FFF;
+		return &m_ppu_ram_buffer[mirrored_position];
+	}
+	assert(false);
+	return nullptr;
+}
+
 void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 {
 	/*

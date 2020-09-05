@@ -3,12 +3,11 @@
 #include "Source/NESConsole.h"
 #include <assert.h>
 #include "SDL.h"
-
+static const int TILE_COUNT = 8192 / 16;
 void PatternTable::Initialize(struct SDL_Renderer* renderer)
 {
 	assert(m_pattern_table_texture == nullptr);
 	assert(m_tiles == nullptr);
-	static const int TILE_COUNT = 8192 / 16;
 	m_tiles = new PatternTableTile[TILE_COUNT];
 
 	m_pattern_table_texture = SDL_CreateTexture(
@@ -42,4 +41,10 @@ void PatternTable::Initialize(struct SDL_Renderer* renderer)
 			8 * sizeof(Uint32)
 		);
 	}
+}
+
+const PatternTableTile* PatternTable::GetTile(int index) const
+{
+	assert(index >= 0 && index < TILE_COUNT);
+	return &m_tiles[index];
 }

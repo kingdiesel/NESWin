@@ -8,6 +8,7 @@
 #include "Palette.h"
 #include "SDL.h"
 #include <iomanip>
+#include "Nametable.h"
 
 int main(int argv, char** args)
 {	
@@ -38,7 +39,7 @@ int main(int argv, char** args)
 
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow(
-		"Pattern Table",
+		"NES",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		window_x * screen_scale,
@@ -67,6 +68,8 @@ int main(int argv, char** args)
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
+	Nametable name_table(0x2000, &pattern_table);
+	name_table.Initialize(renderer);
 	//  $0000-$0FFF, nicknamed "left" 0 - 4095
 	//	$1000-$1FFF, nicknamed "right" 4096 - 8191
 
@@ -189,6 +192,20 @@ int main(int argv, char** args)
 		}
 		
 		NESConsole::GetInstance()->Run();
+		name_table.Run();
+
+		SDL_Rect name_rect;
+		name_rect.x = pattern_render_area_x;
+		name_rect.y = 0;
+		name_rect.h = nes_resolution_y;
+		name_rect.w = nes_resolution_x;
+		SDL_RenderCopy(
+			renderer,
+			name_table.GetTexture(),
+			nullptr,
+			&name_rect
+		);
+
 		SDL_RenderPresent(renderer);
 
 		const Uint32 frame_time = SDL_GetTicks() - frame_start;

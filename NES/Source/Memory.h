@@ -12,6 +12,7 @@ public:
 	void CPUWriteByte(const uint16_t position, uint8_t value);
 	
 	uint8_t PPUReadByte(const uint16_t position) const;
+	const uint8_t* PPUGetRawPtr(const uint16_t position) const;
 	void PPUWriteByte(const uint16_t position, uint8_t value);
 
 	void PPUWriteOAM(const uint8_t index, const uint8_t value);
