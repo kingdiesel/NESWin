@@ -33,9 +33,9 @@ void PatternTableTile::FillTextureData(int palette)
 	uint32_t COLOR_PALETTE[4] =
 	{
 		0x000000,
-		0x676767,
-		0xb6b6b6,
 		0xffffff,
+		0xb6b6b6,
+		0x676767,
 	};
 
 	if (palette != -1)
@@ -60,23 +60,49 @@ void PatternTableTile::FillTextureData(int palette)
 		}
 
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		for (int i = 0; i < 4; ++i)
+		for (int i = 1; i <= 3; ++i)
 		{
-			uint8_t color = memory.PPUReadByte(start_address + i);
+			uint8_t color = memory.PPUReadByte(start_address + i - 1);
 			uint32_t palette_color = PaletteColors[color];
 			COLOR_PALETTE[i] = palette_color;
 		}
 	}
 
+	// https://wiki.nesdev.com/w/index.php/PPU_pattern_tables
 	for (int row = 0; row < 8; ++row)
 	{
 		uint8_t plane_zero_row = m_tile_data[row];
 		uint8_t plane_one_row = m_tile_data[row + 8];
 		for (int bit = 7; bit >= 0; --bit)
 		{
-			uint8_t shifted_row_zero = (plane_zero_row >> bit) & (uint8_t)0x01;
-			uint8_t shifted_row_one = (plane_one_row >> bit) & (uint8_t)0x01;
-			uint8_t color_bit = shifted_row_zero + shifted_row_one;
+			uint8_t shifted_row_zero = (plane_zero_row >> bit) & 0x01;
+			uint8_t shifted_row_one = (plane_one_row >> bit) & 0x01;
+			uint8_t color_bit = 0;
+			switch (shifted_row_zero)
+			{
+			case 0:
+				switch (shifted_row_one)
+				{
+				case 0:
+					color_bit = 0;
+					break;
+				case 1:
+					color_bit = 2;
+					break;
+				}
+				break;
+			case 1:
+				switch (shifted_row_one)
+				{
+				case 0:
+					color_bit = 1;
+					break;
+				case 1:
+					color_bit = 3;
+					break;
+				}
+				break;
+			}
 			assert(color_bit < 4);
 			m_texture_tile_data[row * 8 + (7 - bit)] = COLOR_PALETTE[color_bit];
 		}

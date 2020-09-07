@@ -23,7 +23,6 @@ int main(int argv, char** args)
 		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
-	//NESConsole::GetInstance()->RunROM();
 	const int screen_scale = 1;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
@@ -89,6 +88,7 @@ int main(int argv, char** args)
 
 	bool quit = false;
 	bool paused = false;
+	int show_lines = 0;
 	SDL_Event event;
 	while (!quit)
 	{
@@ -181,14 +181,7 @@ int main(int argv, char** args)
 		if (n_pressed)
 		{
 			n_pressed = false;
-			for (int i = 0x3F00; i <= 0x3F1f; ++i)
-			{
-				uint8_t color = memory.PPUReadByte(i);
-				std::cout << "color: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
-					<< static_cast<uint16_t>(color);// << std::endl;
-				std::cout << "(0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
-					<< PaletteColors[color] << ")" << std::endl;
-			}
+			show_lines++;
 		}
 		
 		NESConsole::GetInstance()->Run();
@@ -206,6 +199,53 @@ int main(int argv, char** args)
 			&name_rect
 		);
 
+		bool draw_lines = false;
+		int max_x = 8;
+		int max_y = 8;
+		if (show_lines % 3 == 1)
+		{
+			draw_lines = true;
+		}
+		else if (show_lines % 3 == 2)
+		{
+			draw_lines = true;
+			max_x = 32;
+			max_y = 30;
+		}
+		else
+		{
+			draw_lines = false;
+		}
+
+		if (draw_lines)
+		{
+			int grid_width = 256 / max_x;
+			int grid_height = 256 / max_y;
+			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+			for (int i = 0; i < max_x; ++i)
+			{
+				SDL_RenderDrawLine(
+					renderer,
+					pattern_render_area_x + (i * grid_width),
+					0,
+					pattern_render_area_x + (i * grid_width),
+					240
+				);
+			}
+
+			for (int i = 0; i < max_y; ++i)
+			{
+				SDL_RenderDrawLine(
+					renderer,
+					pattern_render_area_x,
+					i * grid_height,
+					pattern_render_area_x + 256,
+					i * grid_height
+				);
+			}
+		}
+		
+		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 		SDL_RenderPresent(renderer);
 
 		const Uint32 frame_time = SDL_GetTicks() - frame_start;

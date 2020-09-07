@@ -68,11 +68,26 @@ void Nametable::Run()
 	}
 }
 
-uint8_t Nametable::GetAttributeByte(const int row, const int col)
+uint8_t Nametable::GetAttributeIndex(
+	const int row,
+	const int col,
+	int& out_row,
+	int& out_col
+)
 {
 	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
-	int attribute_index = 32;
-	assert(attribute_index > 0 && attribute_index < 64);
+	out_row = 8 * (row / 4);
+	out_col = col / 4;
+	const int attribute_index = out_row + out_col;
+	return attribute_index;
+}
+
+uint8_t Nametable::GetAttributeByte(const int row, const int col)
+{
+	int out_row = 0;
+	int out_col = 0;
+	const int attribute_index = GetAttributeIndex(row, col, out_row, out_col);
+	assert(attribute_index >= 0 && attribute_index < 64);
 	return m_attribute_table_data[attribute_index];
 }
 
@@ -82,5 +97,55 @@ uint8_t Nametable::GetPaletteIndexFromAttributeByte(
 	const uint8_t attribute_byte
 )
 {
-	return 0;
+	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
+	uint8_t palette_index = 0;
+	uint8_t shift = 0;
+	Nametable::Quadrant quadrant = 
+		GetQuadrantFromAttributeByte(row, col, attribute_byte);
+	switch (quadrant)
+	{
+	case Nametable::Quadrant::TOP_LEFT:
+		shift = 0;
+		break;
+	case Nametable::Quadrant::TOP_RIGHT:
+		shift = 2;
+		break;
+	case Nametable::Quadrant::BOTTOM_RIGHT:
+		shift = 6;
+		break;
+	case Nametable::Quadrant::BOTTOM_LEFT:
+		shift = 4;
+		break;
+	default:
+		assert(false);
+	}
+	palette_index = (attribute_byte >> shift) & 0x03;
+	return palette_index;
+}
+
+Nametable::Quadrant Nametable::GetQuadrantFromAttributeByte(
+	const int row, 
+	const int col, 
+	const uint8_t attribute_byte
+)
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
+	int out_attr_row = 0;
+	int out_attr_col = 0;
+	Nametable::Quadrant quadrant = Nametable::Quadrant::BOTTOM_RIGHT;
+	const int attribute_index = GetAttributeIndex(row, col, out_attr_row, out_attr_col);
+
+	if ((row / 2) % 2 == 0 && (col / 2) % 2 == 0)
+	{
+		quadrant = Nametable::Quadrant::TOP_LEFT;
+	}
+	else if ((row / 2) % 2 == 1 && (col / 2) % 2 == 0)
+	{
+		quadrant = Nametable::Quadrant::BOTTOM_LEFT;
+	}
+	else if ((row / 2) % 2 == 0 && (col / 2) % 2 == 1)
+	{
+		quadrant = Nametable::Quadrant::TOP_RIGHT;
+	}
+	return quadrant;
 }
