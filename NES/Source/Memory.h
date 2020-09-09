@@ -41,6 +41,7 @@ private:
 	uint8_t m_palette_buffer[32];
 	//	https://wiki.nesdev.com/w/index.php/PPU_OAM
 	uint8_t m_object_attribute_memory[256];
+	mutable uint8_t m_controller_poll = 0;
 };
 
 

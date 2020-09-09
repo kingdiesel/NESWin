@@ -86,6 +86,41 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 	}
 	else if (position >= 0x4000 && position <= 0x4017)
 	{
+		if (position == 0x4016)
+		{
+			bool button_state = false;
+			// https://wiki.nesdev.com/w/index.php/Controller_reading
+			// https://wiki.nesdev.com/w/index.php/Controller_reading_code
+			switch (m_controller_poll)
+			{
+			case 0:
+				button_state = NESConsole::GetInstance()->GetAPressed();
+				break;
+			case 1:
+				button_state = NESConsole::GetInstance()->GetBPressed();
+				break;
+			case 2:
+				button_state = NESConsole::GetInstance()->GetSelectPressed();
+				break;
+			case 3:
+				button_state = NESConsole::GetInstance()->GetStartPressed();
+				break;
+			case 4:
+				button_state = NESConsole::GetInstance()->GetUpPressed();
+				break;
+			case 5:
+				button_state = NESConsole::GetInstance()->GetDownPressed();
+				break;
+			case 6:
+				button_state = NESConsole::GetInstance()->GetLeftPressed();
+				break;
+			case 7:
+				button_state = NESConsole::GetInstance()->GetRightPressed();
+				break;
+			}
+			m_controller_poll++;
+			return button_state;
+		}
 		// TODO: read from APU 
 		return 0;
 	}
@@ -166,17 +201,26 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 			assert(false);
 		}
 	}
-	else if (position == 0x4014)
-	{
-		PPU& ppu = NESConsole::GetInstance()->GetPPU();
-		ppu.SetOAMDMA(value);
-		// TODO: if this occurs, need to copy stuff
-		// to sprite memory
-		// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
-	}
 	else if (position >= 0x4000 && position <= 0x4017)
 	{
 		// TODO: write to APU 
+		if (position == 0x4016)
+		{
+			// https://wiki.nesdev.com/w/index.php/Controller_reading
+			if (value == 1)
+			{
+				// start poll
+				m_controller_poll = 0;
+			}
+		}
+		else if (position == 0x4014)
+		{
+			PPU& ppu = NESConsole::GetInstance()->GetPPU();
+			ppu.SetOAMDMA(value);
+			// TODO: if this occurs, need to copy stuff
+			// to sprite memory
+			// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
+		}
 		//assert(false);
 	}
 	else if (position >= 0x4018 && position <= 0x401F)

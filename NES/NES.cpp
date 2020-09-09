@@ -18,9 +18,9 @@ int main(int argv, char** args)
 
 	//NESConsole console;
 	NESConsole::GetInstance()->LoadROM(
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
+		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
-		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
 
 	const int screen_scale = 1;
@@ -122,9 +122,75 @@ int main(int argv, char** args)
 				{
 					v_pressed = true;
 				}
+				else if (event.key.keysym.sym == SDLK_DOWN)
+				{
+					NESConsole::GetInstance()->SetDownPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_UP)
+				{
+					NESConsole::GetInstance()->SetUpPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_LEFT)
+				{
+					NESConsole::GetInstance()->SetLeftPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_RIGHT)
+				{
+					NESConsole::GetInstance()->SetRightPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_RETURN)
+				{
+					NESConsole::GetInstance()->SetStartPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_z)
+				{
+					NESConsole::GetInstance()->SetAPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_x)
+				{
+					NESConsole::GetInstance()->SetBPressed(true);
+				}
+				else if (event.key.keysym.sym == SDLK_SPACE)
+				{
+					NESConsole::GetInstance()->SetSelectPressed(true);
+				}
 				else if (event.key.keysym.sym == SDLK_ESCAPE)
 				{
 					exit(1);
+				}
+				break;
+			case SDL_KEYUP:
+				if (event.key.keysym.sym == SDLK_DOWN)
+				{
+					NESConsole::GetInstance()->SetDownPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_UP)
+				{
+					NESConsole::GetInstance()->SetUpPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_LEFT)
+				{
+					NESConsole::GetInstance()->SetLeftPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_RIGHT)
+				{
+					NESConsole::GetInstance()->SetRightPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_RETURN)
+				{
+					NESConsole::GetInstance()->SetStartPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_z)
+				{
+					NESConsole::GetInstance()->SetAPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_x)
+				{
+					NESConsole::GetInstance()->SetBPressed(false);
+				}
+				else if (event.key.keysym.sym == SDLK_SPACE)
+				{
+					NESConsole::GetInstance()->SetSelectPressed(false);
 				}
 				break;
 			case SDL_QUIT:
