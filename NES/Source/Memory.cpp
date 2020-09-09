@@ -13,10 +13,10 @@ Memory::Memory()
 
 	// The NES has 2KB of RAM dedicated to the PPU
 	// https://wiki.nesdev.com/w/index.php/PPU_memory_map
-	m_ppu_ram_buffer = new uint8_t[2 * 1024];
+	m_ppu_ram_buffer = new uint8_t[16 * 1024];
 	
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
-	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
+	memset(m_ppu_ram_buffer, 0x00, 16 * 1024);
 	memset(m_palette_buffer, 0x00, 32);
 	memset(m_object_attribute_memory, 0x00, 256);
 }
@@ -36,6 +36,7 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 	*/
 	if (position <= 0x1FFF)
 	{
+		assert((position & 0x07FF) < (2 * 1024));
 		return m_cpu_ram_buffer[position & 0x07FF];
 	}
 	else if (position >= 0x2000 && position <= 0x3FFF)
@@ -128,6 +129,7 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 */
 	if (position <= 0x1FFF)
 	{
+		assert((position & 0x07FF) < (2 * 1024));
 		m_cpu_ram_buffer[position & 0x07FF] = value;
 	}
 	else if (position >= 0x2000 && position <= 0x3FFF)
@@ -230,7 +232,27 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
-		const uint16_t mirrored_position = position & 0x2FFF;
+		uint16_t mirrored_position = position & 0x2FFF;
+		// https://wiki.nesdev.com/w/index.php/Mirroring#Nametable_Mirroring
+		// https://wiki.nesdev.com/w/index.php/INES#Flags_6
+		//  0: horizontal (vertical arrangement)
+		//	1: vertical (horizontal arrangement)
+		if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
+		{
+			if (mirrored_position >= 0x2400 && mirrored_position < 0x2800)
+			{
+				mirrored_position &= 0x23FF;
+			}
+			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
+			{
+				mirrored_position &= 0x2BFF;
+			}
+		}
+		else
+		{
+			assert(false);
+		}
+		assert(mirrored_position < 16 * 1024);
 		return m_ppu_ram_buffer[mirrored_position];
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
@@ -285,7 +307,27 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
-		const uint16_t mirrored_position = position & 0x2FFF;
+		uint16_t mirrored_position = position & 0x2FFF;
+		// https://wiki.nesdev.com/w/index.php/Mirroring#Nametable_Mirroring
+		// https://wiki.nesdev.com/w/index.php/INES#Flags_6
+		//  0: horizontal (vertical arrangement)
+		//	1: vertical (horizontal arrangement)
+		if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
+		{
+			if (mirrored_position >= 0x2400 && mirrored_position < 0x2800)
+			{
+				mirrored_position &= 0x23FF;
+			}
+			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
+			{
+				mirrored_position &= 0x2BFF;
+			}
+		}
+		else
+		{
+			assert(false);
+		}
+		assert(mirrored_position < 16 * 1024);
 		m_ppu_ram_buffer[mirrored_position] = value;
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
@@ -322,6 +364,6 @@ uint8_t Memory::PPUReadOAM(const uint8_t index)
 void Memory::Reset()
 {
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
-	memset(m_ppu_ram_buffer, 0x00, 2 * 1024);
+	memset(m_ppu_ram_buffer, 0x00, 16 * 1024);
 	m_rom.Reset();
 }

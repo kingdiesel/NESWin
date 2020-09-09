@@ -29,8 +29,8 @@ int main(int argv, char** args)
 	const int pattern_render_area_x = 128;
 	const int pattern_render_area_y = 256;
 	const int palette_height = 16;
-	const int window_x = pattern_render_area_x + nes_resolution_x;
-	const int window_y = pattern_render_area_y + palette_height;
+	const int window_x = pattern_render_area_x + nes_resolution_x + nes_resolution_x;
+	const int window_y = pattern_render_area_y + nes_resolution_y;
 	const int fps = 60;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
 	SDL_Window* window = nullptr;
@@ -67,8 +67,12 @@ int main(int argv, char** args)
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
-	Nametable name_table(0x2000, &pattern_table);
-	name_table.Initialize(renderer);
+	Nametable** nametables = new Nametable*[4];
+	for (int i = 0; i < 4; ++i)
+	{
+		nametables[i] = new Nametable(0x2000 + (1024 * i), &pattern_table);
+		nametables[i]->Initialize(renderer);
+	}
 	//  $0000-$0FFF, nicknamed "left" 0 - 4095
 	//	$1000-$1FFF, nicknamed "right" 4096 - 8191
 
@@ -89,6 +93,7 @@ int main(int argv, char** args)
 	bool quit = false;
 	bool paused = false;
 	int show_lines = 0;
+	int show_nametable = 0;
 	SDL_Event event;
 	while (!quit)
 	{
@@ -185,19 +190,23 @@ int main(int argv, char** args)
 		}
 		
 		NESConsole::GetInstance()->Run();
-		name_table.Run();
+		for (int i = 0; i < 4; ++i)
+		{
+			nametables[i]->Run();
+			SDL_Rect name_rect;
+			name_rect.x = pattern_render_area_x + (nes_resolution_x * (i % 2));
+			name_rect.y = nes_resolution_y * (i / 2);
+			name_rect.h = nes_resolution_y;
+			name_rect.w = nes_resolution_x;
+			SDL_RenderCopy(
+				renderer,
+				nametables[i]->GetTexture(),
+				nullptr,
+				&name_rect
+			);
+		}
 
-		SDL_Rect name_rect;
-		name_rect.x = pattern_render_area_x;
-		name_rect.y = 0;
-		name_rect.h = nes_resolution_y;
-		name_rect.w = nes_resolution_x;
-		SDL_RenderCopy(
-			renderer,
-			name_table.GetTexture(),
-			nullptr,
-			&name_rect
-		);
+		
 
 		bool draw_lines = false;
 		int max_x = 8;
