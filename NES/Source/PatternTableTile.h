@@ -28,6 +28,7 @@ private:
 	{}
 	uint8_t m_tile_data[TILE_SIZE];
 	uint32_t m_texture_tile_data[64];
+	class NESConsole* m_console = nullptr;
 };
 
 #endif //NES_PATTERNTABLETILE_H

@@ -17,8 +17,13 @@ int main(int argv, char** args)
 	//return 0;
 
 	//NESConsole console;
+	NESConsole::GetInstance()->Initialize();
 	NESConsole::GetInstance()->LoadROM(
 		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/cpu_timing_test.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/branch_basics.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/backward_branch.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/forward_branch.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
 	);
@@ -58,7 +63,7 @@ int main(int argv, char** args)
 		window_y * screen_scale
 	);
 
-	Uint32 format = SDL_PIXELFORMAT_ARGB8888;
+	Uint32 format = SDL_PIXELFORMAT_RGB888;
 	SDL_PixelFormat* mapping_format = SDL_AllocFormat(format);
 	const ROM& rom = NESConsole::GetInstance()->GetROM();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
@@ -258,8 +263,8 @@ int main(int argv, char** args)
 		NESConsole::GetInstance()->Run();
 		for (int i = 0; i < 4; ++i)
 		{
-			nametables[i]->Run();
 			SDL_Rect name_rect;
+			nametables[i]->Run();
 			name_rect.x = pattern_render_area_x + (nes_resolution_x * (i % 2));
 			name_rect.y = nes_resolution_y * (i / 2);
 			name_rect.h = nes_resolution_y;
@@ -324,6 +329,7 @@ int main(int argv, char** args)
 		SDL_RenderPresent(renderer);
 
 		const Uint32 frame_time = SDL_GetTicks() - frame_start;
+		//std::cout << frame_time << std::endl;
 		if (frame_time < sdl_wait)
 		{
 			SDL_Delay(sdl_wait - frame_time);

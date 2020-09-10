@@ -272,7 +272,7 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 	*/
 	if (position >= 0x0000 && position <= 0x1FFF)
 	{
-		return m_rom.GetChrRom()[position];
+		return m_rom.GetChrByte(position);
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
@@ -346,8 +346,7 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 	*/
 	if (position >= 0x0000 && position <= 0x1FFF)
 	{
-		// we're probably not writing to chr rom..yet
-		assert(false);
+		m_rom.SetChrByte(position, value);
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{

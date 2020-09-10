@@ -155,7 +155,10 @@ public:
 		{
 			CPU& cpu = NESConsole::GetInstance()->GetCPU();
 			_instruction &instruction = *static_cast<_instruction *>(arr[_instruction::OP_CODE]);
-			PrintLogString<_instruction>();
+			if (cpu.GetLoggingEnabled())
+			{
+				PrintLogString<_instruction>();
+			}
 
 			instruction.Execute(cpu);
 			if (instruction.GetIncrementsProgramCounter())
@@ -202,8 +205,9 @@ private:
 
 VariadicInstructionMap map;
 
-CPU::CPU()
+CPU::CPU(class NESConsole* console)
 {
+	m_console = console;
 	map.InitializeInstructionTypes();
 }
 
@@ -326,6 +330,6 @@ void CPU::HandleOpCode(const uint8_t op_code)
 }
 void CPU::ExecuteInstruction()
 {
-	uint8_t op_code = NESConsole::GetInstance()->GetMemory().CPUReadByte(m_reg_pc);
+	uint8_t op_code = m_console->GetMemory().CPUReadByte(m_reg_pc);
 	HandleOpCode(op_code);
 }

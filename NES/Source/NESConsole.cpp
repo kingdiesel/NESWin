@@ -19,6 +19,11 @@ void NESConsole::LoadROM(const std::string &path)
 	m_rom_loaded = true;
 }
 
+void NESConsole::Initialize()
+{
+	m_cpu = new CPU(this);
+}
+
 void NESConsole::PowerUp()
 {
 	GetCPU().PowerUp();
@@ -30,17 +35,21 @@ void NESConsole::PowerUp()
 void NESConsole::Run()
 {
 	int cycles = 0;
+	const int current_cpu_cycles = GetCPU().GetCycles();
+	int achieved_cycles = 0;
 	while (!GetPPU().GetFrameReady())
 	{
 		// https://wiki.nesdev.com/w/index.php/PPU_frame_timing#CPU-PPU_Clock_Alignment
-		// The NTSC PPU runs at 3 times the CPU clock rate
+		// The NTSC PPU runs at 3 times the CPU clock rate 
 		if (cycles % 3 == 0)
 		{
 			GetCPU().Run();
+			achieved_cycles = GetCPU().GetCycles() - current_cpu_cycles;
 		}
 		GetPPU().Run();
 		cycles++;
 	}
+	std::cout << achieved_cycles << std::endl;
 	GetPPU().ResetFrameReady();
 }
 
@@ -52,20 +61,20 @@ const ROM &NESConsole::GetROM() const
 void NESConsole::RunNesTestTiming()
 {
 	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
-	m_cpu.PowerUp();
-	m_cpu.SetRegisterProgramCounter(0xC000);
-	m_cpu.SetLoggingEnabled(false);
+	m_cpu->PowerUp();
+	m_cpu->SetRegisterProgramCounter(0xC000);
+	m_cpu->SetLoggingEnabled(false);
 	auto t1 = std::chrono::high_resolution_clock::now();
 	int times = 1000;
 	int cycles = 0;
 	while (times != 0)
 	{
-		m_cpu.ExecuteInstruction();
-		if (m_cpu.GetInstructionCount() == 5003)
+		m_cpu->ExecuteInstruction();
+		if (m_cpu->GetInstructionCount() == 5003)
 		{
-			cycles += m_cpu.GetCycles();
-			m_cpu.PowerUp();
-			m_cpu.SetRegisterProgramCounter(0xC000);
+			cycles += m_cpu->GetCycles();
+			m_cpu->PowerUp();
+			m_cpu->SetRegisterProgramCounter(0xC000);
 			times--;
 		}
 	}
@@ -85,26 +94,26 @@ bool NESConsole::RunNesTest()
 	}
 
 	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
-	m_cpu.PowerUp();
+	m_cpu->PowerUp();
 	// Start execution at $C000 to run "all tests", these will generate log output
 	// that will be compared to a working emulator
-	m_cpu.SetRegisterProgramCounter(0xC000);
-	m_cpu.SetLoggingEnabled(true);
+	m_cpu->SetRegisterProgramCounter(0xC000);
+	m_cpu->SetLoggingEnabled(true);
 	while (true)
 	{
-		std::size_t pos = m_nestest_log[m_cpu.GetInstructionCount()].find("CYC:") + 4;
-		const int nestest_cycles = std::stoi(m_nestest_log[m_cpu.GetInstructionCount()].substr(pos));
-		if (m_cpu.GetCycles() - nestest_cycles > 100)
+		std::size_t pos = m_nestest_log[m_cpu->GetInstructionCount()].find("CYC:") + 4;
+		const int nestest_cycles = std::stoi(m_nestest_log[m_cpu->GetInstructionCount()].substr(pos));
+		if (m_cpu->GetCycles() - nestest_cycles > 100)
 		{
-			m_cpu.SetCycles(nestest_cycles);
+			m_cpu->SetCycles(nestest_cycles);
 		}
-		m_cpu.ExecuteInstruction();
+		m_cpu->ExecuteInstruction();
 
-		const std::string &log_string = m_cpu.GetLastInstructionStr();
-		if (log_string.compare(m_nestest_log[m_cpu.GetInstructionCount() - 1]) != 0)
+		const std::string &log_string = m_cpu->GetLastInstructionStr();
+		if (log_string.compare(m_nestest_log[m_cpu->GetInstructionCount() - 1]) != 0)
 		{
-			std::cout << m_cpu.GetInstructionCount() - 1 << " " << log_string << std::endl;
-			std::cout << m_cpu.GetInstructionCount() - 1 << " " << m_nestest_log[m_cpu.GetInstructionCount() - 1]
+			std::cout << m_cpu->GetInstructionCount() - 1 << " " << log_string << std::endl;
+			std::cout << m_cpu->GetInstructionCount() - 1 << " " << m_nestest_log[m_cpu->GetInstructionCount() - 1]
 					  << std::endl;
 			std::cout << " " << "mismatch" << std::endl;
 			return false;
@@ -114,7 +123,7 @@ bool NESConsole::RunNesTest()
 			//std::cout << m_cpu.GetInstructionCount() - 1 << " " << log_string << std::endl;
 		}
 
-		if (m_cpu.GetInstructionCount() == 5003)
+		if (m_cpu->GetInstructionCount() == 5003)
 		{
 			return true;
 		}

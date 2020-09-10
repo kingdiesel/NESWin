@@ -1,6 +1,4 @@
-#ifndef NES_ADDRESSINGMODE_H
-#define NES_ADDRESSINGMODE_H
-
+#pragma once
 #include <string>
 #include <sstream>
 #include "../Memory.h"
@@ -14,6 +12,7 @@ template<typename _derived_addressing, int _operand_length>
 class BaseAddressingStrategy
 {
 public:
+	BaseAddressingStrategy();
 	void SetMemoryByteValue(uint8_t value)
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
@@ -34,6 +33,7 @@ public:
 
 protected:
 	mutable int m_addressing_cycles = 0;
+	class NESConsole* m_console = nullptr;
 };
 
 class AbsoluteAddressingStrategy : public BaseAddressingStrategy<AbsoluteAddressingStrategy, 2>
@@ -159,6 +159,10 @@ public:
 class AccumulatorAddressingStrategy
 {
 public:
+	AccumulatorAddressingStrategy()
+	{
+		m_console = NESConsole::GetInstance().get();
+	}
 	void ToString(std::string &out_string) const;
 
 	uint8_t GetMemoryByte() const;
@@ -179,6 +183,7 @@ public:
 
 private:
 	mutable int m_addressing_cycles = 0;
+	NESConsole* m_console = nullptr;
 };
 
 class ImmediateAddressingStrategy : public BaseAddressingStrategy<ImmediateAddressingStrategy, 1>
@@ -220,5 +225,8 @@ public:
 	{ return 0; };
 };
 
-
-#endif //NES_ADDRESSINGMODE_H
+template<typename _derived_addressing, int _operand_length>
+inline BaseAddressingStrategy<_derived_addressing, _operand_length>::BaseAddressingStrategy()
+{
+	m_console = NESConsole::GetInstance().get();
+}

@@ -15,7 +15,7 @@ public:
 			m_cycles(cycles),
 			m_name(name)
 	{
-
+		m_console = NESConsole::GetInstance().get();
 	}
 
 	void Execute(CPU &cpu)
@@ -83,6 +83,7 @@ protected:
 	int m_cycles = 0x00;
 	bool m_increments_program_counter = true;
 	std::string m_name;
+	NESConsole* m_console = nullptr;
 private:
 	_addressing_mode m_addressing_mode;
 };

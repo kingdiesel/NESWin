@@ -7,7 +7,7 @@
 class CPU
 {
 public:
-	CPU();
+	CPU(class NESConsole* console);
 	void PowerUp();
 	void Run();
 
@@ -231,6 +231,7 @@ private:
 	int m_cycles = 0;
 	std::string m_last_instruction_str;
 	bool m_logging_enabled = false;
+	class NESConsole* m_console = nullptr;
 };
 
 

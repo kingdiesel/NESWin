@@ -20,8 +20,7 @@ public:
 
 	void ExecuteImplementation()
 	{
-		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		CPU& cpu = BaseInstruction<_addressing_mode, _execute, _op_code>::m_console->GetCPU();
 		this->m_increments_program_counter = true;
 		if (static_cast<_execute *>(this)->ShouldBranch())
 		{
@@ -78,8 +77,7 @@ public:
 
 	bool ShouldBranch() const
 	{
-		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		CPU& cpu = BRABase<RelativeAddressingStrategy, BNE, 0xD0>::m_console->GetCPU();
 		return !cpu.IsZeroFlagSet();
 	}
 };
@@ -93,8 +91,7 @@ public:
 
 	bool ShouldBranch() const
 	{
-		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		CPU& cpu = BRABase<RelativeAddressingStrategy, BEQ, 0xF0>::m_console->GetCPU();
 		return cpu.IsZeroFlagSet();
 	}
 };

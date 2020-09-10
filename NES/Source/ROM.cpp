@@ -96,6 +96,18 @@ uint16_t ROM::GetMappedPosition(const uint16_t position) const
 	return 0;
 }
 
+void ROM::SetChrByte(const uint16_t position, const uint8_t value)
+{
+	assert(position >= 0 && position < m_chr_size);
+	m_chr_buffer[position] = value;
+}
+
+uint8_t ROM::GetChrByte(const uint16_t position) const
+{
+	assert(position >= 0 && position < m_chr_size);
+	return m_chr_buffer[position];
+}
+
 uint8_t ROM::GetByte(const uint16_t position) const
 {
 	assert(position >= 0 && position <= 0xFFFF);

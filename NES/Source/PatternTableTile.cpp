@@ -11,6 +11,7 @@ PatternTableTile::PatternTableTile()
 {
 	memset(m_tile_data, 0x00, TILE_SIZE);
 	memset(m_texture_tile_data, 0x00, sizeof(m_texture_tile_data));
+	m_console = NESConsole::GetInstance().get();
 }
 
 PatternTableTile::~PatternTableTile()
@@ -30,7 +31,7 @@ const uint8_t *PatternTableTile::GetTileData() const
 void PatternTableTile::FillTextureData(int palette)
 {
 	// https://lospec.com/palette-list/2-bit-grayscale
-	uint32_t COLOR_PALETTE[4] =
+	static uint32_t COLOR_PALETTE[4] =
 	{
 		0x000000,
 		0xffffff,
@@ -38,34 +39,31 @@ void PatternTableTile::FillTextureData(int palette)
 		0x676767,
 	};
 
-	if (palette != -1)
+	int start_address = 0;
+	switch (palette)
 	{
-		int start_address = 0;
-		switch (palette)
-		{
-		case 0:
-			start_address = 0x3F01;
-			break;
-		case 1:
-			start_address = 0x3F05;
-			break;
-		case 2:
-			start_address = 0x3F09;
-			break;
-		case 3:
-			start_address = 0x3F0D;
-			break;
-		default:
-			assert(false);
-		}
+	case 0:
+		start_address = 0x3F01;
+		break;
+	case 1:
+		start_address = 0x3F05;
+		break;
+	case 2:
+		start_address = 0x3F09;
+		break;
+	case 3:
+		start_address = 0x3F0D;
+		break;
+	default:
+		assert(false);
+	}
 
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		for (int i = 1; i <= 3; ++i)
-		{
-			uint8_t color = memory.PPUReadByte(start_address + i - 1);
-			uint32_t palette_color = PaletteColors[color];
-			COLOR_PALETTE[i] = palette_color;
-		}
+	Memory& memory = m_console->GetMemory();
+	for (int i = 1; i <= 3 && palette != -1; ++i)
+	{
+		uint8_t color = memory.PPUReadByte(start_address + i - 1);
+		uint32_t palette_color = PaletteColors[color];
+		COLOR_PALETTE[i] = palette_color;
 	}
 
 	// https://wiki.nesdev.com/w/index.php/PPU_pattern_tables
@@ -104,7 +102,7 @@ void PatternTableTile::FillTextureData(int palette)
 				break;
 			}
 			assert(color_bit < 4);
-			m_texture_tile_data[row * 8 + (7 - bit)] = COLOR_PALETTE[color_bit];
+			m_texture_tile_data[(row << 3) + (7 - bit)] = COLOR_PALETTE[color_bit];
 		}
 	}
 }

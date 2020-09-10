@@ -12,7 +12,8 @@ Nametable::Nametable(const uint16_t address, PatternTable* pattern_table) :
 	// https://wiki.nesdev.com/w/index.php/PPU_nametables
 	m_texture_nametable_data = new uint32_t[256*240];
 	m_attribute_table_data = new uint8_t[64];
-
+	memset(m_texture_nametable_data, 0x0, 256 * 240 * sizeof(uint32_t));
+	memset(m_attribute_table_data, 0x0, 64);
 }
 
 void Nametable::Initialize(SDL_Renderer* renderer)
@@ -42,7 +43,6 @@ void Nametable::Run()
 		m_attribute_table_data[i - attribute_memory_start] = memory.PPUReadByte(i);
 	}
 
-	SDL_Rect dest_rect;
 	// https://wiki.nesdev.com/w/index.php/PPU_nametables
 	for (uint16_t i = m_base_address; i < attribute_memory_start; ++i)
 	{
@@ -55,17 +55,20 @@ void Nametable::Run()
 		uint8_t palette_index = GetPaletteIndexFromAttributeByte(row, col, attribute_byte);
 		tile->FillTextureData(palette_index);
 		const uint32_t* tile_texture_data = tile->GetTextureTileData();
-		dest_rect.x = col * 8;
-		dest_rect.y = row * 8;
-		dest_rect.h = 8;
-		dest_rect.w = 8;
-		SDL_UpdateTexture(
-			m_nametable_texture,
-			&dest_rect,
-			tile_texture_data,
-			8 * sizeof(Uint32)
-		);
+		for (int i = 0; i < 8; ++i)
+		{
+			const int address = (8 * row * 256 + col * 8) + (i * 256);
+			assert(address >= 0 && address < 256 * 240);
+			memcpy(&m_texture_nametable_data[address], &tile_texture_data[i*8], 8*sizeof(uint32_t));
+		}
 	}
+
+	SDL_UpdateTexture(
+		m_nametable_texture,
+		nullptr,
+		m_texture_nametable_data,
+		256 * sizeof(Uint32)
+	);
 }
 
 uint8_t Nametable::GetAttributeIndex(

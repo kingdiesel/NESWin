@@ -10,7 +10,7 @@ class NESConsole
 public:
 	static std::shared_ptr<NESConsole> GetInstance(void);
 	void LoadROM(const std::string &path);
-
+	void Initialize();
 	void PowerUp();
 	void Run();
 
@@ -22,7 +22,7 @@ public:
 
 	CPU& GetCPU()
 	{
-		return m_cpu;
+		return *m_cpu;
 	}
 
 	PPU& GetPPU()
@@ -60,7 +60,7 @@ public:
 	bool GetBPressed() const { return m_b_pressed; }
 
 private:
-	CPU m_cpu;
+	CPU* m_cpu = nullptr;
 	PPU m_ppu;
 	Memory m_memory;
 	bool m_rom_loaded = false;
