@@ -55,7 +55,7 @@ void PatternTableTile::FillTextureData(int palette)
 		start_address = 0x3F0D;
 		break;
 	default:
-		assert(false);
+		break;
 	}
 
 	Memory& memory = m_console->GetMemory();

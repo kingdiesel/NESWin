@@ -49,7 +49,7 @@ void NESConsole::Run()
 		GetPPU().Run();
 		cycles++;
 	}
-	std::cout << achieved_cycles << std::endl;
+	//std::cout << achieved_cycles << std::endl;
 	GetPPU().ResetFrameReady();
 }
 
