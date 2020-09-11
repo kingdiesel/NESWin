@@ -158,6 +158,7 @@
     <ClCompile Include="Source\NESConsole.cpp" />
     <ClCompile Include="Source\PatternTableTile.cpp" />
     <ClCompile Include="Source\ROM.cpp" />
+    <ClCompile Include="Sprites.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Nametable.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Source\NESConsole.h" />
     <ClInclude Include="Source\PatternTableTile.h" />
     <ClInclude Include="Source\ROM.h" />
+    <ClInclude Include="Sprites.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

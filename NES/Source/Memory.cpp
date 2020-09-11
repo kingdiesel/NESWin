@@ -308,7 +308,7 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 			return m_palette_buffer[0];
 		}
 		const int shifted_down = mirrored_position - 0x3F00;
-		assert(shifted_down < 32);
+		assert(shifted_down >= 0 && shifted_down < 32);
 		return m_palette_buffer[shifted_down];
 	}
 	else
@@ -384,6 +384,7 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 			//assert(false);
 		}
 		const int shifted_down = mirrored_position - 0x3F00;
+		assert(shifted_down >= 0 && shifted_down < 32);
 		m_palette_buffer[shifted_down] = value;
 	}
 	else
@@ -396,11 +397,13 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 
 void Memory::PPUWriteOAM(const uint8_t index, const uint8_t value)
 {
+	assert(index >= 0 && index < 256);
 	m_object_attribute_memory[index] = value;
 }
 
 uint8_t Memory::PPUReadOAM(const uint8_t index)
 {
+	assert(index >= 0 && index < 256);
 	return m_object_attribute_memory[index];
 }
 

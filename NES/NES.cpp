@@ -9,6 +9,7 @@
 #include "SDL.h"
 #include <iomanip>
 #include "Nametable.h"
+#include "Sprites.h"
 
 int main(int argv, char** args)
 {	
@@ -19,13 +20,15 @@ int main(int argv, char** args)
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
 	NESConsole::GetInstance()->LoadROM(
-		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/cpu_timing_test.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/branch_basics.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/backward_branch.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/forward_branch.nes"
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
+		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/iceclimber.nes"
+		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/balloonfight.nes"
 	);
 
 	const int screen_scale = 1;
@@ -34,7 +37,7 @@ int main(int argv, char** args)
 	const int pattern_render_area_x = 128;
 	const int pattern_render_area_y = 256;
 	const int palette_height = 16;
-	const int window_x = pattern_render_area_x + nes_resolution_x + nes_resolution_x;
+	const int window_x = pattern_render_area_x + nes_resolution_x + nes_resolution_x + nes_resolution_x;
 	const int window_y = pattern_render_area_y + nes_resolution_y;
 	const int fps = 60;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
@@ -72,8 +75,13 @@ int main(int argv, char** args)
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
-	Nametable** nametables = new Nametable*[4];
-	for (int i = 0; i < 4; ++i)
+	
+	Sprites sprites;
+	sprites.Initialize(renderer);
+	
+	const int NUM_NAMETABLES = 4;
+	Nametable** nametables = new Nametable*[NUM_NAMETABLES];
+	for (int i = 0; i < NUM_NAMETABLES; ++i)
 	{
 		nametables[i] = new Nametable(0x2000 + (1024 * i), &pattern_table);
 		nametables[i]->Initialize(renderer);
@@ -261,7 +269,7 @@ int main(int argv, char** args)
 		}
 		
 		NESConsole::GetInstance()->Run();
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < NUM_NAMETABLES; ++i)
 		{
 			SDL_Rect name_rect;
 			nametables[i]->Run();
@@ -277,6 +285,18 @@ int main(int argv, char** args)
 			);
 		}
 
+		sprites.Run();
+		SDL_Rect sprites_rect;
+		sprites_rect.x = pattern_render_area_x + (nes_resolution_x * 2);
+		sprites_rect.y = 0;
+		sprites_rect.h = 240;
+		sprites_rect.w = 256;
+		SDL_RenderCopy(
+			renderer,
+			sprites.GetTexture(),
+			nullptr,
+			&sprites_rect
+		);
 		
 
 		bool draw_lines = false;
@@ -329,7 +349,6 @@ int main(int argv, char** args)
 		SDL_RenderPresent(renderer);
 
 		const Uint32 frame_time = SDL_GetTicks() - frame_start;
-		//std::cout << frame_time << std::endl;
 		if (frame_time < sdl_wait)
 		{
 			SDL_Delay(sdl_wait - frame_time);

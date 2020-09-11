@@ -36,7 +36,6 @@ void NESConsole::Run()
 {
 	int cycles = 0;
 	const int current_cpu_cycles = GetCPU().GetCycles();
-	int achieved_cycles = 0;
 	while (!GetPPU().GetFrameReady())
 	{
 		// https://wiki.nesdev.com/w/index.php/PPU_frame_timing#CPU-PPU_Clock_Alignment
@@ -44,11 +43,12 @@ void NESConsole::Run()
 		if (cycles % 3 == 0)
 		{
 			GetCPU().Run();
-			achieved_cycles = GetCPU().GetCycles() - current_cpu_cycles;
+			
 		}
 		GetPPU().Run();
 		cycles++;
 	}
+	const int achieved_cycles = GetCPU().GetCycles() - current_cpu_cycles;
 	//std::cout << achieved_cycles << std::endl;
 	GetPPU().ResetFrameReady();
 }

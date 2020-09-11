@@ -46,6 +46,9 @@
     <ClCompile Include="Nametable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Addressing\AddressingMode.h">
@@ -209,5 +212,6 @@
     </ClInclude>
     <ClInclude Include="PatternTable.h" />
     <ClInclude Include="Nametable.h" />
+    <ClInclude Include="Sprites.h" />
   </ItemGroup>
 </Project>

@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /NES/TestRoms/dk.nes
+/NES/TestRoms/balloonfight.nes
+/NES/TestRoms/iceclimber.nes
