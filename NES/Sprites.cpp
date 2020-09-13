@@ -36,16 +36,10 @@ void Sprites::Run()
 		// https://wiki.nesdev.com/w/index.php/PPU_OAM#Byte_0
 		// Y position of top of sprite
 		const uint8_t byte0 = oam[i];
-
-		// Hide a sprite by writing any values in $EF-$FF here.
-		switch (byte0)
+		if (byte0 > 239)
 		{
-		case 0xEF:
-		case 0xFF:
 			continue;
-			break;
 		}
-
 		// https://wiki.nesdev.com/w/index.php/PPU_OAM#Byte_1
 		// 76543210
 		// ||||||||
@@ -129,6 +123,10 @@ void Sprites::Run()
 			for (int i = 0; i < 8; ++i)
 			{
 				const int address = (y_pos * 256 + x_pos) + (i * 256);
+				if (address >= 256 * 240)
+				{
+					continue;
+				}
 				assert(address >= 0 && address < 256 * 240);
 				memcpy(&m_texture_sprites_data[address], &tile_texture_data[i * 8], 8 * sizeof(uint32_t));
 			}
