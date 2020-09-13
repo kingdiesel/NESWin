@@ -21,6 +21,7 @@ public:
 	// helper function when we read two bytes in a row
 	// to construct a memory address
 	uint16_t CPUReadShort(const uint16_t position) const;
+	const uint8_t* GetOAM() const { return m_object_attribute_memory; }
 	
 	ROM &GetROM()
 	{

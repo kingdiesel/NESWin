@@ -3,7 +3,7 @@
 #include "Source/NESConsole.h"
 #include <assert.h>
 #include "SDL.h"
-static const int TILE_COUNT = 8192 / 16;
+static const int TILE_COUNT = 512;
 void PatternTable::Initialize(struct SDL_Renderer* renderer)
 {
 	assert(m_pattern_table_texture == nullptr);
@@ -21,6 +21,7 @@ void PatternTable::Initialize(struct SDL_Renderer* renderer)
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 
 	SDL_Rect dest_rect;
+	FillData fill_data;
 	for (int i = 0; i < 8192; i += 16)
 	{
 		int tile_count = i / 16;
@@ -28,7 +29,7 @@ void PatternTable::Initialize(struct SDL_Renderer* renderer)
 		{
 			m_tiles[tile_count].GetTileData()[j] = memory.PPUReadByte(i + j);
 		}
-		m_tiles[tile_count].FillTextureData();
+		m_tiles[tile_count].FillTextureData(fill_data);
 		uint32_t* texture_tile_data = m_tiles[tile_count].GetTextureTileData();
 		dest_rect.x = (tile_count * 8) % 128;
 		dest_rect.y = ((tile_count * 8) / 128) * 8;

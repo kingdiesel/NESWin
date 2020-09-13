@@ -6,6 +6,25 @@
 
 #include <cstdint>
 
+struct FillData
+{
+	FillData() = default;
+	FillData(const int palette_index) :
+		m_palette_index(palette_index)
+	{}
+	FillData(
+		const int palette_index,
+		const bool flip_horizontally,
+		const bool flip_vertically) :
+		m_palette_index(palette_index),
+		m_flip_horizontally(flip_horizontally),
+		m_flip_vertically(flip_vertically)
+	{}
+	int m_palette_index = -1;
+	bool m_flip_horizontally = false;
+	bool m_flip_vertically = false;
+};
+
 class PatternTableTile
 {
 public:
@@ -20,8 +39,7 @@ public:
 	uint32_t* GetTextureTileData() { return m_texture_tile_data; }
 	const uint32_t* GetTextureTileData() const { return m_texture_tile_data; }
 
-	void FillTextureData(int palette = -1);
-
+	void FillTextureData(const FillData& _data);
 	static const int TILE_SIZE = 16;
 private:
 	PatternTableTile(const PatternTableTile &other)

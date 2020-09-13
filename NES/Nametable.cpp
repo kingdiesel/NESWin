@@ -53,7 +53,7 @@ void Nametable::Run()
 		PatternTableTile* tile = m_pattern_table->GetTile(tile_id + tile_offset);
 		uint8_t attribute_byte = GetAttributeByte(row, col);
 		uint8_t palette_index = GetPaletteIndexFromAttributeByte(row, col, attribute_byte);
-		tile->FillTextureData(palette_index);
+		tile->FillTextureData(FillData(palette_index));
 		const uint32_t* tile_texture_data = tile->GetTextureTileData();
 		for (int i = 0; i < 8; ++i)
 		{

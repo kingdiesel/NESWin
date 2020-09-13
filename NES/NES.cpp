@@ -76,7 +76,7 @@ int main(int argv, char** args)
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
 	
-	Sprites sprites;
+	Sprites sprites(&pattern_table);
 	sprites.Initialize(renderer);
 	
 	const int NUM_NAMETABLES = 4;
@@ -227,7 +227,7 @@ int main(int argv, char** args)
 			&pattern_rect
 		);
 		
-		for (int i = 0x3F00; i <= 0x3F1f; ++i)
+		for (int i = 0x3F00; i <= 0x3F1F; ++i)
 		{
 			static const int num_palettes = 0x3F1F - 0x3F00;
 			SDL_Rect palette_rect;

@@ -28,7 +28,7 @@ const uint8_t *PatternTableTile::GetTileData() const
 	return m_tile_data;
 }
 
-void PatternTableTile::FillTextureData(int palette)
+void PatternTableTile::FillTextureData(const FillData& _data)
 {
 	// https://lospec.com/palette-list/2-bit-grayscale
 	static uint32_t COLOR_PALETTE[4] =
@@ -40,7 +40,7 @@ void PatternTableTile::FillTextureData(int palette)
 	};
 
 	int start_address = 0;
-	switch (palette)
+	switch (_data.m_palette_index)
 	{
 	case 0:
 		start_address = 0x3F01;
@@ -54,12 +54,24 @@ void PatternTableTile::FillTextureData(int palette)
 	case 3:
 		start_address = 0x3F0D;
 		break;
+	case 4:
+		start_address = 0x3F11;
+		break;
+	case 5:
+		start_address = 0x3F15;
+		break;
+	case 6:
+		start_address = 0x3F19;
+		break;
+	case 7:
+		start_address = 0x3F1D;
+		break;
 	default:
 		break;
 	}
 
 	Memory& memory = m_console->GetMemory();
-	for (int i = 1; i <= 3 && palette != -1; ++i)
+	for (int i = 1; i <= 3 && _data.m_palette_index != -1; ++i)
 	{
 		uint8_t color = memory.PPUReadByte(start_address + i - 1);
 		uint32_t palette_color = PaletteColors[color];
@@ -102,7 +114,18 @@ void PatternTableTile::FillTextureData(int palette)
 				break;
 			}
 			assert(color_bit < 4);
-			m_texture_tile_data[(row << 3) + (7 - bit)] = COLOR_PALETTE[color_bit];
+			if (_data.m_flip_horizontally)
+			{
+				m_texture_tile_data[(row << 3) + bit] = COLOR_PALETTE[color_bit];
+			}
+			else if (_data.m_flip_vertically)
+			{
+				m_texture_tile_data[((7 - row) << 3) + (7 - bit)] = COLOR_PALETTE[color_bit];
+			}
+			else
+			{
+				m_texture_tile_data[(row << 3) + (7 - bit)] = COLOR_PALETTE[color_bit];
+			}
 		}
 	}
 }
