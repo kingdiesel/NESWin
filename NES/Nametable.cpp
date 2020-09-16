@@ -133,11 +133,7 @@ Nametable::Quadrant Nametable::GetQuadrantFromAttributeByte(
 )
 {
 	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
-	int out_attr_row = 0;
-	int out_attr_col = 0;
 	Nametable::Quadrant quadrant = Nametable::Quadrant::BOTTOM_RIGHT;
-	const int attribute_index = GetAttributeIndex(row, col, out_attr_row, out_attr_col);
-
 	if ((row / 2) % 2 == 0 && (col / 2) % 2 == 0)
 	{
 		quadrant = Nametable::Quadrant::TOP_LEFT;

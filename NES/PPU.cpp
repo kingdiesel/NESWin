@@ -1,5 +1,14 @@
 #include "PPU.h"
 #include "Source/NESConsole.h"
+#include "PatternTable.h"
+#include "Source/PatternTableTile.h"
+#include <cassert>
+
+PPU::PPU()
+{
+	m_frame_buffer_data = new uint32_t[256 * 240];
+	memset(m_frame_buffer_data, 0x00, 256 * 240 * sizeof(uint32_t));
+}
 
 void PPU::PowerUp()
 {
@@ -16,10 +25,30 @@ void PPU::Run()
 	m_even_frame = !m_even_frame;
 	const bool show_background = GetMaskRegister().Bits.m_show_bkgrnd;
 	const bool show_sprites = GetMaskRegister().Bits.m_show_sprites;
+	const uint8_t background_pattern_table = GetControlRegister().Bits.m_bkgrnd_pattern_addr;
 	const bool rendering_disabled = !(show_background && show_sprites);
+	const Memory& memory = NESConsole::GetInstance()->GetMemory();
 	// The PPU renders 262 scanlines per frame. Each scanline lasts for 
 	// 341 PPU clock cycles (113.667 CPU clock cycles; 1 CPU cycle = 3 PPU cycles), 
 	// with each clock cycle producing one pixel.
+	// (0 = $2000; 1 = $2400; 2 = $2800; 3 = $2C00)
+	uint16_t nametable_addr = 0x2000;
+	switch (GetControlRegister().Bits.m_base_nametable_addr)
+	{
+	case 1:
+		nametable_addr = 0x2400;
+		break;
+	case 2:
+		nametable_addr = 0x2800;
+		break;
+	case 3:
+		nametable_addr = 0x2C00;
+		break;
+	case 0:
+	default:
+		break;
+	}
+	const uint16_t attribute_addr = nametable_addr + 960;
 
 	if (cycles > 340) 
 	{
@@ -29,7 +58,39 @@ void PPU::Run()
 
 	if (scanlines >=0 && scanlines <= 239)
 	{ 
-		//  drawing
+		// nametable
+		const uint8_t pattern_table_id = GetControlRegister().Bits.m_bkgrnd_pattern_addr;
+		const uint16_t attribute_memory_start = nametable_addr + 960;
+		const uint16_t attribute_memory_end = nametable_addr + 1024;
+		uint16_t tile_offset = pattern_table_id == 0 ? 0 : 256;
+
+		// scanline pixels
+		for (int i = 0; i < 256; i += 8)
+		{
+			// fetch attribute byte for this pixel
+			const uint8_t attribute_byte = GetAttributeByte(i, scanlines, nametable_addr);
+			
+			// get palette index out ofthe attribute byte
+			const uint8_t palette_index = GetPaletteIndexFromAttributeByte(i, scanlines, attribute_byte);
+
+			// get the tile_id for these 8 pixels
+			const uint16_t nametable_index = nametable_addr + ((i / 8) + ((scanlines/8) * (256/8)));
+			const uint8_t tile_id = memory.PPUReadByte(nametable_index);
+
+			// get corresponding tile
+			PatternTableTile* tile = m_pattern_table->GetTile(tile_id + tile_offset);
+			
+			// get corresponding row out of the tile
+			const int row = scanlines % 8;
+			uint32_t pixels[8] = { 0 };
+			tile->GetTextureDataRow(row, pixels, FillData(palette_index));
+
+			// copy row data into frame buffer
+			memcpy(&m_frame_buffer_data[i + (scanlines * 256)], pixels, 8 * sizeof(uint32_t));
+		}
+
+		// sprite
+
 
 	}
 	else if (scanlines == 241 && cycles == 1) 
@@ -49,6 +110,62 @@ void PPU::Run()
 		SetFrameReady(true);
 	}
 	cycles++;
+}
+
+Nametable::Quadrant PPU::GetQuadrantFromAttribyteByte(const int pixel_x, const int pixel_y, const uint8_t attribute_byte)
+{
+	Nametable::Quadrant quadrant = Nametable::Quadrant::BOTTOM_RIGHT;
+
+	//if ((pixel_y / 2) % 2 == 0 && (pixel_x / 2) % 2 == 0)
+	//{
+	//	quadrant = Nametable::Quadrant::TOP_LEFT;
+	//}
+	return quadrant;
+}
+
+uint8_t PPU::GetPaletteIndexFromAttributeByte(
+	const int pixel_x, 
+	const int pixel_y, 
+	const uint8_t attribute_byte
+)
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
+	uint8_t palette_index = 0;
+	uint8_t shift = 0;
+	const Nametable::Quadrant quadrant = 
+		GetQuadrantFromAttribyteByte(pixel_x, pixel_y, attribute_byte);
+	switch (quadrant)
+	{
+	case Nametable::Quadrant::TOP_LEFT:
+		shift = 0;
+		break;
+	case Nametable::Quadrant::TOP_RIGHT:
+		shift = 2;
+		break;
+	case Nametable::Quadrant::BOTTOM_RIGHT:
+		shift = 6;
+		break;
+	case Nametable::Quadrant::BOTTOM_LEFT:
+		shift = 4;
+		break;
+	default:
+		assert(false);
+	}
+	palette_index = (attribute_byte >> shift) & 0x03;
+	return palette_index;
+}
+
+uint8_t PPU::GetAttributeByte(
+	const int pixel_x, 
+	const int pixel_y, 
+	const uint16_t nametable_addr
+)
+{
+	const int y_offset = 8 * (pixel_y / 32);
+	const int x_offset = pixel_x / 32;
+	const int byte_index = x_offset + y_offset;
+	assert(byte_index >= 0 && byte_index < 64);
+	return 0;
 }
 
 void PPU::SetOAMDMA(const uint8_t value)

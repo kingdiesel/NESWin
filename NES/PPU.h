@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include "Nametable.h"
 
 union PPUControlRegister
 {
@@ -47,10 +48,12 @@ union PPUStatusRegister
 class PPU
 {
 public:
+	PPU();
 	void PowerUp();
 	void Reset();
+	void SetPatternTable(class PatternTable* pattern_table) { m_pattern_table = pattern_table; }
 	void ResetWriteToggle() { m_write_toggle = 0; }
-
+	const uint32_t* GetFrameBufferData() const { return m_frame_buffer_data; }
 	void Run();
 
 	void SetOAMDMA(const uint8_t value);
@@ -172,6 +175,25 @@ public:
 	}
 private:
 	void SetFrameReady(const bool frame_ready) { m_frame_ready = frame_ready; }
+	
+	uint8_t GetPaletteIndexFromAttributeByte(
+		const int pixel_x, 
+		const int pixel_y, 
+		const uint8_t attribute_byte
+	);
+	
+	uint8_t GetAttributeByte(
+		const int pixel_x, 
+		const int pixel_y, 
+		const uint16_t nametable_addr
+	);
+
+	Nametable::Quadrant GetQuadrantFromAttribyteByte(
+		const int pixel_x,
+		const int pixel_y,
+		const uint8_t attribute_byte
+	);
+
 	// https://wiki.nesdev.com/w/index.php/PPU_registers
 	PPUControlRegister m_reg_ppu_control;
 	PPUMaskRegister m_reg_ppu_mask;
@@ -196,5 +218,9 @@ private:
 
 	// ppu has "filled the frame buffer"
 	bool m_frame_ready = false;
+
+	uint32_t* m_frame_buffer_data = nullptr;
+
+	class PatternTable* m_pattern_table = nullptr;
 };
 

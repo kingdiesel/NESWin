@@ -40,6 +40,7 @@ public:
 	const uint32_t* GetTextureTileData() const { return m_texture_tile_data; }
 
 	void FillTextureData(const FillData& _data);
+	void GetTextureDataRow(int row, uint32_t* row_data, const FillData& _data);
 	static const int TILE_SIZE = 16;
 private:
 	PatternTableTile(const PatternTableTile &other)

@@ -43,6 +43,7 @@ int main(int argv, char** args)
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
 	SDL_Window* window = nullptr;
 	SDL_Renderer* renderer = nullptr;
+	SDL_Texture* frame_buffer = nullptr;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow(
@@ -66,6 +67,14 @@ int main(int argv, char** args)
 		window_y * screen_scale
 	);
 
+	frame_buffer = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STATIC,
+		256,
+		240
+	);
+
 	Uint32 format = SDL_PIXELFORMAT_RGB888;
 	SDL_PixelFormat* mapping_format = SDL_AllocFormat(format);
 	const ROM& rom = NESConsole::GetInstance()->GetROM();
@@ -75,6 +84,7 @@ int main(int argv, char** args)
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
+	ppu.SetPatternTable(&pattern_table);
 	
 	Sprites sprites(&pattern_table);
 	sprites.Initialize(renderer);
@@ -269,6 +279,13 @@ int main(int argv, char** args)
 		}
 		
 		NESConsole::GetInstance()->Run();
+		const uint32_t* frame_buffer_data = NESConsole::GetInstance()->GetPPU().GetFrameBufferData();
+		SDL_UpdateTexture(
+			frame_buffer,
+			nullptr,
+			frame_buffer_data,
+			256 * sizeof(Uint32)
+		);
 		for (int i = 0; i < NUM_NAMETABLES; ++i)
 		{
 			SDL_Rect name_rect;
@@ -296,6 +313,18 @@ int main(int argv, char** args)
 			sprites.GetTexture(),
 			nullptr,
 			&sprites_rect
+		);
+
+		SDL_Rect frame_buffer_rect;
+		frame_buffer_rect.x = pattern_render_area_x + (nes_resolution_x * 2);
+		frame_buffer_rect.y = 240;
+		frame_buffer_rect.h = 240;
+		frame_buffer_rect.w = 256;
+		SDL_RenderCopy(
+			renderer,
+			frame_buffer,
+			nullptr,
+			&frame_buffer_rect
 		);
 		
 

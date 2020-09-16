@@ -4,6 +4,13 @@
 class Nametable
 {
 public:
+	enum class Quadrant
+	{
+		TOP_LEFT,
+		TOP_RIGHT,
+		BOTTOM_LEFT,
+		BOTTOM_RIGHT
+	};
 	Nametable(const uint16_t address, class PatternTable* pattern_table);
 	void Initialize(struct SDL_Renderer* renderer);
 	void Run();
@@ -21,13 +28,7 @@ private:
 		const int col, 
 		const uint8_t attribute_byte
 	);
-	enum class Quadrant
-	{
-		TOP_LEFT,
-		TOP_RIGHT,
-		BOTTOM_LEFT,
-		BOTTOM_RIGHT
-	};
+	
 	Quadrant GetQuadrantFromAttributeByte(
 		const int row,
 		const int col,
