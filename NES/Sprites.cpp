@@ -27,7 +27,7 @@ void Sprites::Initialize(SDL_Renderer* renderer)
 void Sprites::Run()
 {
 	memset(m_texture_sprites_data, 0x0, 256 * 240 * sizeof(uint32_t));
-	const uint8_t* oam = NESConsole::GetInstance()->GetMemory().GetOAM();
+	const uint8_t* oam = NESConsole::GetInstance()->GetMemory().GetPrimaryOAM();
 	PPU& ppu = NESConsole::GetInstance()->GetPPU();
 	const PPUControlRegister& control_register = ppu.GetControlRegister();
 	const uint8_t pattern_table_id = control_register.Bits.m_sprite_pattern_addr;

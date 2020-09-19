@@ -1,11 +1,13 @@
 #pragma once
 #include <cstdint>
+#include <cassert>
 #include "Nametable.h"
 
 union PPUControlRegister
 {
 	struct Bits {
-		uint8_t m_base_nametable_addr : 2;
+		uint8_t m_nametable_x : 1;
+		uint8_t m_nametable_y : 1;
 		uint8_t m_vram_add : 1;
 		uint8_t m_sprite_pattern_addr : 1;
 		uint8_t m_bkgrnd_pattern_addr : 1;
@@ -45,6 +47,21 @@ union PPUStatusRegister
 	uint8_t Register = 0x00;
 };
 
+// https://wiki.nesdev.com/w/index.php/PPU_scrolling#PPU_internal_registers
+union PPUScrollRegister
+{
+	struct
+	{
+		uint16_t m_coarse_x : 5;
+		uint16_t m_coarse_y : 5;
+		uint16_t m_nametable_x : 1;
+		uint16_t m_nametable_y : 1;
+		uint16_t m_fine_y : 3;
+		uint16_t m_unused : 1;
+	} Bits;
+	uint16_t Register = 0x0000;
+};
+
 class PPU
 {
 public:
@@ -61,75 +78,30 @@ public:
 	void ResetNMIRequest() { SetNMIRequest(false); }
 	void SetNMIRequest(const bool cpu_nmi) { m_cpu_nmi = cpu_nmi; }
 	bool GetNMIRequest() { return m_cpu_nmi; }
+	bool IsRenderingEnabled() const;
 
 	uint8_t GetData()
 	{
 		return m_ppu_data;
 	}
 
-	void SetData(const uint8_t value);
+	void SetData(const uint8_t data)
+	{
+		m_ppu_data = data;
+	}
+
+	uint8_t GetWriteToggle() const { return m_write_toggle; }
+	void SetWriteToggle(const uint8_t toggle) 
+	{ 
+		assert(toggle == 0 || toggle == 1); 
+		m_write_toggle = toggle; 
+	}
+
+	void SetFineX(const uint8_t fine_x) { m_fine_x = fine_x; }
+
 	
 	bool GetFrameReady() const { return m_frame_ready; }
 	void ResetFrameReady() { m_frame_ready = false; }
-
-	uint8_t GetAddress()
-	{
-		return m_ppu_addr;
-	}
-
-	void SetAddress(const uint8_t value)
-	{
-		// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUADDR
-		if (m_write_toggle == 0)
-		{
-			m_write_toggle = 1;
-			m_ppu_addr = value;
-			const uint16_t high_address = m_ppu_addr << 8;
-			// clear high bits
-			m_ppu_full_addr &= 0x00FF;
-			// set high bits
-			m_ppu_full_addr |= high_address;
-		}
-		else
-		{
-			m_write_toggle = 0;
-			m_ppu_addr = value;
-			// clear low bits
-			m_ppu_full_addr &= 0xFF00;
-			// set low bits
-			m_ppu_full_addr |= m_ppu_addr;
-		}
-	}
-
-	uint8_t GetScroll()
-	{
-		return m_ppu_scroll;
-	}
-
-	void SetScroll(const uint8_t value)
-	{
-		// https://wiki.nesdev.com/w/index.php/PPU_registers#Scroll_.28.242005.29_.3E.3E_write_x2
-		if (m_write_toggle == 0)
-		{
-			m_write_toggle = 1;
-			m_ppu_scroll = value;
-			const uint16_t high_address = m_ppu_scroll << 8;
-			// clear high bits
-			m_ppu_full_scroll &= 0x00FF;
-			// set high bits
-			m_ppu_full_scroll |= high_address;
-
-		}
-		else
-		{
-			m_write_toggle = 0;
-			m_ppu_scroll = value;
-			// clear low bits
-			m_ppu_full_scroll &= 0xFF00;
-			// set low bits
-			m_ppu_full_scroll |= m_ppu_addr;
-		}
-	}
 
 	uint8_t GetOAMData();
 	void SetOAMData(const uint8_t value);
@@ -154,7 +126,7 @@ public:
 		m_reg_status.Register = value;
 	}
 
-	PPUMaskRegister GetMaskRegister()
+	PPUMaskRegister GetMaskRegister() const
 	{
 		return m_reg_ppu_mask;
 	}
@@ -173,6 +145,10 @@ public:
 	{
 		m_reg_ppu_control.Register = value;
 	}
+
+	PPUScrollRegister& GetTempVram() { return m_temp_vram; }
+	PPUScrollRegister& GetCurrentVram() { return m_current_vram; }
+	void MoveTempVramToCurrent() { m_current_vram = m_temp_vram; }
 private:
 	void SetFrameReady(const bool frame_ready) { m_frame_ready = frame_ready; }
 	
@@ -199,15 +175,7 @@ private:
 	PPUMaskRegister m_reg_ppu_mask;
 	PPUStatusRegister m_reg_status;
 	uint8_t m_reg_oam_addr = 0x00;
-	uint8_t m_ppu_scroll = 0x00;
-	uint16_t m_ppu_full_scroll = 0x0000;
-	uint8_t m_ppu_addr = 0x00;
-	uint16_t m_ppu_full_addr = 0x0000;
 	uint8_t m_ppu_data = 0x00;
-	// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUADDR
-	// determines if writing high bit or low bit
-	// to 0x2005 and 0x2006
-	uint8_t m_write_toggle = 0x00;
 	bool m_cpu_nmi = false;
 	// https://wiki.nesdev.com/w/index.php/PPU_frame_timing#Even.2FOdd_Frames
 	bool m_even_frame = true;
@@ -215,6 +183,12 @@ private:
 	int cycles = 0;
 	// scanlines rendered this frame
 	int scanlines = 0;
+
+	// https://wiki.nesdev.com/w/index.php/PPU_scrolling#PPU_internal_registers
+	PPUScrollRegister m_temp_vram;
+	PPUScrollRegister m_current_vram;
+	uint8_t m_fine_x = 0x00;
+	uint8_t m_write_toggle = 0x00;
 
 	// ppu has "filled the frame buffer"
 	bool m_frame_ready = false;

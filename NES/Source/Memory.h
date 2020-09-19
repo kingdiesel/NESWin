@@ -21,7 +21,9 @@ public:
 	// helper function when we read two bytes in a row
 	// to construct a memory address
 	uint16_t CPUReadShort(const uint16_t position) const;
-	const uint8_t* GetOAM() const { return m_object_attribute_memory; }
+	const uint8_t* GetPrimaryOAM() const { return m_primary_oam; }
+	uint8_t* GetSeconaryOAM() { return m_secondary_oam; }
+	void ClearSecondaryOAM();
 	
 	ROM &GetROM()
 	{
@@ -41,7 +43,13 @@ private:
 	uint8_t* m_ppu_ram_buffer = nullptr;
 	uint8_t m_palette_buffer[32];
 	//	https://wiki.nesdev.com/w/index.php/PPU_OAM
-	uint8_t m_object_attribute_memory[256];
+	uint8_t m_primary_oam[256];
+	uint8_t m_secondary_oam[64];
+
+	//	https://wiki.nesdev.com/w/index.php/PPU_rendering#Preface
+	uint16_t m_bkgd_pattern_registers[2];
+	uint8_t m_bkgd_palette_registers[2];
+	
 	mutable uint8_t m_controller_poll = 0;
 };
 

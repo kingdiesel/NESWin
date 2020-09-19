@@ -18,7 +18,8 @@ Memory::Memory()
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
 	memset(m_ppu_ram_buffer, 0x00, 16 * 1024);
 	memset(m_palette_buffer, 0x00, 32);
-	memset(m_object_attribute_memory, 0x00, 256);
+	memset(m_primary_oam, 0x00, 256);
+	memset(m_secondary_oam, 0x00, 64);
 }
 
 uint8_t Memory::CPUReadByte(const uint16_t position) const
@@ -73,13 +74,23 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 			case 0x2004:
 				return ppu.GetOAMData();
 			case 0x2005:
-				// TODO: how does this work with latching
-				return ppu.GetScroll();
+				return 0;
 			case 0x2006:
-				// TODO: how does this work with latching
-				return ppu.GetAddress();
+				return 0;
 			case 0x2007:
-				return ppu.GetData();
+			{
+				// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUDATA
+				uint8_t data = ppu.GetData();
+				PPUScrollRegister& current_vram = ppu.GetCurrentVram();
+				ppu.SetData(PPUReadByte(current_vram.Register));
+				if (current_vram.Register >= 0x3F00)
+				{
+					data = ppu.GetData();
+				}
+				
+				current_vram.Register += (ppu.GetControlRegister().Bits.m_vram_add ? 32 : 1);
+				return data;
+			}
 			default:
 				assert(false);
 		}
@@ -149,6 +160,11 @@ uint16_t Memory::CPUReadShort(const uint16_t position) const
 	return return_value;
 }
 
+void Memory::ClearSecondaryOAM()
+{
+	memset(m_secondary_oam, 0x00, 64);
+}
+
 void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 {
 /*
@@ -174,8 +190,13 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 		switch (mirrored_position)
 		{
 		case 0x2000:
+		{
+			PPUScrollRegister& temp_vram = ppu.GetTempVram();
 			ppu.SetControlRegister(value);
-			break;
+			temp_vram.Bits.m_nametable_x = ppu.GetControlRegister().Bits.m_nametable_x;
+			temp_vram.Bits.m_nametable_y = ppu.GetControlRegister().Bits.m_nametable_y;
+		}
+		break;
 		case 0x2001:
 			ppu.SetMaskRegister(value);
 			break;
@@ -189,14 +210,50 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 			ppu.SetOAMData(value);
 			break;
 		case 0x2005:
-			ppu.SetScroll(value);
-			break;
+		{
+			// https://wiki.nesdev.com/w/index.php/PPU_scrolling#.242005_first_write_.28w_is_0.29
+			PPUScrollRegister& temp_vram = ppu.GetTempVram();
+			if (ppu.GetWriteToggle() == 0)
+			{
+
+				ppu.SetFineX(value & 0x07);
+				temp_vram.Bits.m_coarse_x = value >> 3;
+				ppu.SetWriteToggle(1);
+			}
+			else
+			{
+				temp_vram.Bits.m_fine_y = value & 0x07;
+				temp_vram.Bits.m_coarse_y = value >> 3;
+				ppu.SetWriteToggle(0);
+			}
+		}
+		break;
 		case 0x2006:
-			ppu.SetAddress(value);
-			break;
+		{
+			// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUADDR
+			PPUScrollRegister& temp_vram = ppu.GetTempVram();
+			if (ppu.GetWriteToggle() == 0)
+			{
+				temp_vram.Register = (uint16_t)((value & 0x3F) << 8) | (temp_vram.Register & 0x00FF);
+				ppu.SetWriteToggle(1);
+			}
+			else
+			{
+				temp_vram.Register = (temp_vram.Register & 0xFF00) | value;
+				ppu.MoveTempVramToCurrent();
+				ppu.SetWriteToggle(0);
+
+			}
+		}
+		break;
 		case 0x2007:
-			ppu.SetData(value);
-			break;
+		{
+			// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUDATA
+			PPUScrollRegister& current_vram = ppu.GetCurrentVram();
+			PPUWriteByte(current_vram.Register, value);
+			current_vram.Register += (ppu.GetControlRegister().Bits.m_vram_add ? 32 : 1);
+		}
+		break;
 		default:
 			assert(false);
 		}
@@ -398,13 +455,13 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 void Memory::PPUWriteOAM(const uint8_t index, const uint8_t value)
 {
 	assert(index >= 0 && index < 256);
-	m_object_attribute_memory[index] = value;
+	m_primary_oam[index] = value;
 }
 
 uint8_t Memory::PPUReadOAM(const uint8_t index)
 {
 	assert(index >= 0 && index < 256);
-	return m_object_attribute_memory[index];
+	return m_primary_oam[index];
 }
 
 void Memory::Reset()

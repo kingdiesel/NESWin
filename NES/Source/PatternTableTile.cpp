@@ -176,8 +176,7 @@ void PatternTableTile::GetTextureDataRow(int row, uint32_t* row_data, const Fill
 	for (int i = 1; i <= 3 && _data.m_palette_index != -1; ++i)
 	{
 		uint8_t color = memory.PPUReadByte(start_address + i - 1);
-		uint32_t palette_color = PaletteColors[color];
-		COLOR_PALETTE[i] = palette_color;
+		COLOR_PALETTE[i] = PaletteColors[color];
 	}
 
 	if (_data.m_flip_vertically)

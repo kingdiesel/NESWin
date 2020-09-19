@@ -31,14 +31,15 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/balloonfight.nes"
 	);
 
-	const int screen_scale = 1;
+	const bool debug = true;
+	const int screen_scale = debug ? 1 : 2;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
 	const int pattern_render_area_x = 128;
 	const int pattern_render_area_y = 256;
 	const int palette_height = 16;
-	const int window_x = pattern_render_area_x + nes_resolution_x + nes_resolution_x + nes_resolution_x;
-	const int window_y = pattern_render_area_y + nes_resolution_y;
+	const int window_x = debug ? pattern_render_area_x + nes_resolution_x + nes_resolution_x + nes_resolution_x : nes_resolution_x;
+	const int window_y = debug ? pattern_render_area_y + nes_resolution_y : nes_resolution_y;
 	const int fps = 60;
 	const int sdl_wait = static_cast<int>(1000.0f / (float)fps);
 	SDL_Window* window = nullptr;
@@ -224,38 +225,41 @@ int main(int argv, char** args)
 
 		//	bug if frame takes too long to render, need double buffer
 		SDL_RenderClear(renderer);
-
-		SDL_Rect pattern_rect;
-		pattern_rect.x = 0;
-		pattern_rect.y = 0;
-		pattern_rect.h = 256;
-		pattern_rect.w = 128;
-		SDL_RenderCopy(
-			renderer,
-			pattern_table.GetTexture(),
-			nullptr,
-			&pattern_rect
-		);
-		
-		for (int i = 0x3F00; i <= 0x3F1F; ++i)
+		if (debug)
 		{
-			static const int num_palettes = 0x3F1F - 0x3F00;
-			SDL_Rect palette_rect;
-			palette_rect.y = pattern_render_area_y;
-			palette_rect.h = palette_height;
-			palette_rect.w = pattern_render_area_x / num_palettes;
-			palette_rect.x = (i - 0x3F00) * palette_rect.w;
-			
-			uint8_t color = memory.PPUReadByte(i);
-			uint32_t palette_color = PaletteColors[color];
+			SDL_Rect pattern_rect;
+			pattern_rect.x = 0;
+			pattern_rect.y = 0;
+			pattern_rect.h = 256;
+			pattern_rect.w = 128;
+			SDL_RenderCopy(
+				renderer,
+				pattern_table.GetTexture(),
+				nullptr,
+				&pattern_rect
+			);
 
-			const uint8_t r = (palette_color & 0xFF0000) >> 16;
-			const uint8_t g = (palette_color & 0x00FF00) >> 8;
-			const uint8_t b = (palette_color & 0x0000FF);
-			const uint8_t a = 0xFF;
-			return_code = SDL_SetRenderDrawColor(renderer, r, g, b, a);
-			SDL_RenderFillRect(renderer, &palette_rect);
+			for (int i = 0x3F00; i <= 0x3F1F; ++i)
+			{
+				static const int num_palettes = 0x3F1F - 0x3F00;
+				SDL_Rect palette_rect;
+				palette_rect.y = pattern_render_area_y;
+				palette_rect.h = palette_height;
+				palette_rect.w = pattern_render_area_x / num_palettes;
+				palette_rect.x = (i - 0x3F00) * palette_rect.w;
+
+				uint8_t color = memory.PPUReadByte(i);
+				uint32_t palette_color = PaletteColors[color];
+
+				const uint8_t r = (palette_color & 0xFF0000) >> 16;
+				const uint8_t g = (palette_color & 0x00FF00) >> 8;
+				const uint8_t b = (palette_color & 0x0000FF);
+				const uint8_t a = 0xFF;
+				return_code = SDL_SetRenderDrawColor(renderer, r, g, b, a);
+				SDL_RenderFillRect(renderer, &palette_rect);
+			}
 		}
+		
 
 		if (l_pressed)
 		{
@@ -286,40 +290,43 @@ int main(int argv, char** args)
 			frame_buffer_data,
 			256 * sizeof(Uint32)
 		);
-		for (int i = 0; i < NUM_NAMETABLES; ++i)
+		if (debug)
 		{
-			SDL_Rect name_rect;
-			nametables[i]->Run();
-			name_rect.x = pattern_render_area_x + (nes_resolution_x * (i % 2));
-			name_rect.y = nes_resolution_y * (i / 2);
-			name_rect.h = nes_resolution_y;
-			name_rect.w = nes_resolution_x;
+			for (int i = 0; i < NUM_NAMETABLES; ++i)
+			{
+				SDL_Rect name_rect;
+				nametables[i]->Run();
+				name_rect.x = pattern_render_area_x + (nes_resolution_x * (i % 2));
+				name_rect.y = nes_resolution_y * (i / 2);
+				name_rect.h = nes_resolution_y;
+				name_rect.w = nes_resolution_x;
+				SDL_RenderCopy(
+					renderer,
+					nametables[i]->GetTexture(),
+					nullptr,
+					&name_rect
+				);
+			}
+
+			sprites.Run();
+			SDL_Rect sprites_rect;
+			sprites_rect.x = pattern_render_area_x + (nes_resolution_x * 2);
+			sprites_rect.y = 0;
+			sprites_rect.h = 240;
+			sprites_rect.w = 256;
 			SDL_RenderCopy(
 				renderer,
-				nametables[i]->GetTexture(),
+				sprites.GetTexture(),
 				nullptr,
-				&name_rect
+				&sprites_rect
 			);
 		}
 
-		sprites.Run();
-		SDL_Rect sprites_rect;
-		sprites_rect.x = pattern_render_area_x + (nes_resolution_x * 2);
-		sprites_rect.y = 0;
-		sprites_rect.h = 240;
-		sprites_rect.w = 256;
-		SDL_RenderCopy(
-			renderer,
-			sprites.GetTexture(),
-			nullptr,
-			&sprites_rect
-		);
-
 		SDL_Rect frame_buffer_rect;
-		frame_buffer_rect.x = pattern_render_area_x + (nes_resolution_x * 2);
-		frame_buffer_rect.y = 240;
-		frame_buffer_rect.h = 240;
-		frame_buffer_rect.w = 256;
+		frame_buffer_rect.x = debug ? pattern_render_area_x + (nes_resolution_x * 2) :0;
+		frame_buffer_rect.y = debug ? 240 : 0;
+		frame_buffer_rect.h = debug ? 240 : window_y * screen_scale;
+		frame_buffer_rect.w = debug ? 256 : window_x * screen_scale;
 		SDL_RenderCopy(
 			renderer,
 			frame_buffer,
@@ -346,7 +353,7 @@ int main(int argv, char** args)
 			draw_lines = false;
 		}
 
-		if (draw_lines)
+		if (debug && draw_lines)
 		{
 			int grid_width = 256 / max_x;
 			int grid_height = 256 / max_y;
