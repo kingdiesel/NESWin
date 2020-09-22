@@ -20,15 +20,15 @@ int main(int argv, char** args)
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
 	NESConsole::GetInstance()->LoadROM(
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/cpu_timing_test.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/branch_basics.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/backward_branch.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/forward_branch.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/color_test.nes"
-		"C:/Users/aspiv/source/repos/NES/NES/TestRoms/dk.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/iceclimber.nes"
-		//"C:/Users/aspiv/source/repos/NES/NES/TestRoms/balloonfight.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_timing_test.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/branch_basics.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/backward_branch.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/forward_branch.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/color_test.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"
 	);
 
 	const bool debug = true;
