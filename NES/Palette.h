@@ -1,8 +1,7 @@
 #pragma once
 #include <cstdint>
 
-// did not feel like typing these out, so stolen from
-// https://emudev.de/nes-emulator/palettes-attribute-tables-and-sprites/
+// http://www.thealmightyguru.com/Games/Hacking/Wiki/index.php/NES_Palette
 static uint32_t PaletteColors[64] = {
         0x7C7C7C, 
         0x0000FC, 

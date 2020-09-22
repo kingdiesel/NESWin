@@ -362,10 +362,10 @@ int main(int argv, char** args)
 			{
 				SDL_RenderDrawLine(
 					renderer,
-					pattern_render_area_x + (i * grid_width),
-					0,
-					pattern_render_area_x + (i * grid_width),
-					240
+					(nes_resolution_x * 2) + pattern_render_area_x + (i * grid_width),
+					nes_resolution_y,
+					(nes_resolution_x * 2) + pattern_render_area_x + (i * grid_width),
+					nes_resolution_y * 2
 				);
 			}
 
@@ -373,10 +373,10 @@ int main(int argv, char** args)
 			{
 				SDL_RenderDrawLine(
 					renderer,
-					pattern_render_area_x,
-					i * grid_height,
-					pattern_render_area_x + 256,
-					i * grid_height
+					(nes_resolution_x * 2) + pattern_render_area_x,
+					nes_resolution_y + i * grid_height,
+					(nes_resolution_x * 2) + pattern_render_area_x + 256,
+					nes_resolution_y + i * grid_height
 				);
 			}
 		}

@@ -47,9 +47,9 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 		switch (mirrored_position)
 		{
 			case 0x2000:
-				return ppu.GetControlRegister().Register;
+				return 0;
 			case 0x2001:
-				return ppu.GetMaskRegister().Register;
+				return 0;
 			case 0x2002:
 			{
 				// https://wiki.nesdev.com/w/index.php/PPU_scrolling#.242002_read
@@ -67,10 +67,10 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 				ppu.SetStatusRegister(register_value & 0x80);
 
 				// return cached value with those bits still set?
-				return register_value;
+				return (register_value & 0xE0) | (ppu.GetData() & 0x1F);
 			}
 			case 0x2003:
-				return ppu.GetOAMAddress();
+				return 0;
 			case 0x2004:
 				return ppu.GetOAMData();
 			case 0x2005:
@@ -146,6 +146,7 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 	}
 	std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 				<< position << std::endl;
+	assert(false);
 	exit(1);
 	return 0;
 }
@@ -272,8 +273,12 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 		}
 		else if (position == 0x4014)
 		{
-			PPU& ppu = NESConsole::GetInstance()->GetPPU();
-			ppu.SetOAMDMA(value);
+			//PPU& ppu = NESConsole::GetInstance()->GetPPU();
+			//ppu.SetOAMDMA(value);
+			// A write to this address initiates a DMA transfer
+			NESConsole::GetInstance()->SetDmaPage(value);
+			NESConsole::GetInstance()->SetDmaAddr(0x00);
+			NESConsole::GetInstance()->SetDmaTransfer(true);
 			// TODO: if this occurs, need to copy stuff
 			// to sprite memory
 			// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
@@ -294,6 +299,7 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 	{
 		std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 			<< position << std::endl;
+		assert(false);
 		exit(1);
 	}
 }
@@ -314,8 +320,9 @@ bool IsBackgroundFallthrough(const uint16_t position)
 	return false;
 }
 
-uint8_t Memory::PPUReadByte(const uint16_t position) const
+uint8_t Memory::PPUReadByte(uint16_t position) const
 {
+	//position &= 0x3FFF;
 	/*
 		$0000-$0FFF	$1000	Pattern table 0
 		$1000-$1FFF	$1000	Pattern table 1
@@ -372,6 +379,7 @@ uint8_t Memory::PPUReadByte(const uint16_t position) const
 	{
 		std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 			<< position << std::endl;
+		assert(false);
 		exit(1);
 	}
 	return 0;
@@ -388,8 +396,9 @@ const uint8_t* Memory::PPUGetRawPtr(const uint16_t position) const
 	return nullptr;
 }
 
-void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
+void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 {
+	//position &= 0x3FFF;
 	/*
 		$0000-$0FFF	$1000	Pattern table 0
 		$1000-$1FFF	$1000	Pattern table 1
@@ -448,6 +457,7 @@ void Memory::PPUWriteByte(const uint16_t position, uint8_t value)
 	{
 		std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 			<< position << std::endl;
+		assert(false);
 		exit(1);
 	}
 }

@@ -11,9 +11,9 @@ public:
 	uint8_t CPUReadByte(const uint16_t position) const;
 	void CPUWriteByte(const uint16_t position, uint8_t value);
 	
-	uint8_t PPUReadByte(const uint16_t position) const;
+	uint8_t PPUReadByte(uint16_t position) const;
 	const uint8_t* PPUGetRawPtr(const uint16_t position) const;
-	void PPUWriteByte(const uint16_t position, uint8_t value);
+	void PPUWriteByte(uint16_t position, uint8_t value);
 
 	void PPUWriteOAM(const uint8_t index, const uint8_t value);
 	uint8_t PPUReadOAM(const uint8_t index);
@@ -21,7 +21,7 @@ public:
 	// helper function when we read two bytes in a row
 	// to construct a memory address
 	uint16_t CPUReadShort(const uint16_t position) const;
-	const uint8_t* GetPrimaryOAM() const { return m_primary_oam; }
+	uint8_t* GetPrimaryOAM() { return m_primary_oam; }
 	uint8_t* GetSeconaryOAM() { return m_secondary_oam; }
 	void ClearSecondaryOAM();
 	
@@ -46,10 +46,6 @@ private:
 	uint8_t m_primary_oam[256];
 	uint8_t m_secondary_oam[64];
 
-	//	https://wiki.nesdev.com/w/index.php/PPU_rendering#Preface
-	uint16_t m_bkgd_pattern_registers[2];
-	uint8_t m_bkgd_palette_registers[2];
-	
 	mutable uint8_t m_controller_poll = 0;
 };
 

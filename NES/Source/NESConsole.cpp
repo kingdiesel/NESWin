@@ -34,6 +34,89 @@ void NESConsole::PowerUp()
 
 void NESConsole::Run()
 {
+	while (!GetPPU().GetFrameReady())
+	{
+		// Clocking. The heart and soul of an emulator. The running
+		// frequency is controlled by whatever calls this function.
+		// So here we "divide" the clock as necessary and call
+		// the peripheral devices clock() function at the correct
+		// times.
+
+		// The fastest clock frequency the digital system cares
+		// about is equivalent to the PPU clock. So the PPU is clocked
+		// each time this function is called...
+		m_ppu.Run();
+
+		// The CPU runs 3 times slower than the PPU so we only call its
+		// clock() function every 3 times this function is called. We
+		// have a global counter to keep track of this.
+		if (cycles % 3 == 0)
+		{
+			// Is the system performing a DMA transfer form CPU memory to 
+			// OAM memory on PPU?...
+			if (dma_transfer)
+			{
+				// ...Yes! We need to wait until the next even CPU clock cycle
+				// before it starts...
+				if (dma_dummy)
+				{
+					// ...So hang around in here each clock until 1 or 2 cycles
+					// have elapsed...
+					if (cycles % 2 == 1)
+					{
+						// ...and finally allow DMA to start
+						dma_dummy = false;
+					}
+				}
+				else
+				{
+					// DMA can take place!
+					if (cycles % 2 == 0)
+					{
+						// On even clock cycles, read from CPU bus
+						m_dma_data = m_memory.CPUReadByte(m_dma_page << 8 | m_dma_addr);
+					}
+					else
+					{
+						// On odd clock cycles, write to PPU OAM
+						m_memory.GetPrimaryOAM()[m_dma_addr] = m_dma_data;
+						//ppu.pOAM[m_dma_addr] = m_dma_data;
+						// Increment the lo byte of the address
+						m_dma_addr++;
+						// If this wraps around, we know that 256
+						// bytes have been written, so end the DMA
+						// transfer, and proceed as normal
+						if (m_dma_addr == 0x00)
+						{
+							dma_transfer = false;
+							dma_dummy = true;
+						}
+					}
+				}
+			}
+			else
+			{
+				// No DMA happening, the CPU is in control of its
+				// own destiny. Go forth my friend and calculate
+				// awesomeness for many generations to come...
+				m_cpu->Run();
+			}
+		}
+		cycles++;
+	}
+	// The PPU is capable of emitting an interrupt to indicate the
+	// vertical blanking period has been entered. If it has, we need
+	// to send that irq to the CPU.
+	//if (ppu.nmi)
+	//{
+	//	ppu.nmi = false;
+	//	cpu.nmi();
+	//}
+	
+	// Check if cartridge is requesting IRQ
+	//cycles++;
+	GetPPU().ResetFrameReady();
+#if 0
 	int cycles = 0;
 	const int current_cpu_cycles = GetCPU().GetCycles();
 	while (!GetPPU().GetFrameReady())
@@ -51,6 +134,7 @@ void NESConsole::Run()
 	const int achieved_cycles = GetCPU().GetCycles() - current_cpu_cycles;
 	//std::cout << achieved_cycles << std::endl;
 	GetPPU().ResetFrameReady();
+#endif
 }
 
 const ROM &NESConsole::GetROM() const

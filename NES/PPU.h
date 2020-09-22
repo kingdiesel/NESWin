@@ -190,6 +190,37 @@ private:
 	uint8_t m_fine_x = 0x00;
 	uint8_t m_write_toggle = 0x00;
 
+	// more internal registers
+	// https://wiki.nesdev.com/w/index.php/PPU_rendering#Preface
+	// 2 16-bit shift registers - These contain the pattern table data 
+	// for two tiles. Every 8 cycles, the data for the next tile is 
+	// loaded into the upper 8 bits of this shift register. 
+	// Meanwhile, the pixel to render is fetched from one of the lower 8 bits.
+	uint16_t m_shift_pattern_bkgd[2] = { 0 };
+	uint8_t m_next_tile_high = 0;
+	uint8_t m_next_tile_low = 0;
+	uint8_t m_next_tile_id = 0;
+
+	// 2 8 - bit shift registers - These contain the palette attributes 
+	// for the lower 8 pixels of the 16 - bit shift register.These 
+	// registers are fed by a latch which contains the palette attribute 
+	// for the next tile.Every 8 cycles, the latch is loaded with the 
+	// palette attribute for the next tile.
+	uint16_t m_shift_attribute[2] = { 0 };
+	uint8_t m_next_tile_attrubte = 0;
+
+	// 8 pairs of 8-bit shift registers - These contain the pattern table 
+	// data for up to 8 sprites, to be rendered on the current scanline. 
+	// Unused sprites are loaded with an all-transparent set of values.
+	uint8_t m_shifter_pattern_sprite_low[8];
+	uint8_t m_shifter_pattern_sprite_high[8];
+
+	bool m_possible_sprite_zero_hit = false;
+	bool m_sprite_zero_rendered = false;
+
+	uint8_t m_active_sprites = 0;
+
+
 	// ppu has "filled the frame buffer"
 	bool m_frame_ready = false;
 
