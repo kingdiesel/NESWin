@@ -144,12 +144,13 @@ const ROM &NESConsole::GetROM() const
 
 void NESConsole::RunNesTestTiming()
 {
-	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
+	Initialize();
+	LoadROM("C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes");
 	m_cpu->PowerUp();
 	m_cpu->SetRegisterProgramCounter(0xC000);
 	m_cpu->SetLoggingEnabled(false);
 	auto t1 = std::chrono::high_resolution_clock::now();
-	int times = 1000;
+	int times = 10000;
 	int cycles = 0;
 	while (times != 0)
 	{
@@ -170,14 +171,15 @@ void NESConsole::RunNesTestTiming()
 
 bool NESConsole::RunNesTest()
 {
-	std::ifstream myfile("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest_out.txt");
+	Initialize();
+	std::ifstream myfile("C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest_out.txt");
 	std::string line;
 	while (std::getline(myfile, line))
 	{
 		m_nestest_log.push_back(line);
 	}
 
-	LoadROM("C:/Users/aspiv/source/repos/NES/NES/TestRoms/nestest.nes");
+	LoadROM("C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes");
 	m_cpu->PowerUp();
 	// Start execution at $C000 to run "all tests", these will generate log output
 	// that will be compared to a working emulator
