@@ -251,6 +251,7 @@ void PPU::Run()
 
 		if (scanlines == -1 && cycles == 1)
 		{
+			memset(m_frame_buffer_data, 0x00, 256 * 240 * sizeof(uint32_t));
 			// Effectively start of new frame, so clear vertical blank flag
 			m_reg_status.Bits.m_vertical_blank_started = 0;
 
@@ -883,7 +884,7 @@ void PPU::Run()
 	//sprScreen.SetPixel(cycle - 1, scanline, GetColourFromPaletteRam(palette, pixel));
 	if (cycles >= 0 && cycles < 256 && scanlines < 240 && scanlines >= 0)
 	{
-		const int index = cycles + (scanlines * 256);
+		const int index = (cycles) + (scanlines * 256);
 		assert(index >= 0 && index < 256 * 240);
 		assert(pixel >= 0 && pixel < 4);
 		//m_frame_buffer_data[index] = COLOR_PALETTE[pixel];
@@ -1117,6 +1118,11 @@ void PPU::SetOAMDMA(const uint8_t value)
 	{
 		memory.PPUWriteOAM(i - start_address, memory.CPUReadByte(i));
 	}
+}
+
+void PPU::ResetFrameReady()
+{
+	m_frame_ready = false;
 }
 
 uint8_t PPU::GetOAMData()

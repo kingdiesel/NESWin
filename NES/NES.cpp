@@ -20,18 +20,18 @@ int main(int argv, char** args)
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
 	NESConsole::GetInstance()->LoadROM(
-		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_timing_test.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/branch_basics.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/backward_branch.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/forward_branch.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/color_test.nes"
-		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"
 	);
 
-	const bool debug = true;
+#define debug true
 	const int screen_scale = debug ? 1 : 2;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
@@ -83,6 +83,7 @@ int main(int argv, char** args)
 	PPU& ppu = NESConsole::GetInstance()->GetPPU();
 	// Pattern tables
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
+#if debug
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
 	ppu.SetPatternTable(&pattern_table);
@@ -97,6 +98,7 @@ int main(int argv, char** args)
 		nametables[i] = new Nametable(0x2000 + (1024 * i), &pattern_table);
 		nametables[i]->Initialize(renderer);
 	}
+#endif
 	//  $0000-$0FFF, nicknamed "left" 0 - 4095
 	//	$1000-$1FFF, nicknamed "right" 4096 - 8191
 
@@ -225,7 +227,7 @@ int main(int argv, char** args)
 
 		//	bug if frame takes too long to render, need double buffer
 		SDL_RenderClear(renderer);
-		if (debug)
+#if debug
 		{
 			SDL_Rect pattern_rect;
 			pattern_rect.x = 0;
@@ -259,7 +261,7 @@ int main(int argv, char** args)
 				SDL_RenderFillRect(renderer, &palette_rect);
 			}
 		}
-		
+#endif
 
 		if (l_pressed)
 		{
@@ -290,7 +292,7 @@ int main(int argv, char** args)
 			frame_buffer_data,
 			256 * sizeof(Uint32)
 		);
-		if (debug)
+#if debug
 		{
 			for (int i = 0; i < NUM_NAMETABLES; ++i)
 			{
@@ -321,7 +323,7 @@ int main(int argv, char** args)
 				&sprites_rect
 			);
 		}
-
+#endif
 		SDL_Rect frame_buffer_rect;
 		frame_buffer_rect.x = debug ? pattern_render_area_x + (nes_resolution_x * 2) :0;
 		frame_buffer_rect.y = debug ? 240 : 0;

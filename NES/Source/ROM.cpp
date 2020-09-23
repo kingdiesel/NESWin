@@ -82,8 +82,7 @@ uint16_t ROM::GetMappedPosition(const uint16_t position) const
 			}
 			else
 			{
-				// 32k not implemented yet
-				assert(false);
+				return position - 0x8000;
 			}
 		}
 		return position;

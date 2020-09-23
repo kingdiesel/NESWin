@@ -101,7 +101,7 @@ public:
 
 	
 	bool GetFrameReady() const { return m_frame_ready; }
-	void ResetFrameReady() { m_frame_ready = false; }
+	void ResetFrameReady();
 
 	uint8_t GetOAMData();
 	void SetOAMData(const uint8_t value);
