@@ -4,6 +4,7 @@
 #include "Source/PatternTableTile.h"
 #include <cassert>
 #include "Palette.h"
+#include <iostream>
 
 PPU::PPU()
 {
@@ -165,16 +166,16 @@ void PPU::Run()
 		// the required bit is always the MSB of the shifter. However, "fine x" scrolling
 		// plays a part in this too, whcih is seen later, so in fact we can choose
 		// any one of the top 8 bits.
-		m_shift_pattern_bkgd[0] = (m_shift_pattern_bkgd[0] & 0xFF00) | m_next_tile_low;
-		m_shift_pattern_bkgd[1] = (m_shift_pattern_bkgd[0] & 0xFF00) | m_next_tile_high;
+		m_bg_shifter_pattern_lo = (m_bg_shifter_pattern_lo & 0xFF00) | m_bg_next_tile_lsb;
+		m_bg_shifter_pattern_hi = (m_bg_shifter_pattern_hi & 0xFF00) | m_bg_next_tile_msb;
 
 		// Attribute bits do not change per pixel, rather they change every 8 pixels
 		// but are synchronised with the pattern shifters for convenience, so here
 		// we take the bottom 2 bits of the attribute word which represent which 
 		// palette is being used for the current 8 pixels and the next 8 pixels, and 
 		// "inflate" them to 8 bit words.
-		m_shift_attribute[0] = (m_shift_attribute[0] & 0xFF00) | ((m_next_tile_attrubte & 0b01) ? 0xFF : 0x00);
-		m_shift_attribute[1] = (m_shift_attribute[1] & 0xFF00) | ((m_next_tile_attrubte & 0b10) ? 0xFF : 0x00);
+		m_bg_shifter_attrib_lo = (m_bg_shifter_attrib_lo & 0xFF00) | ((m_bg_next_tile_attrib & 0b01) ? 0xFF : 0x00);
+		m_bg_shifter_attrib_hi = (m_bg_shifter_attrib_hi & 0xFF00) | ((m_bg_next_tile_attrib & 0b10) ? 0xFF : 0x00);
 	};
 
 	// ==============================================================================
@@ -187,12 +188,12 @@ void PPU::Run()
 		if (GetMaskRegister().Bits.m_show_bkgrnd == 1)
 		{
 			// Shifting background tile pattern row
-			m_shift_pattern_bkgd[0] <<= 1;
-			m_shift_pattern_bkgd[1] <<= 1;
+			m_bg_shifter_pattern_lo <<= 1;
+			m_bg_shifter_pattern_hi <<= 1;
 
 			// Shifting palette attributes by 1
-			m_shift_attribute[0] <<= 1;
-			m_shift_attribute[1] <<= 1;
+			m_bg_shifter_attrib_lo <<= 1;
+			m_bg_shifter_attrib_hi <<= 1;
 		}
 
 		if (GetMaskRegister().Bits.m_show_sprites == 1 && cycles >= 1 && cycles < 258)
@@ -251,7 +252,6 @@ void PPU::Run()
 
 		if (scanlines == -1 && cycles == 1)
 		{
-			memset(m_frame_buffer_data, 0x00, 256 * 240 * sizeof(uint32_t));
 			// Effectively start of new frame, so clear vertical blank flag
 			m_reg_status.Bits.m_vertical_blank_started = 0;
 
@@ -291,8 +291,7 @@ void PPU::Run()
 				// Fetch the next background tile ID
 				// "(vram_addr.reg & 0x0FFF)" : Mask to 12 bits that are relevant
 				// "| 0x2000"                 : Offset into nametable space on PPU address bus
-				m_next_tile_id = 
-					memory.PPUReadByte(0x2000 | (m_current_vram.Register & 0x0FFF));
+				m_bg_next_tile_id = memory.PPUReadByte(0x2000 | (m_current_vram.Register & 0x0FFF));
 
 				// Explanation:
 				// The bottom 12 bits of the loopy register provide an index into
@@ -359,8 +358,7 @@ void PPU::Run()
 				// All attribute memory begins at 0x03C0 within a nametable, so OR with
 				// result to select target nametable, and attribute byte offset. Finally
 				// OR with 0x2000 to offset into nametable address space on PPU bus.				
-				m_next_tile_attrubte = memory.PPUReadByte(
-					0x23C0 | (m_current_vram.Bits.m_nametable_y << 11)
+				m_bg_next_tile_attrib = memory.PPUReadByte(0x23C0 | (m_current_vram.Bits.m_nametable_y << 11)
 					| (m_current_vram.Bits.m_nametable_x << 10)
 					| ((m_current_vram.Bits.m_coarse_y >> 2) << 3)
 					| (m_current_vram.Bits.m_coarse_x >> 2));
@@ -385,15 +383,9 @@ void PPU::Run()
 				// Likewise if "coarse x % 4" < 2 we are in the left half else right half.
 				// Ultimately we want the bottom two bits of our attribute word to be the
 				// palette selected. So shift as required...				
-				if (m_current_vram.Bits.m_coarse_y & 0x02)
-				{
-					m_next_tile_attrubte >>= 4;
-				}
-				if (m_current_vram.Bits.m_coarse_x & 0x02)
-				{
-					m_next_tile_attrubte >>= 2;
-				}
-				m_next_tile_attrubte &= 0x03;
+				if (m_current_vram.Bits.m_coarse_y & 0x02) m_bg_next_tile_attrib >>= 4;
+				if (m_current_vram.Bits.m_coarse_x & 0x02) m_bg_next_tile_attrib >>= 2;
+				m_bg_next_tile_attrib &= 0x03;
 				break;
 
 				// Compared to the last two, the next two are the easy ones... :P
@@ -419,18 +411,16 @@ void PPU::Run()
 				//                                         vertical scroll offset
 				// "+ 0"                                 : Mental clarity for plane offset
 				// Note: No PPU address bus offset required as it starts at 0x0000
-				m_next_tile_low = memory.PPUReadByte(
-					(GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
-					+ ((uint16_t)m_next_tile_id << 4)
+				m_bg_next_tile_lsb = memory.PPUReadByte((GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
+					+ ((uint16_t)m_bg_next_tile_id << 4)
 					+ (m_current_vram.Bits.m_fine_y) + 0);
 
 				break;
 			case 6:
 				// Fetch the next background tile MSB bit plane from the pattern memory
 				// This is the same as above, but has a +8 offset to select the next bit plane
-				m_next_tile_high = memory.PPUReadByte(
-					(GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
-					+ ((uint16_t)m_next_tile_id << 4)
+				m_bg_next_tile_msb = memory.PPUReadByte((GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
+					+ ((uint16_t)m_bg_next_tile_id << 4)
 					+ (m_current_vram.Bits.m_fine_y) + 8);
 				break;
 			case 7:
@@ -459,7 +449,7 @@ void PPU::Run()
 	// Superfluous reads of tile id at end of scanline
 	if (cycles == 338 || cycles == 340)
 	{
-		m_next_tile_id = memory.PPUReadByte(0x2000 | (m_current_vram.Register & 0x0FFF));
+		m_bg_next_tile_id = memory.PPUReadByte(0x2000 | (m_current_vram.Register & 0x0FFF));
 	}
 
 	if (scanlines == -1 && cycles >= 280 && cycles < 305)
@@ -732,15 +722,15 @@ void PPU::Run()
 
 			// Select Plane pixels by extracting from the shifter 
 			// at the required location. 
-			uint8_t p0_pixel = (m_shift_pattern_bkgd[0] & bit_mux) > 0;
-			uint8_t p1_pixel = (m_shift_pattern_bkgd[1] & bit_mux) > 0;
+			uint8_t p0_pixel = (m_bg_shifter_pattern_lo & bit_mux) > 0;
+			uint8_t p1_pixel = (m_bg_shifter_pattern_hi & bit_mux) > 0;
 
 			// Combine to form pixel index
 			bg_pixel = (p1_pixel << 1) | p0_pixel;
 
 			// Get palette
-			uint8_t bg_pal0 = (m_shift_attribute[0] & bit_mux) > 0;
-			uint8_t bg_pal1 = (m_shift_attribute[1] & bit_mux) > 0;
+			uint8_t bg_pal0 = (m_bg_shifter_attrib_lo & bit_mux) > 0;
+			uint8_t bg_pal1 = (m_bg_shifter_attrib_hi & bit_mux) > 0;
 			bg_palette = (bg_pal1 << 1) | bg_pal0;
 		}
 	}
@@ -879,17 +869,19 @@ void PPU::Run()
 		}
 	}
 
-	// Now we have a final pixel colour, and a palette for this cycle
-	// of the current scanline. Let's at long last, draw that ^&%*er :P
 	//sprScreen.SetPixel(cycle - 1, scanline, GetColourFromPaletteRam(palette, pixel));
 	if (cycles >= 0 && cycles < 256 && scanlines < 240 && scanlines >= 0)
 	{
 		const int index = (cycles) + (scanlines * 256);
 		assert(index >= 0 && index < 256 * 240);
 		assert(pixel >= 0 && pixel < 4);
+		static int pixel_counter[4] = { 0 };
+		pixel_counter[pixel]++;
 		//m_frame_buffer_data[index] = COLOR_PALETTE[pixel];
 		const int nes_palette_index = memory.PPUReadByte(0x3F00 + (palette << 2) + pixel) & 0x3F;
 		assert(nes_palette_index >= 0 && nes_palette_index < 64);
+		static int counter[64] = { 0 };
+		counter[nes_palette_index]++;
 		m_frame_buffer_data[index] = PaletteColors[nes_palette_index];
 	}
 		

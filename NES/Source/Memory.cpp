@@ -3,7 +3,7 @@
 #include <iomanip>
 #include "Memory.h"
 #include "NESConsole.h"
-
+const int ppu_ram_size = 16 * 1024;
 Memory::Memory()
 {
 	
@@ -13,10 +13,10 @@ Memory::Memory()
 
 	// The NES has 2KB of RAM dedicated to the PPU
 	// https://wiki.nesdev.com/w/index.php/PPU_memory_map
-	m_ppu_ram_buffer = new uint8_t[16 * 1024];
+	m_ppu_ram_buffer = new uint8_t[ppu_ram_size];
 	
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
-	memset(m_ppu_ram_buffer, 0x00, 16 * 1024);
+	memset(m_ppu_ram_buffer, 0x00, ppu_ram_size);
 	memset(m_palette_buffer, 0x00, 32);
 	memset(m_primary_oam, 0x00, 256);
 	memset(m_secondary_oam, 0x00, 64);
@@ -202,7 +202,6 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 			ppu.SetMaskRegister(value);
 			break;
 		case 0x2002:
-			ppu.SetStatusRegister(value);
 			break;
 		case 0x2003:
 			ppu.SetOAMAddress(value);
@@ -359,7 +358,7 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		{
 			assert(false);
 		}
-		assert(mirrored_position < 16 * 1024);
+		assert(mirrored_position >= 0 && mirrored_position < ppu_ram_size);
 		return m_ppu_ram_buffer[mirrored_position];
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
@@ -372,7 +371,7 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		if (position == 0x001C) position = 0x000C;
 		return m_palette_buffer[position] & ( ppu.GetMaskRegister().Bits.m_grayscale ? 0x30 : 0x3F);
 
-
+#if 0
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
 		const uint16_t mirrored_position = position & 0x3F1F;
 		if (IsBackgroundFallthrough(mirrored_position))
@@ -382,6 +381,7 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		return m_palette_buffer[shifted_down];
+#endif
 	}
 	else
 	{
@@ -398,6 +398,7 @@ const uint8_t* Memory::PPUGetRawPtr(const uint16_t position) const
 	if (position >= 0x2000 && position <= 0x3EFF)
 	{
 		const uint16_t mirrored_position = position & 0x2FFF;
+		assert(mirrored_position >= 0 && mirrored_position < ppu_ram_size);
 		return &m_ppu_ram_buffer[mirrored_position];
 	}
 	assert(false);
@@ -444,7 +445,7 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 		{
 			assert(false);
 		}
-		assert(mirrored_position < 16 * 1024);
+		assert(mirrored_position >=0 && mirrored_position < ppu_ram_size);
 		m_ppu_ram_buffer[mirrored_position] = value;
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
@@ -493,6 +494,6 @@ uint8_t Memory::PPUReadOAM(const uint8_t index)
 void Memory::Reset()
 {
 	memset(m_cpu_ram_buffer, 0x00, 2 * 1024);
-	memset(m_ppu_ram_buffer, 0x00, 16 * 1024);
+	memset(m_ppu_ram_buffer, 0x00, ppu_ram_size);
 	m_rom.Reset();
 }

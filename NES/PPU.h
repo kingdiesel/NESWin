@@ -196,6 +196,7 @@ private:
 	// for two tiles. Every 8 cycles, the data for the next tile is 
 	// loaded into the upper 8 bits of this shift register. 
 	// Meanwhile, the pixel to render is fetched from one of the lower 8 bits.
+#if 0
 	uint16_t m_shift_pattern_bkgd[2] = { 0 };
 	uint8_t m_next_tile_high = 0;
 	uint8_t m_next_tile_low = 0;
@@ -208,7 +209,15 @@ private:
 	// palette attribute for the next tile.
 	uint16_t m_shift_attribute[2] = { 0 };
 	uint8_t m_next_tile_attrubte = 0;
-
+#endif
+	uint8_t m_bg_next_tile_id = 0x00;
+	uint8_t m_bg_next_tile_attrib = 0x00;
+	uint8_t m_bg_next_tile_lsb = 0x00;
+	uint8_t m_bg_next_tile_msb = 0x00;
+	uint16_t m_bg_shifter_pattern_lo = 0x0000;
+	uint16_t m_bg_shifter_pattern_hi = 0x0000;
+	uint16_t m_bg_shifter_attrib_lo = 0x0000;
+	uint16_t m_bg_shifter_attrib_hi = 0x0000;
 	// 8 pairs of 8-bit shift registers - These contain the pattern table 
 	// data for up to 8 sprites, to be rendered on the current scanline. 
 	// Unused sprites are loaded with an all-transparent set of values.

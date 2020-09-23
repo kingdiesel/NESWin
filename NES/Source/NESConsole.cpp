@@ -79,6 +79,7 @@ void NESConsole::Run()
 					else
 					{
 						// On odd clock cycles, write to PPU OAM
+						assert(m_dma_addr >= 0 && m_dma_addr < 256);
 						m_memory.GetPrimaryOAM()[m_dma_addr] = m_dma_data;
 						//ppu.pOAM[m_dma_addr] = m_dma_data;
 						// Increment the lo byte of the address
@@ -104,17 +105,6 @@ void NESConsole::Run()
 		}
 		cycles++;
 	}
-	// The PPU is capable of emitting an interrupt to indicate the
-	// vertical blanking period has been entered. If it has, we need
-	// to send that irq to the CPU.
-	//if (ppu.nmi)
-	//{
-	//	ppu.nmi = false;
-	//	cpu.nmi();
-	//}
-	
-	// Check if cartridge is requesting IRQ
-	//cycles++;
 	GetPPU().ResetFrameReady();
 #if 0
 	int cycles = 0;
