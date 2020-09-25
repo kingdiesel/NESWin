@@ -39,30 +39,6 @@ void PPU::Run()
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 
 	// ==============================================================================
-	// Prime the "in-effect" background tile shifters ready for outputting next
-	// 8 pixels in scanline.
-	auto LoadBackgroundShifters = [&]()
-	{
-		// Each PPU update we calculate one pixel. These shifters shift 1 bit along
-		// feeding the pixel compositor with the binary information it needs. Its
-		// 16 bits wide, because the top 8 bits are the current 8 pixels being drawn
-		// and the bottom 8 bits are the next 8 pixels to be drawn. Naturally this means
-		// the required bit is always the MSB of the shifter. However, "fine x" scrolling
-		// plays a part in this too, whcih is seen later, so in fact we can choose
-		// any one of the top 8 bits.
-		m_bg_shifter_pattern_lo = (m_bg_shifter_pattern_lo & 0xFF00) | m_bg_next_tile_lsb;
-		m_bg_shifter_pattern_hi = (m_bg_shifter_pattern_hi & 0xFF00) | m_bg_next_tile_msb;
-
-		// Attribute bits do not change per pixel, rather they change every 8 pixels
-		// but are synchronised with the pattern shifters for convenience, so here
-		// we take the bottom 2 bits of the attribute word which represent which 
-		// palette is being used for the current 8 pixels and the next 8 pixels, and 
-		// "inflate" them to 8 bit words.
-		m_bg_shifter_attrib_lo = (m_bg_shifter_attrib_lo & 0xFF00) | ((m_bg_next_tile_attrib & 0b01) ? 0xFF : 0x00);
-		m_bg_shifter_attrib_hi = (m_bg_shifter_attrib_hi & 0xFF00) | ((m_bg_next_tile_attrib & 0b10) ? 0xFF : 0x00);
-	};
-
-	// ==============================================================================
 	// Every cycle the shifters storing pattern and attribute information shift
 	// their contents by 1 bit. This is because every cycle, the output progresses
 	// by 1 pixel. This means relatively, the state of the shifter is in sync
@@ -99,29 +75,6 @@ void PPU::Run()
 		}
 	};
 
-	// The PPU renders 262 scanlines per frame. Each scanline lasts for 
-	// 341 PPU clock cycles (113.667 CPU clock cycles; 1 CPU cycle = 3 PPU cycles), 
-	// with each clock cycle producing one pixel.
-	// (0 = $2000; 1 = $2400; 2 = $2800; 3 = $2C00)
-#if 0
-	uint16_t nametable_addr = 0x2000;
-	switch (GetControlRegister().Bits.m_base_nametable_addr)
-	{
-	case 1:
-		nametable_addr = 0x2400;
-		break;
-	case 2:
-		nametable_addr = 0x2800;
-		break;
-	case 3:
-		nametable_addr = 0x2C00;
-		break;
-	case 0:
-	default:
-		break;
-	}
-	const uint16_t attribute_addr = nametable_addr + 960;
-#endif
 	// All but 1 of the secanlines is visible to the user. The pre-render scanline
 	// at -1, is used to configure the "shifters" for the first visible scanline, 0.
 	if (scanlines >= -1 && scanlines < 240)
@@ -170,7 +123,7 @@ void PPU::Run()
 			{
 			case 0:
 				// Load the current background tile pattern and attributes into the "shifter"
-				LoadBackgroundShifters();
+				TransferLatchesToShiftRegisters();
 
 				// Fetch the next background tile ID
 				// "(vram_addr.reg & 0x0FFF)" : Mask to 12 bits that are relevant
@@ -327,7 +280,7 @@ void PPU::Run()
 	//...and reset the x position
 	if (cycles == 257)
 	{
-		LoadBackgroundShifters();
+		TransferLatchesToShiftRegisters();
 		// https://wiki.nesdev.com/w/index.php/PPU_scrolling#At_dot_257_of_each_scanline
 		// If rendering is enabled, the PPU copies all bits related to horizontal 
 		// position from t to v
@@ -997,6 +950,19 @@ void PPU::YIncrement()
 			}
 		}
 		}
+}
+
+void PPU::TransferLatchesToShiftRegisters()
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_rendering#Preface
+	// Every 8 cycles/shifts, new data is loaded into these registers.
+	// https://wiki.nesdev.com/w/index.php/PPU_rendering#Cycles_1-256
+	// The data fetched from these accesses is placed into internal latches, 
+	// and then fed to the appropriate shift registers when it's time to do so (every 8 cycles).
+	m_bg_shifter_pattern_lo = (m_bg_shifter_pattern_lo & 0xFF00) | m_bg_next_tile_lsb;
+	m_bg_shifter_pattern_hi = (m_bg_shifter_pattern_hi & 0xFF00) | m_bg_next_tile_msb;
+	m_bg_shifter_attrib_lo = (m_bg_shifter_attrib_lo & 0xFF00) | ((m_bg_next_tile_attrib & 0b01) ? 0xFF : 0x00);
+	m_bg_shifter_attrib_hi = (m_bg_shifter_attrib_hi & 0xFF00) | ((m_bg_next_tile_attrib & 0b10) ? 0xFF : 0x00);
 }
 
 uint8_t PPU::GetPaletteIndexFromAttributeByte(

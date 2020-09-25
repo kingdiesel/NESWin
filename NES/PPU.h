@@ -171,6 +171,7 @@ private:
 
 	void CoarseXIncrement();
 	void YIncrement();
+	void TransferLatchesToShiftRegisters();
 
 
 	// https://wiki.nesdev.com/w/index.php/PPU_registers
