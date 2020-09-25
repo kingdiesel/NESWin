@@ -37,6 +37,11 @@ void ROM::Load(const std::string &path)
 	m_prg_buffer = new uint8_t[m_prg_size];
 	std::memcpy(m_prg_buffer, &m_rom_buffer[HEADER_SIZE], m_prg_size);
 	m_chr_size = 8 * KB * m_header_data.chr_rom_size_8;
+	// chr ram
+	if (HasChrRam())
+	{
+		m_chr_size = 8 * KB;
+	}
 	m_chr_buffer = new uint8_t[m_chr_size];
 	std::memcpy(m_chr_buffer, &m_rom_buffer[HEADER_SIZE + m_prg_size], m_chr_size);
 }

@@ -4,20 +4,8 @@
 #include <assert.h>
 #include "SDL.h"
 static const int TILE_COUNT = 512;
-void PatternTable::Initialize(struct SDL_Renderer* renderer)
+void PatternTable::Run()
 {
-	assert(m_pattern_table_texture == nullptr);
-	assert(m_tiles == nullptr);
-	m_tiles = new PatternTableTile[TILE_COUNT];
-
-	m_pattern_table_texture = SDL_CreateTexture(
-		renderer,
-		SDL_PIXELFORMAT_ARGB8888,
-		SDL_TEXTUREACCESS_STATIC,
-		128,
-		256
-	);
-
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 
 	SDL_Rect dest_rect;
@@ -42,6 +30,21 @@ void PatternTable::Initialize(struct SDL_Renderer* renderer)
 			8 * sizeof(Uint32)
 		);
 	}
+}
+void PatternTable::Initialize(struct SDL_Renderer* renderer)
+{
+	assert(m_pattern_table_texture == nullptr);
+	assert(m_tiles == nullptr);
+	m_tiles = new PatternTableTile[TILE_COUNT];
+
+	m_pattern_table_texture = SDL_CreateTexture(
+		renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STATIC,
+		128,
+		256
+	);
+	Run();
 }
 
 PatternTableTile* PatternTable::GetTile(int index)

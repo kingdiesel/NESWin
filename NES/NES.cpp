@@ -21,13 +21,17 @@ int main(int argv, char** args)
 	NESConsole::GetInstance()->Initialize();
 	NESConsole::GetInstance()->LoadROM(
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/power_up_palette.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/sprite_ram.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/palette_ram.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_timing_test.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/branch_basics.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/backward_branch.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/forward_branch.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/color_test.nes"
-		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
-		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"
 	);
 
@@ -86,7 +90,6 @@ int main(int argv, char** args)
 #if debug
 	PatternTable pattern_table;
 	pattern_table.Initialize(renderer);
-	ppu.SetPatternTable(&pattern_table);
 	
 	Sprites sprites(&pattern_table);
 	sprites.Initialize(renderer);
@@ -308,6 +311,14 @@ int main(int argv, char** args)
 					nullptr,
 					&name_rect
 				);
+			}
+
+			// presence of chr ram indicates taht this memory is filled 
+			// and managed at run time, so it too needs an update call
+			// every frame
+			if (NESConsole::GetInstance()->GetROM().HasChrRam())
+			{
+				pattern_table.Run();
 			}
 
 			sprites.Run();

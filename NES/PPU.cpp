@@ -37,122 +37,6 @@ bool PPU::IsRenderingEnabled() const
 void PPU::Run()
 {
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
-	// ==============================================================================
-	// Increment the background tile "pointer" one tile/column horizontally
-	auto IncrementScrollX = [&]()
-	{
-		// Note: pixel perfect scrolling horizontally is handled by the 
-		// data shifters. Here we are operating in the spatial domain of 
-		// tiles, 8x8 pixel blocks.
-
-		// Ony if rendering is enabled
-		if (IsRenderingEnabled())
-		{
-			// A single name table is 32x30 tiles. As we increment horizontally
-			// we may cross into a neighbouring nametable, or wrap around to
-			// a neighbouring nametable
-			if (m_current_vram.Bits.m_coarse_x == 31)
-			{
-				// Leaving nametable so wrap address round
-				m_current_vram.Bits.m_coarse_x = 0;
-				// Flip target nametable bit
-				m_current_vram.Bits.m_nametable_x = ~m_current_vram.Bits.m_nametable_x;
-			}
-			else
-			{
-				// Staying in current nametable, so just increment
-				m_current_vram.Bits.m_coarse_x++;
-			}
-		}
-	};
-
-	// Increment the background tile "pointer" one scanline vertically
-	auto IncrementScrollY = [&]()
-	{
-		// Incrementing vertically is more complicated. The visible nametable
-		// is 32x30 tiles, but in memory there is enough room for 32x32 tiles.
-		// The bottom two rows of tiles are in fact not tiles at all, they
-		// contain the "attribute" information for the entire table. This is
-		// information that describes which palettes are used for different 
-		// regions of the nametable.
-
-		// In addition, the NES doesnt scroll vertically in chunks of 8 pixels
-		// i.e. the height of a tile, it can perform fine scrolling by using
-		// the fine_y component of the register. This means an increment in Y
-		// first adjusts the fine offset, but may need to adjust the whole
-		// row offset, since fine_y is a value 0 to 7, and a row is 8 pixels high
-
-		// Ony if rendering is enabled
-		if (IsRenderingEnabled())
-		{
-			// If possible, just increment the fine y offset
-			if (m_current_vram.Bits.m_fine_y < 7)
-			{
-				m_current_vram.Bits.m_fine_y++;
-			}
-			else
-			{
-				// If we have gone beyond the height of a row, we need to
-				// increment the row, potentially wrapping into neighbouring
-				// vertical nametables. Dont forget however, the bottom two rows
-				// do not contain tile information. The coarse y offset is used
-				// to identify which row of the nametable we want, and the fine
-				// y offset is the specific "scanline"
-
-				// Reset fine y offset
-				m_current_vram.Bits.m_fine_y = 0;
-
-				// Check if we need to swap vertical nametable targets
-				if (m_current_vram.Bits.m_coarse_y == 29)
-				{
-					// We do, so reset coarse y offset
-					m_current_vram.Bits.m_coarse_y = 0;
-					// And flip the target nametable bit
-					m_current_vram.Bits.m_nametable_y = ~m_current_vram.Bits.m_nametable_y;
-				}
-				else if (m_current_vram.Bits.m_coarse_y == 31)
-				{
-					// In case the pointer is in the attribute memory, we
-					// just wrap around the current nametable
-					m_current_vram.Bits.m_coarse_y = 0;
-				}
-				else
-				{
-					// None of the above boundary/wrapping conditions apply
-					// so just increment the coarse y offset
-					m_current_vram.Bits.m_coarse_y++;
-				}
-			}
-		}
-	};
-
-	// Transfer the temporarily stored horizontal nametable access information
-	// into the "pointer". Note that fine x scrolling is not part of the "pointer"
-	// addressing mechanism
-	auto TransferAddressX = [&]()
-	{
-		// Ony if rendering is enabled
-		if (IsRenderingEnabled())
-		{
-			m_current_vram.Bits.m_nametable_x = m_temp_vram.Bits.m_nametable_x;
-			m_current_vram.Bits.m_coarse_x = m_temp_vram.Bits.m_coarse_x;
-		}
-	};
-
-	// ==============================================================================
-	// Transfer the temporarily stored vertical nametable access information
-	// into the "pointer". Note that fine y scrolling is part of the "pointer"
-	// addressing mechanism
-	auto TransferAddressY = [&]()
-	{
-		// Ony if rendering is enabled
-		if (IsRenderingEnabled())
-		{
-			m_current_vram.Bits.m_fine_y = m_temp_vram.Bits.m_fine_y;
-			m_current_vram.Bits.m_nametable_y = m_temp_vram.Bits.m_nametable_y;
-			m_current_vram.Bits.m_coarse_y = m_temp_vram.Bits.m_coarse_y;
-		}
-	};
 
 	// ==============================================================================
 	// Prime the "in-effect" background tile shifters ready for outputting next
@@ -424,26 +308,34 @@ void PPU::Run()
 					+ (m_current_vram.Bits.m_fine_y) + 8);
 				break;
 			case 7:
-				// Increment the background tile "pointer" to the next tile horizontally
-				// in the nametable memory. Note this may cross nametable boundaries which
-				// is a little complex, but essential to implement scrolling
-				IncrementScrollX();
+				// https://wiki.nesdev.com/w/index.php/PPU_scrolling#Coarse_X_increment
+				// The coarse X component of v needs to be incremented when the 
+				// next tile is reached
+				CoarseXIncrement();
 				break;
 			}
 		}
 	}
 
-	// End of a visible scanline, so increment downwards...
+	// https://wiki.nesdev.com/w/index.php/PPU_scrolling#Y_increment
+	// If rendering is enabled, fine Y is incremented at dot 256 of each scanline
 	if (cycles == 256)
 	{
-		IncrementScrollY();
+		YIncrement();
 	}
 
 	//...and reset the x position
 	if (cycles == 257)
 	{
 		LoadBackgroundShifters();
-		TransferAddressX();
+		// https://wiki.nesdev.com/w/index.php/PPU_scrolling#At_dot_257_of_each_scanline
+		// If rendering is enabled, the PPU copies all bits related to horizontal 
+		// position from t to v
+		if (IsRenderingEnabled())
+		{
+			m_current_vram.Bits.m_nametable_x = m_temp_vram.Bits.m_nametable_x;
+			m_current_vram.Bits.m_coarse_x = m_temp_vram.Bits.m_coarse_x;
+		}
 	}
 
 	// Superfluous reads of tile id at end of scanline
@@ -454,8 +346,15 @@ void PPU::Run()
 
 	if (scanlines == -1 && cycles >= 280 && cycles < 305)
 	{
-		// End of vertical blank period so reset the Y address ready for rendering
-		TransferAddressY();
+		// https://wiki.nesdev.com/w/index.php/PPU_scrolling#During_dots_280_to_304_of_the_pre-render_scanline_.28end_of_vblank.29
+		// the PPU will repeatedly copy the vertical bits from 
+		// t to v from dots 280 to 304, completing the full initialization of v from t
+		if (IsRenderingEnabled())
+		{
+			m_current_vram.Bits.m_fine_y = m_temp_vram.Bits.m_fine_y;
+			m_current_vram.Bits.m_nametable_y = m_temp_vram.Bits.m_nametable_y;
+			m_current_vram.Bits.m_coarse_y = m_temp_vram.Bits.m_coarse_y;
+		}
 	}
 
 	// Foreground Rendering ========================================================
@@ -1044,6 +943,60 @@ Nametable::Quadrant PPU::GetQuadrantFromAttribyteByte(const int pixel_x, const i
 		quadrant = Nametable::Quadrant::TOP_RIGHT;
 	}
 	return quadrant;
+}
+
+void PPU::CoarseXIncrement()
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_scrolling#Coarse_X_increment
+	if (IsRenderingEnabled())
+	{
+		if (m_current_vram.Bits.m_coarse_x == 31)
+		{
+			m_current_vram.Bits.m_coarse_x = 0;
+			m_current_vram.Bits.m_nametable_x = ~m_current_vram.Bits.m_nametable_x;
+		}
+		else
+		{
+			m_current_vram.Bits.m_coarse_x += 1;
+		}
+	}
+}
+
+void PPU::YIncrement()
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_scrolling#Y_increment
+	if (IsRenderingEnabled())
+	{
+		// if fine y goes past 7, we need to 
+		// increment coarse y
+		if (m_current_vram.Bits.m_fine_y < 7)
+		{
+			m_current_vram.Bits.m_fine_y++;
+		}
+		else
+		{
+			// reset fine y to 0 on a coarse increment
+			m_current_vram.Bits.m_fine_y = 0;
+			// Row 29 is the last row of tiles in a 
+			// nametable. To wrap to the next nametable when 
+			// incrementing coarse Y from 29, the vertical nametable is 
+			// switched by toggling bit 11, and coarse Y wraps to row 0.
+			if (m_current_vram.Bits.m_coarse_y == 29)
+			{
+				m_current_vram.Bits.m_coarse_y = 0;
+				m_current_vram.Bits.m_nametable_y = ~m_current_vram.Bits.m_nametable_y;
+			}
+			else if (m_current_vram.Bits.m_coarse_y == 31)
+			{
+				// coarse y wrap around
+				m_current_vram.Bits.m_coarse_y = 0;
+			}
+			else
+			{
+				m_current_vram.Bits.m_coarse_y += 1;
+			}
+		}
+		}
 }
 
 uint8_t PPU::GetPaletteIndexFromAttributeByte(

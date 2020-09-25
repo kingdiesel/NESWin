@@ -68,7 +68,6 @@ public:
 	PPU();
 	void PowerUp();
 	void Reset();
-	void SetPatternTable(class PatternTable* pattern_table) { m_pattern_table = pattern_table; }
 	void ResetWriteToggle() { m_write_toggle = 0; }
 	const uint32_t* GetFrameBufferData() const { return m_frame_buffer_data; }
 	void Run();
@@ -170,6 +169,10 @@ private:
 		const uint8_t attribute_byte
 	);
 
+	void CoarseXIncrement();
+	void YIncrement();
+
+
 	// https://wiki.nesdev.com/w/index.php/PPU_registers
 	PPUControlRegister m_reg_ppu_control;
 	PPUMaskRegister m_reg_ppu_mask;
@@ -235,6 +238,5 @@ private:
 
 	uint32_t* m_frame_buffer_data = nullptr;
 
-	class PatternTable* m_pattern_table = nullptr;
 };
 

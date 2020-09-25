@@ -57,6 +57,7 @@ public:
 	uint8_t GetChrByte(const uint16_t position) const;
 	void SetChrByte(const uint16_t position, const uint8_t value);
 	void Reset();
+	bool HasChrRam() const { return m_header_data.chr_rom_size_8 == 0; }
 
 	const iNESHeader &GetHeaderData() const;
 
