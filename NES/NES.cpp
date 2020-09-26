@@ -30,6 +30,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/forward_branch.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/color_test.nes"
 		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/shadowgate.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"

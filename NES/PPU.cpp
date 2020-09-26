@@ -61,6 +61,7 @@ void PPU::Run()
 			uint8_t* secondary_oam = memory.GetSeconaryOAM();
 			for (int i = 0; i < m_active_sprites; i++)
 			{
+				assert(((i * 4) + 3) < 64);
 				uint8_t byte3 = secondary_oam[(i * 4) + 3];
 				if (byte3 > 0)
 				{
@@ -75,85 +76,44 @@ void PPU::Run()
 		}
 	};
 
-	// All but 1 of the secanlines is visible to the user. The pre-render scanline
-	// at -1, is used to configure the "shifters" for the first visible scanline, 0.
 	if (scanlines >= -1 && scanlines < 240)
 	{
-		// Background Rendering ======================================================
-
-		if (scanlines == 0 && cycles == 0 && !m_even_frame && IsRenderingEnabled())
+		// https://wiki.nesdev.com/w/index.php/PPU_frame_timing#Even.2FOdd_Frames
+		// With rendering enabled, each odd PPU frame is one PPU clock shorter than 
+		// normal. This is done by skipping the first idle tick on the first visible scanline
+		if (scanlines == 0 && cycles == 0 && !m_even_frame)
 		{
-			// "Odd Frame" cycle skip
-			cycles = 1;
+			if (IsRenderingEnabled())
+			{
+				cycles = 1;
+			}
 		}
 
+		// https://wiki.nesdev.com/w/index.php/PPU_rendering#Pre-render_scanline_.28-1_or_261.29
+		// This is a dummy scanline, whose sole purpose is to fill the shift registers with the data 
+		// for the first two tiles of the next scanline.
 		if (scanlines == -1 && cycles == 1)
 		{
-			// Effectively start of new frame, so clear vertical blank flag
 			m_reg_status.Bits.m_vertical_blank_started = 0;
-
-			// Clear sprite overflow flag
 			m_reg_status.Bits.m_sprite_overflow = 0;
-
-			// Clear the sprite zero hit flag
 			m_reg_status.Bits.m_sprite_zero_hit = 0;
-
-			// Clear Shifters
-			for (int i = 0; i < 8; i++)
-			{
-				m_shifter_pattern_sprite_low[i] = 0;
-				m_shifter_pattern_sprite_high[i] = 0;
-			}
+			memset(m_shifter_pattern_sprite_low, 0x0, 8);
+			memset(m_shifter_pattern_sprite_high, 0x0, 8);
 		}
 
 		if ((cycles >= 2 && cycles < 258) || (cycles >= 321 && cycles < 338))
 		{
 			UpdateShifters();
-
-
-			// In these cycles we are collecting and working with visible data
-			// The "shifters" have been preloaded by the end of the previous
-			// scanline with the data for the start of this scanline. Once we
-			// leave the visible region, we go dormant until the shifters are
-			// preloaded for the next scanline.
-
 			// Fortunately, for background rendering, we go through a fairly
 			// repeatable sequence of events, every 2 clock cycles.
 			switch ((cycles - 1) % 8)
 			{
 			case 0:
-				// Load the current background tile pattern and attributes into the "shifter"
+			{
 				TransferLatchesToShiftRegisters();
-
-				// Fetch the next background tile ID
-				// "(vram_addr.reg & 0x0FFF)" : Mask to 12 bits that are relevant
-				// "| 0x2000"                 : Offset into nametable space on PPU address bus
-				m_bg_next_tile_id = memory.PPUReadByte(0x2000 | (m_current_vram.Register & 0x0FFF));
-
-				// Explanation:
-				// The bottom 12 bits of the loopy register provide an index into
-				// the 4 nametables, regardless of nametable mirroring configuration.
-				// nametable_y(1) nametable_x(1) coarse_y(5) coarse_x(5)
-				//
-				// Consider a single nametable is a 32x32 array, and we have four of them
-				//   0                1
-				// 0 +----------------+----------------+
-				//   |                |                |
-				//   |                |                |
-				//   |    (32x32)     |    (32x32)     |
-				//   |                |                |
-				//   |                |                |
-				// 1 +----------------+----------------+
-				//   |                |                |
-				//   |                |                |
-				//   |    (32x32)     |    (32x32)     |
-				//   |                |                |
-				//   |                |                |
-				//   +----------------+----------------+
-				//
-				// This means there are 4096 potential locations in this array, which 
-				// just so happens to be 2^12!
-				break;
+				ExtractTileAddress();
+			}
+			break; 
 			case 2:
 				// Fetch the next background tile attribute. OK, so this one is a bit
 				// more involved :P
@@ -228,6 +188,7 @@ void PPU::Run()
 				// Compared to the last two, the next two are the easy ones... :P
 
 			case 4:
+			{
 				// Fetch the next background tile LSB bit plane from the pattern memory
 				// The Tile ID has been read from the nametable. We will use this id to 
 				// index into the pattern memory to find the correct sprite (assuming
@@ -248,18 +209,22 @@ void PPU::Run()
 				//                                         vertical scroll offset
 				// "+ 0"                                 : Mental clarity for plane offset
 				// Note: No PPU address bus offset required as it starts at 0x0000
+				const uint8_t nametable_tile = memory.PPUReadByte(m_background_tile_addr);
 				m_bg_next_tile_lsb = memory.PPUReadByte((GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
-					+ ((uint16_t)m_bg_next_tile_id << 4)
+					+ ((uint16_t)nametable_tile << 4)
 					+ (m_current_vram.Bits.m_fine_y) + 0);
-
-				break;
+			}
+			break;
 			case 6:
+			{
 				// Fetch the next background tile MSB bit plane from the pattern memory
 				// This is the same as above, but has a +8 offset to select the next bit plane
+				const uint8_t nametable_tile = memory.PPUReadByte(m_background_tile_addr);
 				m_bg_next_tile_msb = memory.PPUReadByte((GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
-					+ ((uint16_t)m_bg_next_tile_id << 4)
+					+ ((uint16_t)nametable_tile << 4)
 					+ (m_current_vram.Bits.m_fine_y) + 8);
-				break;
+			}
+			break;
 			case 7:
 				// https://wiki.nesdev.com/w/index.php/PPU_scrolling#Coarse_X_increment
 				// The coarse X component of v needs to be incremented when the 
@@ -291,10 +256,12 @@ void PPU::Run()
 		}
 	}
 
-	// Superfluous reads of tile id at end of scanline
+	// https://wiki.nesdev.com/w/index.php/PPU_rendering#Cycles_337-340
+	// two bytes are fetched, but the purpose for this is unknown. 
+	// These fetches are 2 PPU cycles each.
 	if (cycles == 338 || cycles == 340)
 	{
-		m_bg_next_tile_id = memory.PPUReadByte(0x2000 | (m_current_vram.Register & 0x0FFF));
+		ExtractTileAddress();
 	}
 
 	if (scanlines == -1 && cycles >= 280 && cycles < 305)
@@ -319,35 +286,10 @@ void PPU::Run()
 	// it easier to see the process of sprite evaluation.
 	if (cycles == 257 && scanlines >= 0)
 	{
-		// We've reached the end of a visible scanline. It is now time to determine
-		// which sprites are visible on the next scanline, and preload this info
-		// into buffers that we can work with while the scanline scans the row.
-
-		// Firstly, clear out the sprite memory. This memory is used to store the
-		// sprites to be rendered. It is not the OAM.
 		memory.ClearSecondaryOAM();
-
-		// The NES supports a maximum number of sprites per scanline. Nominally
-		// this is 8 or fewer sprites. This is why in some games you see sprites
-		// flicker or disappear when the scene gets busy.
 		m_active_sprites = 0;
-
-		// Secondly, clear out any residual information in sprite pattern shifters
-		for (uint8_t i = 0; i < 8; i++)
-		{
-			m_shifter_pattern_sprite_low[i] = 0;
-			m_shifter_pattern_sprite_high[i] = 0;
-		}
-
-		// Thirdly, Evaluate which sprites are visible in the next scanline. We need
-		// to iterate through the OAM until we have found 8 sprites that have Y-positions
-		// and heights that are within vertical range of the next scanline. Once we have
-		// found 8 or exhausted the OAM we stop. Now, notice I count to 9 sprites. This
-		// is so I can set the sprite overflow flag in the event of there being > 8 sprites.
-		uint8_t nOAMEntry = 0;
-
-		// New set of sprites. Sprite zero may not exist in the new set, so clear this
-		// flag.
+		memset(m_shifter_pattern_sprite_low, 0x0, 8);
+		memset(m_shifter_pattern_sprite_high, 0x0, 8);
 		m_possible_sprite_zero_hit = false;
 
 		const uint8_t* oam = memory.GetPrimaryOAM();
@@ -367,16 +309,10 @@ void PPU::Run()
 			const int sprite_size = m_reg_ppu_control.Bits.m_sprite_size ? 16 : 8;
 			if (diff >= 0 && diff < sprite_size && m_active_sprites < 8)
 			{
-				// Sprite is visible, so copy the attribute entry over to our
-				// scanline sprite cache. Ive added < 8 here to guard the array
-				// being written to.
 				if (m_active_sprites < 8)
 				{
-					// Is this sprite sprite zero?
 					if (i == 0)
 					{
-						// It is, so its possible it may trigger a 
-						// sprite zero hit when drawn
 						m_possible_sprite_zero_hit = true;
 					}
 					assert(m_active_sprites * 4 < 64);
@@ -386,23 +322,13 @@ void PPU::Run()
 			}
 		}
 
-		// Set sprite overflow flag
 		m_reg_status.Bits.m_sprite_overflow = (m_active_sprites >= 8);
-
-		// Now we have an array of the 8 visible sprites for the next scanline. By 
-		// the nature of this search, they are also ranked in priority, because
-		// those lower down in the OAM have the higher priority.
-
-		// We also guarantee that "Sprite Zero" will exist in spriteScanline[0] if
-		// it is evaluated to be visible. 
 	}
 
 
 	if (cycles == 340)
 	{
 		uint8_t* secondary_oam = memory.GetSeconaryOAM();
-		// Now we're at the very end of the scanline, I'm going to prepare the 
-		// sprite shifters with the 8 or less selected sprites.
 		for (uint8_t i = 0; i < m_active_sprites; i++)
 		{
 			assert(((i * 4) + 3) < 64);
@@ -410,19 +336,10 @@ void PPU::Run()
 			const uint8_t byte1 = secondary_oam[(i * 4) + 1];
 			const uint8_t byte2 = secondary_oam[(i * 4) + 2];
 			const uint8_t byte3 = secondary_oam[(i * 4) + 3];
-			// We need to extract the 8-bit row patterns of the sprite with the
-			// correct vertical offset. The "Sprite Mode" also affects this as
-			// the sprites may be 8 or 16 rows high. Additionally, the sprite
-			// can be flipped both vertically and horizontally. So there's a lot
-			// going on here :P
-
 			uint8_t sprite_pattern_bits_lo, sprite_pattern_bits_hi;
 			uint16_t sprite_pattern_addr_lo, sprite_pattern_addr_hi;
 
 
-			// Determine the memory addresses that contain the byte of pattern data. We
-			// only need the lo pattern address, because the hi pattern address is always
-			// offset by 8 from the lo address.
 			if (!GetControlRegister().Bits.m_sprite_size)
 			{
 				// 8x8 Sprite Mode - The control register determines the pattern table
@@ -950,6 +867,17 @@ void PPU::YIncrement()
 			}
 		}
 		}
+}
+
+void PPU::ExtractTileAddress()
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_scrolling#Explanation
+	// The high 5 bits of the X and Y scroll settings sent to $2005, when combined with 
+	// the 2 nametable select bits sent to $2000, make a 12 bit address for the next 
+	// tile to be fetched within the nametable address space $2000-2FFF
+	const uint16_t extracted_addr = m_current_vram.Register & 0x0FFF;
+	const uint16_t nametable_addr = 0x2000 | extracted_addr;
+	m_background_tile_addr = nametable_addr;
 }
 
 void PPU::TransferLatchesToShiftRegisters()

@@ -42,7 +42,7 @@ struct iNESHeader
 	uint8_t flags_10 = 0;
 	uint8_t raw_data[16] = {0x00};
 
-	uint8_t GetMapperNumber() const
+	int GetMapperNumber() const
 	{
 		return m_flags_6.Bits.m_lower_mapper & m_flags_7.Bits.m_upper_mapper;
 	}

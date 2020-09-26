@@ -163,7 +163,8 @@ uint16_t Memory::CPUReadShort(const uint16_t position) const
 
 void Memory::ClearSecondaryOAM()
 {
-	memset(m_secondary_oam, 0x00, 64);
+	// we should clear to 0xFF hear because 0xFF means
+	memset(m_secondary_oam, 0xFF, 64);
 }
 
 void Memory::CPUWriteByte(const uint16_t position, uint8_t value)

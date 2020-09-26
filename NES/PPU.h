@@ -172,6 +172,7 @@ private:
 	void CoarseXIncrement();
 	void YIncrement();
 	void TransferLatchesToShiftRegisters();
+	void ExtractTileAddress();
 
 
 	// https://wiki.nesdev.com/w/index.php/PPU_registers
@@ -214,7 +215,7 @@ private:
 	uint16_t m_shift_attribute[2] = { 0 };
 	uint8_t m_next_tile_attrubte = 0;
 #endif
-	uint8_t m_bg_next_tile_id = 0x00;
+	uint16_t m_background_tile_addr = 0x0000;
 	uint8_t m_bg_next_tile_attrib = 0x00;
 	uint8_t m_bg_next_tile_lsb = 0x00;
 	uint8_t m_bg_next_tile_msb = 0x00;
