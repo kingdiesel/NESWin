@@ -357,7 +357,14 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		}
 		else
 		{
-			assert(false);
+			if (mirrored_position >= 0x2800 && mirrored_position < 0x2C00)
+			{
+				mirrored_position &= 0x23FF;
+			}
+			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
+			{
+				mirrored_position &= 0x27FF;
+			}
 		}
 		assert(mirrored_position >= 0 && mirrored_position < ppu_ram_size);
 		return m_ppu_ram_buffer[mirrored_position];
@@ -444,7 +451,14 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 		}
 		else
 		{
-			assert(false);
+			if (mirrored_position >= 0x2800 && mirrored_position < 0x2C00)
+			{
+				mirrored_position &= 0x23FF;
+			}
+			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
+			{
+				mirrored_position &= 0x27FF;
+			}
 		}
 		assert(mirrored_position >=0 && mirrored_position < ppu_ram_size);
 		m_ppu_ram_buffer[mirrored_position] = value;
