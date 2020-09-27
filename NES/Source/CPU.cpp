@@ -192,8 +192,8 @@ public:
 		}
 		else
 		{
-			std::cout << std::hex << std::uppercase;
-			std::cout << "Unknown op code: " << (int) op_code << std::endl;
+			std::cout << "Unknown opcode: 0x" << std::uppercase << std::hex << std::setw(2) << std::setfill('0')
+				<< (int)op_code << std::endl;
 			exit(1);
 		}
 	}

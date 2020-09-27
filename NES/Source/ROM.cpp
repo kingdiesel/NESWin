@@ -44,6 +44,11 @@ void ROM::Load(const std::string &path)
 	}
 	m_chr_buffer = new uint8_t[m_chr_size];
 	std::memcpy(m_chr_buffer, &m_rom_buffer[HEADER_SIZE + m_prg_size], m_chr_size);
+	if (GetHeaderData().GetMapperNumber() != 0)
+	{
+		std::cout << "Unsupported mapper: " << GetHeaderData().GetMapperNumber() << std::endl;
+		exit(1);
+	}
 }
 
 void ROM::Reset()
