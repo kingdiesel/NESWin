@@ -150,24 +150,6 @@ public:
 	void MoveTempVramToCurrent() { m_current_vram = m_temp_vram; }
 private:
 	void SetFrameReady(const bool frame_ready) { m_frame_ready = frame_ready; }
-	
-	uint8_t GetPaletteIndexFromAttributeByte(
-		const int pixel_x, 
-		const int pixel_y, 
-		const uint8_t attribute_byte
-	);
-	
-	uint8_t GetAttributeByte(
-		const int pixel_x, 
-		const int pixel_y, 
-		const uint16_t nametable_addr
-	);
-
-	Nametable::Quadrant GetQuadrantFromAttribyteByte(
-		const int pixel_x,
-		const int pixel_y,
-		const uint8_t attribute_byte
-	);
 
 	void CoarseXIncrement();
 	void YIncrement();
@@ -201,20 +183,6 @@ private:
 	// for two tiles. Every 8 cycles, the data for the next tile is 
 	// loaded into the upper 8 bits of this shift register. 
 	// Meanwhile, the pixel to render is fetched from one of the lower 8 bits.
-#if 0
-	uint16_t m_shift_pattern_bkgd[2] = { 0 };
-	uint8_t m_next_tile_high = 0;
-	uint8_t m_next_tile_low = 0;
-	uint8_t m_next_tile_id = 0;
-
-	// 2 8 - bit shift registers - These contain the palette attributes 
-	// for the lower 8 pixels of the 16 - bit shift register.These 
-	// registers are fed by a latch which contains the palette attribute 
-	// for the next tile.Every 8 cycles, the latch is loaded with the 
-	// palette attribute for the next tile.
-	uint16_t m_shift_attribute[2] = { 0 };
-	uint8_t m_next_tile_attrubte = 0;
-#endif
 	uint16_t m_background_tile_addr = 0x0000;
 	uint8_t m_bg_next_tile_attrib = 0x00;
 	uint8_t m_bg_next_tile_lsb = 0x00;
@@ -223,6 +191,7 @@ private:
 	uint16_t m_bg_shifter_pattern_hi = 0x0000;
 	uint16_t m_bg_shifter_attrib_lo = 0x0000;
 	uint16_t m_bg_shifter_attrib_hi = 0x0000;
+	
 	// 8 pairs of 8-bit shift registers - These contain the pattern table 
 	// data for up to 8 sprites, to be rendered on the current scanline. 
 	// Unused sprites are loaded with an all-transparent set of values.
@@ -233,7 +202,6 @@ private:
 	bool m_sprite_zero_rendered = false;
 
 	uint8_t m_active_sprites = 0;
-
 
 	// ppu has "filled the frame buffer"
 	bool m_frame_ready = false;

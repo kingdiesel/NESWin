@@ -49,16 +49,7 @@ void Sprites::Run()
 		const bool is8x16sprite = ppu.GetControlRegister().Bits.m_sprite_size == 1;
 		uint8_t tile_id = 0;
 		uint16_t tile_offset = 0;
-		if (is8x16sprite)
-		{
-			tile_id = byte1 & 0xFE;
-			tile_offset = (byte1 & 0x01) == 0 ? 0 : 256;
-		}
-		else
-		{
-			tile_id = byte1;
-			tile_offset = pattern_table_id == 0 ? 0 : 256;
-		}
+		GetTileDataFromByte1(byte1, is8x16sprite, pattern_table_id, tile_id, tile_offset);
 
 		// https://wiki.nesdev.com/w/index.php/PPU_OAM#Byte_2
 		// 76543210
@@ -139,6 +130,44 @@ void Sprites::Run()
 		m_texture_sprites_data,
 		256 * sizeof(Uint32)
 	);
+}
+
+void Sprites::GetTileDataFromByte1(
+	const uint8_t byte1,
+	const bool is8x16sprite,
+	const uint8_t pattern_table_id,
+	uint8_t& tile_id,
+	uint16_t& tile_offset
+)
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_OAM#Byte_1
+	// 76543210
+	// ||||||||
+	// |||||||+-Bank($0000 or $1000) of tiles
+	// ++++++ + --Tile number of top of sprite(0 to 254; bottom half gets the next tile)
+	if (is8x16sprite)
+	{
+		tile_id = byte1 & 0xFE;
+		tile_offset = (byte1 & 0x01) == 0 ? 0 : 256;
+	}
+	else
+	{
+		tile_id = byte1;
+		tile_offset = pattern_table_id == 0 ? 0 : 256;
+	}
+}
+
+uint8_t Sprites::GetPriorityFromByte2(const uint8_t byte2)
+{
+	// https://wiki.nesdev.com/w/index.php/PPU_OAM#Byte_2
+	// 76543210
+	// ||||||||
+	// ||||||++ - Palette(4 to 7) of sprite
+	// |||++ + -- - Unimplemented
+	// || +------Priority(0: in front of background; 1: behind background)
+	// | +------ - Flip sprite horizontally
+	// + --------Flip sprite vertically
+	return (byte2 & 0x20) == 0 ? 0 : 1;
 }
 
 uint8_t Sprites::GetPaletteIndexFromByte2(const uint8_t byte2)
