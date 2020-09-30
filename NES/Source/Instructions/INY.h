@@ -6,7 +6,7 @@
 
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-
+// http://www.obelisk.me.uk/6502/reference.html#INY
 class INY : public BaseInstruction<ImpliedAddressingStrategy, INY, 0xC8>
 {
 public:

@@ -124,7 +124,8 @@ void PPU::Run()
 			case 4:
 			{
 				const uint8_t nametable_tile = memory.PPUReadByte(m_background_tile_addr);
-				m_bg_next_tile_lsb = memory.PPUReadByte((GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
+				m_bg_next_tile_lsb = memory.PPUReadByte(
+					(GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
 					+ ((uint16_t)nametable_tile << 4)
 					+ (m_current_vram.Bits.m_fine_y) + 0);
 			}
@@ -132,7 +133,8 @@ void PPU::Run()
 			case 6:
 			{
 				const uint8_t nametable_tile = memory.PPUReadByte(m_background_tile_addr);
-				m_bg_next_tile_msb = memory.PPUReadByte((GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
+				m_bg_next_tile_msb = memory.PPUReadByte(
+					(GetControlRegister().Bits.m_bkgrnd_pattern_addr << 12)
 					+ ((uint16_t)nametable_tile << 4)
 					+ (m_current_vram.Bits.m_fine_y) + 8);
 			}

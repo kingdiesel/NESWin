@@ -6,7 +6,7 @@
 
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-
+// http://www.obelisk.me.uk/6502/reference.html#DEX
 class DEX : public BaseInstruction<ImpliedAddressingStrategy, DEX, 0xCA>
 {
 public:

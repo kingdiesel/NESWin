@@ -12,7 +12,6 @@ public:
 	void CPUWriteByte(const uint16_t position, uint8_t value);
 	
 	uint8_t PPUReadByte(uint16_t position) const;
-	const uint8_t* PPUGetRawPtr(const uint16_t position) const;
 	void PPUWriteByte(uint16_t position, uint8_t value);
 
 	void PPUWriteOAM(const uint8_t index, const uint8_t value);
@@ -38,6 +37,7 @@ public:
 	void Reset();
 
 private:
+	uint16_t GetMirroredPosition(const uint16_t position) const;
 	ROM m_rom;
 	uint8_t* m_cpu_ram_buffer = nullptr;
 	uint8_t* m_ppu_ram_buffer = nullptr;
@@ -45,7 +45,10 @@ private:
 	//	https://wiki.nesdev.com/w/index.php/PPU_OAM
 	uint8_t m_primary_oam[256];
 	uint8_t m_secondary_oam[64];
-
+#define olc 0
+#if olc
+	uint8_t     tblName[2][1024];
+#endif
 	mutable uint8_t m_controller_poll = 0;
 };
 

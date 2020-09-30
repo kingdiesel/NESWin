@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#TXA
 class TXA : public BaseInstruction<ImpliedAddressingStrategy, TXA, 0x8A>
 {
 public:

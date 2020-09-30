@@ -7,7 +7,7 @@
 
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-
+// http://www.obelisk.me.uk/6502/reference.html#CLC
 class CLC : public BaseInstruction<ImpliedAddressingStrategy, CLC, 0x18>
 {
 public:

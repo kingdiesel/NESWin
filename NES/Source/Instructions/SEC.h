@@ -8,6 +8,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#SEC
 class SEC : public BaseInstruction<ImpliedAddressingStrategy, SEC, 0x38>
 {
 public:

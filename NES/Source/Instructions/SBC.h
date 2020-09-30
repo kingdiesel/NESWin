@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "ADC.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#SBC
 class SBCImmediate : public ADCBase<ImmediateAddressingStrategy, SBCImmediate, 0xE9>
 {
 public:

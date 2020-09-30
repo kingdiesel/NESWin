@@ -6,7 +6,7 @@
 
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
-
+// http://www.6502.org/tutorials/6502opcodes.html#LSR
 template<typename _addressing_mode, typename _execute, int _op_code>
 class LSRBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
@@ -23,6 +23,7 @@ public:
 		uint8_t bit_zero = value & (uint8_t) 0x01;
 		cpu.SetCarryFlag(bit_zero != 0);
 		value = value >> 1;
+		// makes sure a 0 gets inserted into msb
 		value &= (uint8_t) 0x7F;
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);

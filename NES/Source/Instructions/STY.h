@@ -8,6 +8,7 @@
 #include "BaseInstruction.h"
 #include "../CPU.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#STY
 template<typename _addressing_mode, typename _execute, int _op_code>
 class STYBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {

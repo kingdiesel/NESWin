@@ -6,7 +6,7 @@
 
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-
+// http://www.obelisk.me.uk/6502/reference.html#INX
 class INX : public BaseInstruction<ImpliedAddressingStrategy, INX, 0xE8>
 {
 public:

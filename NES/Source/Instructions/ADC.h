@@ -7,6 +7,7 @@
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#ADC
 template<typename _addressing_mode, typename _execute, int _op_code>
 class ADCBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {
@@ -29,7 +30,7 @@ public:
 		uint8_t eight_bit_result = cpu.GetRegisterA() + value + carry_bit;
 		uint16_t full_bit_result =
 				(uint16_t) cpu.GetRegisterA() + (uint16_t) value + (uint16_t) carry_bit;
-		bool overflowed = bool((cpu.GetRegisterA() ^ eight_bit_result) & (value ^ eight_bit_result) & 0x80);
+		const bool overflowed = (~((uint16_t)cpu.GetRegisterA() ^ (uint16_t)value) & ((uint16_t)cpu.GetRegisterA() ^ (uint16_t)full_bit_result)) & 0x0080;
 
 		cpu.SetRegisterA(eight_bit_result);
 		cpu.SetOverflowFlag(overflowed);

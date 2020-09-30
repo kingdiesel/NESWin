@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#RTI
 class RTI : public BaseInstruction<ImpliedAddressingStrategy, RTI, 0x40>
 {
 public:

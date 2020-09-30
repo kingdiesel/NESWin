@@ -20,6 +20,9 @@ Memory::Memory()
 	memset(m_palette_buffer, 0x00, 32);
 	memset(m_primary_oam, 0x00, 256);
 	memset(m_secondary_oam, 0x00, 64);
+#if olc
+	memset(tblName, 0x00, 2048);
+#endif
 }
 
 uint8_t Memory::CPUReadByte(const uint16_t position) const
@@ -272,17 +275,11 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 		}
 		else if (position == 0x4014)
 		{
-			//PPU& ppu = NESConsole::GetInstance()->GetPPU();
-			//ppu.SetOAMDMA(value);
-			// A write to this address initiates a DMA transfer
+			// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
 			NESConsole::GetInstance()->SetDmaPage(value);
 			NESConsole::GetInstance()->SetDmaAddr(0x00);
 			NESConsole::GetInstance()->SetDmaTransfer(true);
-			// TODO: if this occurs, need to copy stuff
-			// to sprite memory
-			// https://wiki.nesdev.com/w/index.php/PPU_registers#OAM_DMA_.28.244014.29_.3E_write
 		}
-		//assert(false);
 	}
 	else if (position >= 0x4018 && position <= 0x401F)
 	{
@@ -291,10 +288,10 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 	}
 	else if (position >= 0x4020 && position <= 0xFFFF)
 	{
-	std::cout << "Unsupported write location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
-		<< position << std::endl;
-	assert(false);
-	exit(1);
+		std::cout << "Unsupported write location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
+			<< position << std::endl;
+		assert(false);
+		exit(1);
 	}
 	else
 	{
@@ -323,7 +320,6 @@ bool IsBackgroundFallthrough(const uint16_t position)
 
 uint8_t Memory::PPUReadByte(uint16_t position) const
 {
-	position &= 0x3FFF;
 	/*
 		$0000-$0FFF	$1000	Pattern table 0
 		$1000-$1FFF	$1000	Pattern table 1
@@ -335,53 +331,52 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		$3F00-$3F1F	$0020	Palette RAM indexes
 		$3F20-$3FFF	$00E0	Mirrors of $3F00-$3F1F
 	*/
+	position &= 0x3FFF;
 	if (position >= 0x0000 && position <= 0x1FFF)
 	{
 		return m_rom.GetChrByte(position);
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
-		uint16_t mirrored_position = position & 0x2FFF;
-		// https://wiki.nesdev.com/w/index.php/Mirroring#Nametable_Mirroring
-		// https://wiki.nesdev.com/w/index.php/INES#Flags_6
+#if olc
+		uint16_t addr = position;
+		addr &= 0x0FFF;
+		uint8_t data = 0x00;
 		//  0: horizontal (vertical arrangement)
 		//	1: vertical (horizontal arrangement)
 		if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
 		{
-			if (mirrored_position >= 0x2400 && mirrored_position < 0x2800)
-			{
-				mirrored_position &= 0x23FF;
-			}
-			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
-			{
-				mirrored_position &= 0x2BFF;
-			}
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0400 && addr <= 0x07FF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				data = tblName[1][addr & 0x03FF];
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				data = tblName[1][addr & 0x03FF];
+			return data;
 		}
 		else
 		{
-			if (mirrored_position >= 0x2800 && mirrored_position < 0x2C00)
-			{
-				mirrored_position &= 0x23FF;
-			}
-			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
-			{
-				mirrored_position &= 0x27FF;
-			}
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0400 && addr <= 0x07FF)
+				data = tblName[1][addr & 0x03FF];
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				data = tblName[0][addr & 0x03FF];
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				data = tblName[1][addr & 0x03FF];
+			return data;
 		}
+#else
+		uint16_t mirrored_position = GetMirroredPosition(position & 0x2FFF);
 		assert(mirrored_position >= 0 && mirrored_position < ppu_ram_size);
 		return m_ppu_ram_buffer[mirrored_position];
+#endif
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
 		PPU& ppu = NESConsole::GetInstance()->GetPPU();
-		position &= 0x001F;
-		if (position == 0x0010) position = 0x0000;
-		if (position == 0x0014) position = 0x0004;
-		if (position == 0x0018) position = 0x0008;
-		if (position == 0x001C) position = 0x000C;
-		return m_palette_buffer[position] & ( ppu.GetMaskRegister().Bits.m_grayscale ? 0x30 : 0x3F);
-
-#if 0
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
 		const uint16_t mirrored_position = position & 0x3F1F;
 		if (IsBackgroundFallthrough(mirrored_position))
@@ -391,7 +386,6 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		return m_palette_buffer[shifted_down];
-#endif
 	}
 	else
 	{
@@ -403,21 +397,8 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 	return 0;
 }
 
-const uint8_t* Memory::PPUGetRawPtr(const uint16_t position) const
-{
-	if (position >= 0x2000 && position <= 0x3EFF)
-	{
-		const uint16_t mirrored_position = position & 0x2FFF;
-		assert(mirrored_position >= 0 && mirrored_position < ppu_ram_size);
-		return &m_ppu_ram_buffer[mirrored_position];
-	}
-	assert(false);
-	return nullptr;
-}
-
 void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 {
-	position &= 0x3FFF;
 	/*
 		$0000-$0FFF	$1000	Pattern table 0
 		$1000-$1FFF	$1000	Pattern table 1
@@ -429,51 +410,46 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 		$3F00-$3F1F	$0020	Palette RAM indexes
 		$3F20-$3FFF	$00E0	Mirrors of $3F00-$3F1F
 	*/
+	position &= 0x3FFF;
 	if (position >= 0x0000 && position <= 0x1FFF)
 	{
 		m_rom.SetChrByte(position, value);
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
-		uint16_t mirrored_position = position & 0x2FFF;
-		// https://wiki.nesdev.com/w/index.php/Mirroring#Nametable_Mirroring
-		// https://wiki.nesdev.com/w/index.php/INES#Flags_6
-		//  0: horizontal (vertical arrangement)
-		//	1: vertical (horizontal arrangement)
+#if olc
+		uint16_t addr = position;
+		addr &= 0x0FFF;
 		if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
 		{
-			if (mirrored_position >= 0x2400 && mirrored_position < 0x2800)
-			{
-				mirrored_position &= 0x23FF;
-			}
-			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
-			{
-				mirrored_position &= 0x2BFF;
-			}
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				tblName[0][addr & 0x03FF] = value;
+			if (addr >= 0x0400 && addr <= 0x07FF)
+				tblName[0][addr & 0x03FF] = value;
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				tblName[1][addr & 0x03FF] = value;
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				tblName[1][addr & 0x03FF] = value;
 		}
 		else
 		{
-			if (mirrored_position >= 0x2800 && mirrored_position < 0x2C00)
-			{
-				mirrored_position &= 0x23FF;
-			}
-			else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
-			{
-				mirrored_position &= 0x27FF;
-			}
+			if (addr >= 0x0000 && addr <= 0x03FF)
+				tblName[0][addr & 0x03FF] = value;
+			if (addr >= 0x0400 && addr <= 0x07FF)
+				tblName[1][addr & 0x03FF] = value;
+			if (addr >= 0x0800 && addr <= 0x0BFF)
+				tblName[0][addr & 0x03FF] = value;
+			if (addr >= 0x0C00 && addr <= 0x0FFF)
+				tblName[1][addr & 0x03FF] = value;
 		}
+#else
+		uint16_t mirrored_position = GetMirroredPosition(position & 0x2FFF);
 		assert(mirrored_position >=0 && mirrored_position < ppu_ram_size);
 		m_ppu_ram_buffer[mirrored_position] = value;
+#endif
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
-		position &= 0x001F;
-		if (position == 0x0010) position = 0x0000;
-		if (position == 0x0014) position = 0x0004;
-		if (position == 0x0018) position = 0x0008;
-		if (position == 0x001C) position = 0x000C;
-		m_palette_buffer[position] = value;
-#if 0
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
 		const uint16_t mirrored_position = position & 0x3F1F;
 		if (IsBackgroundFallthrough(mirrored_position))
@@ -485,7 +461,6 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		m_palette_buffer[shifted_down] = value;
-#endif
 	}
 	else
 	{
@@ -494,6 +469,38 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 		assert(false);
 		exit(1);
 	}
+}
+
+uint16_t Memory::GetMirroredPosition(const uint16_t position) const
+{
+	uint16_t mirrored_position = position;
+	// https://wiki.nesdev.com/w/index.php/Mirroring#Nametable_Mirroring
+	// https://wiki.nesdev.com/w/index.php/INES#Flags_6
+	//  0: horizontal (vertical arrangement)
+	//	1: vertical (horizontal arrangement)
+	if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
+	{
+		if (mirrored_position >= 0x2400 && mirrored_position < 0x2800)
+		{
+			mirrored_position &= 0x23FF;
+		}
+		else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
+		{
+			mirrored_position &= 0x2BFF;
+		}
+	}
+	else
+	{
+		if (mirrored_position >= 0x2800 && mirrored_position < 0x2C00)
+		{
+			mirrored_position &= 0x23FF;
+		}
+		else if (mirrored_position >= 0x2C00 && mirrored_position < 0x2FFF)
+		{
+			mirrored_position &= 0x27FF;
+		}
+	}
+	return mirrored_position;
 }
 
 void Memory::PPUWriteOAM(const uint8_t index, const uint8_t value)

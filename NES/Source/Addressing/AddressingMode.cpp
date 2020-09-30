@@ -165,6 +165,7 @@ uint16_t RelativeAddressingStrategy::GetMemoryByteValue() const
 {
 	CPU& cpu = m_console->GetCPU();
 	Memory& memory = m_console->GetMemory();
+	// The offset is a signed byte, so it can jump a maximum of 127 bytes forward, or 128 bytes backward.
 	int8_t data_byte = static_cast<int8_t>(GetMemoryByte());
 	uint16_t destination = cpu.GetRegisterProgramCounterPlus(2) + (uint16_t) data_byte;
 	return destination;

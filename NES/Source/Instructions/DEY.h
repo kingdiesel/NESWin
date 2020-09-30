@@ -6,7 +6,7 @@
 
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-
+// http://www.obelisk.me.uk/6502/reference.html#DEY
 class DEY : public BaseInstruction<ImpliedAddressingStrategy, DEY, 0x88>
 {
 public:

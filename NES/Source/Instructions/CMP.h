@@ -27,6 +27,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#CPX
 class CPXImmediate : public CMPBase<ImmediateAddressingStrategy, CPXImmediate, 0xE0>
 {
 public:
@@ -69,6 +70,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#CPY
 class CPYImmediate : public CMPBase<ImmediateAddressingStrategy, CPYImmediate, 0xC0>
 {
 public:
@@ -111,6 +113,7 @@ public:
 	}
 };
 
+// // http://www.obelisk.me.uk/6502/reference.html#CMP
 class CMPImmediate : public CMPBase<ImmediateAddressingStrategy, CMPImmediate, 0xC9>
 {
 public:

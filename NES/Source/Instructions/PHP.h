@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#PHP
 class PHP : public BaseInstruction<ImpliedAddressingStrategy, PHP, 0x08>
 {
 public:

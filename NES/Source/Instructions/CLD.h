@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#CLD
 class CLD : public BaseInstruction<ImpliedAddressingStrategy, CLD, 0xD8>
 {
 public:

@@ -79,23 +79,14 @@ uint16_t ROM::GetMappedPosition(const uint16_t position) const
 			// no PRG RAM on mapper 000
 			assert(false);
 		}
-		if (position >= 0x8000 && position <= 0xBFFF)
+		else if (position >= 0x8000 && position <= 0xFFFF)
 		{
-			return position - 0x8000;
+			return position & (m_header_data.prg_rom_size_16 > 1 ? 0x7FFF : 0x3FFF);
 		}
-		else if (position >= 0xC000 && position <= 0xFFFF)
+		else
 		{
-			// mirrored
-			if (m_header_data.prg_rom_size_16 == 1)
-			{
-				return position - (uint16_t)0xC000;
-			}
-			else
-			{
-				return position - 0x8000;
-			}
+			return position;
 		}
-		return position;
 	}
 	else
 	{
@@ -123,6 +114,12 @@ uint8_t ROM::GetByte(const uint16_t position) const
 	assert(m_prg_buffer != nullptr);
 	// https://wiki.nesdev.com/w/index.php/NROM
 	const uint16_t mapped_position = GetMappedPosition(position);
+	if (mapped_position > m_prg_size)
+	{
+		// TODO: this needs to return whatever is on the bus from the last
+		// read/write
+		return 0xFF;
+	}
 	assert(mapped_position < m_prg_size);
 	return m_prg_buffer[mapped_position];
 }

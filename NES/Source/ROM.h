@@ -48,6 +48,8 @@ struct iNESHeader
 	}
 };
 
+
+
 class ROM
 {
 public:
@@ -58,7 +60,7 @@ public:
 	void SetChrByte(const uint16_t position, const uint8_t value);
 	void Reset();
 	bool HasChrRam() const { return m_header_data.chr_rom_size_8 == 0; }
-
+	int GetMapperNumber() const { return m_header_data.GetMapperNumber(); }
 	const iNESHeader &GetHeaderData() const;
 
 private:

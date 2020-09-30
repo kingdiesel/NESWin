@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#TYA
 class TYA : public BaseInstruction<ImpliedAddressingStrategy, TYA, 0x98>
 {
 public:

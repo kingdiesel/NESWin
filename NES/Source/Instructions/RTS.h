@@ -7,6 +7,7 @@
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#RTS
 class RTS : public BaseInstruction<ImpliedAddressingStrategy, RTS, 0x60>
 {
 public:

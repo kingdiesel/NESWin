@@ -7,7 +7,7 @@
 
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
-
+// http://www.6502.org/tutorials/6502opcodes.html#ROL
 template<typename _addressing_mode, typename _execute, int _op_code>
 class ROLBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {

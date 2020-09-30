@@ -22,8 +22,8 @@ public:
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t result = cpu.GetRegisterA() & value;
 		cpu.SetZeroFlag(result == 0);
-		cpu.SetNegativeFlagForValue(value);
-		cpu.SetOverflowFlag((value & 0x40) != 0);
+		cpu.SetNegativeFlagForValue(value & (1 << 7));
+		cpu.SetOverflowFlag(value & (1 << 6));
 	}
 };
 

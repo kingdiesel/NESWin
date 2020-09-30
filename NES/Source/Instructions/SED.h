@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#SED
 class SED : public BaseInstruction<ImpliedAddressingStrategy, SED, 0xF8>
 {
 public:

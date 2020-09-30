@@ -7,6 +7,7 @@
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#SEI
 class SEI : public BaseInstruction<ImpliedAddressingStrategy, SEI, 0x78>
 {
 public:

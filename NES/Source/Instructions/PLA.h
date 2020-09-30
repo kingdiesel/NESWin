@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#PLA
 class PLA : public BaseInstruction<ImpliedAddressingStrategy, PLA, 0x68>
 {
 public:

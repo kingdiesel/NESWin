@@ -7,6 +7,7 @@
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#NOP
 template<typename _addressing_mode, typename _execute, int _op_code>
 class NOPBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
 {

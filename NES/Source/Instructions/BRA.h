@@ -1,9 +1,7 @@
 //
 // Created by kingdiesel on 12/30/17.
 //
-
-#ifndef NES_BRA_H
-#define NES_BRA_H
+#pragma once
 
 #include "BaseInstruction.h"
 #include "../Addressing/AddressingMode.h"
@@ -38,6 +36,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BCS
 class BCS : public BRABase<RelativeAddressingStrategy, BCS, 0xB0>
 {
 public:
@@ -53,6 +52,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BPL
 class BPL : public BRABase<RelativeAddressingStrategy, BPL, 0x10>
 {
 public:
@@ -68,6 +68,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BNE
 class BNE : public BRABase<RelativeAddressingStrategy, BNE, 0xD0>
 {
 public:
@@ -82,6 +83,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BEQ
 class BEQ : public BRABase<RelativeAddressingStrategy, BEQ, 0xF0>
 {
 public:
@@ -96,6 +98,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BCC
 class BCC : public BRABase<RelativeAddressingStrategy, BCC, 0x90>
 {
 public:
@@ -111,6 +114,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BVS
 class BVS : public BRABase<RelativeAddressingStrategy, BVS, 0x70>
 {
 public:
@@ -126,6 +130,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BVC
 class BVC : public BRABase<RelativeAddressingStrategy, BVC, 0x50>
 {
 public:
@@ -141,6 +146,7 @@ public:
 	}
 };
 
+// http://www.obelisk.me.uk/6502/reference.html#BMI
 class BMI : public BRABase<RelativeAddressingStrategy, BMI, 0x30>
 {
 public:
@@ -155,4 +161,3 @@ public:
 		return cpu.IsNegativeFlagSet();
 	}
 };
-#endif //NES_BRA_H

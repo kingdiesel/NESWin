@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#TXS
 class TXS : public BaseInstruction<ImpliedAddressingStrategy, TXS, 0x9A>
 {
 public:

@@ -16,6 +16,7 @@ PatternTableTile::PatternTableTile()
 
 PatternTableTile::~PatternTableTile()
 {
+	m_console = nullptr;
 }
 
 uint8_t *PatternTableTile::GetTileData()

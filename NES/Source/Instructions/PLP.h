@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#PLP
 class PLP : public BaseInstruction<ImpliedAddressingStrategy, PLP, 0x28>
 {
 public:

@@ -7,6 +7,7 @@
 #include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
+// http://www.obelisk.me.uk/6502/reference.html#TAX
 class TAX : public BaseInstruction<ImpliedAddressingStrategy, TAX, 0xAA>
 {
 public:
