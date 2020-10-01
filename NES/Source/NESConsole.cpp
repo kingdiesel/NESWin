@@ -13,6 +13,27 @@ std::shared_ptr<NESConsole> NESConsole::GetInstance(void)
 	return NESConsoleSingleton;
 }
 
+NESConsole::NESConsole()
+{
+	std::string filename = "C:/Users/Public/logs/example";
+	time_t rawtime;
+	struct tm timeinfo;
+	char buffer[80];
+
+	time(&rawtime);
+	localtime_s(&timeinfo, &rawtime);
+
+	strftime(buffer, 80, "%Y_%m_%d_%H_%M_%S", &timeinfo);
+	filename += buffer;
+	filename += ".txt";
+	m_log_file.open(filename);
+}
+
+NESConsole::~NESConsole()
+{
+	m_log_file.close();
+}
+
 void NESConsole::LoadROM(const std::string &path)
 {
 	m_memory.GetROM().Load(path);
@@ -157,6 +178,12 @@ void NESConsole::RunNesTestTiming()
 	const int elapsed_seconds = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(t2 - t1).count());
 
 	std::cout << "NESTEST " << cycles / elapsed_seconds << " cycles per second" << std::endl;
+}
+
+void NESConsole::FlushLog()
+{
+	m_log_file.flush();
+	m_log_file.close();
 }
 
 bool NESConsole::RunNesTest()

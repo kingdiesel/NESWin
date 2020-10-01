@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <mutex>
+#include <fstream>
 #include "CPU.h"
 #include "Memory.h"
 #include "../PPU.h"
@@ -9,6 +10,8 @@ class NESConsole
 {
 public:
 	static std::shared_ptr<NESConsole> GetInstance(void);
+	NESConsole();
+	~NESConsole();
 	void LoadROM(const std::string &path);
 	void Initialize();
 	void PowerUp();
@@ -34,6 +37,10 @@ public:
 	{
 		return m_memory;
 	}
+	
+	void FlushLog();
+
+	std::ofstream& GetLogStream() { return m_log_file; }
 
 	void SetDownPressed(const bool down_pressed) { m_down_pressed = down_pressed; }
 	bool GetDownPressed() const { return m_down_pressed; }
@@ -105,4 +112,6 @@ private:
 	bool dma_transfer = false;
 
 	uint32_t cycles = 0;
+
+	std::ofstream m_log_file;
 };

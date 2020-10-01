@@ -85,11 +85,12 @@ public:
 	void PrintLogString()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		if (!cpu.GetLoggingEnabled())
 		{
 			return;
 		}
+		std::ofstream& log_stream = NESConsole::GetInstance()->GetLogStream();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		memory.SetReadOnlyMode(true);
 		
 		_first_instruction &instruction = *static_cast<_first_instruction *>(arr[_first_instruction::OP_CODE]);
@@ -145,7 +146,7 @@ public:
 		flagstream << "CYC:" << std::dec << std::setfill(' ') << std::setw(3) << std::right << cpu.GetCycles();
 
 		log_string.append(flagstream.str());
-		//std::cout << cpu.GetInstructionCount() << " " << log_string << std::endl;
+		log_stream << cpu.GetInstructionCount() << " " << log_string << std::endl;
 		memory.SetReadOnlyMode(false);
 	}
 

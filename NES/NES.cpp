@@ -190,6 +190,7 @@ int main(int argv, char** args)
 				}
 				else if (event.key.keysym.sym == SDLK_ESCAPE)
 				{
+					NESConsole::GetInstance()->FlushLog();
 					exit(1);
 				}
 				break;
