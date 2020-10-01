@@ -90,6 +90,7 @@ public:
 		{
 			return;
 		}
+		memory.SetReadOnlyMode(true);
 		
 		_first_instruction &instruction = *static_cast<_first_instruction *>(arr[_first_instruction::OP_CODE]);
 		std::string &log_string = cpu.GetLastInstructionStr();
@@ -144,7 +145,8 @@ public:
 		flagstream << "CYC:" << std::dec << std::setfill(' ') << std::setw(3) << std::right << cpu.GetCycles();
 
 		log_string.append(flagstream.str());
-		std::cout << cpu.GetInstructionCount() << " " << log_string << std::endl;
+		//std::cout << cpu.GetInstructionCount() << " " << log_string << std::endl;
+		memory.SetReadOnlyMode(false);
 	}
 
 	template<typename _instruction>

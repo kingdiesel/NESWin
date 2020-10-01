@@ -34,6 +34,8 @@ public:
 		return m_rom;
 	}
 
+	void SetReadOnlyMode(const bool read_only) { m_read_only_mode = read_only; }
+	bool GetReadyOnlyMode() const { return m_read_only_mode; }
 	void Reset();
 
 private:
@@ -45,6 +47,7 @@ private:
 	//	https://wiki.nesdev.com/w/index.php/PPU_OAM
 	uint8_t m_primary_oam[256];
 	uint8_t m_secondary_oam[64];
+	bool m_read_only_mode = false;
 #define olc 0
 #if olc
 	uint8_t     tblName[2][1024];

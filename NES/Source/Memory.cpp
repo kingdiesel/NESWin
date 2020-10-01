@@ -63,11 +63,15 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 				// or overflow bit.
 				const uint8_t register_value = ppu.GetStatusRegister().Register;
 
-				// reset latch
-				ppu.ResetWriteToggle();
+				if (!GetReadyOnlyMode())
+				{
+					// reset latch
+					ppu.ResetWriteToggle();
 
-				// clear vblank flag
-				ppu.SetStatusRegister(register_value & 0x80);
+					// clear vblank flag
+					ppu.SetStatusRegister(register_value & 0x80);
+				}
+				
 
 				// return cached value with those bits still set?
 				return (register_value & 0xE0) | (ppu.GetData() & 0x1F);
@@ -84,14 +88,18 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 			{
 				// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUDATA
 				uint8_t data = ppu.GetData();
-				PPUScrollRegister& current_vram = ppu.GetCurrentVram();
-				ppu.SetData(PPUReadByte(current_vram.Register));
-				if (current_vram.Register >= 0x3F00)
+				if (!GetReadyOnlyMode())
 				{
-					data = ppu.GetData();
+					PPUScrollRegister& current_vram = ppu.GetCurrentVram();
+					ppu.SetData(PPUReadByte(current_vram.Register));
+					if (current_vram.Register >= 0x3F00)
+					{
+						data = ppu.GetData();
+					}
+
+					current_vram.Register += (ppu.GetControlRegister().Bits.m_vram_add ? 32 : 1);
 				}
 				
-				current_vram.Register += (ppu.GetControlRegister().Bits.m_vram_add ? 32 : 1);
 				return data;
 			}
 			default:
@@ -132,7 +140,11 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 				button_state = NESConsole::GetInstance()->GetRightPressed();
 				break;
 			}
-			m_controller_poll++;
+
+			if (!GetReadyOnlyMode())
+			{
+				m_controller_poll++;
+			}
 			return button_state;
 		}
 		// TODO: read from APU 
