@@ -26,6 +26,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/sprite_ram.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/palette_ram.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_timing_test.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_interrupts.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/branch_basics.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/backward_branch.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/forward_branch.nes"

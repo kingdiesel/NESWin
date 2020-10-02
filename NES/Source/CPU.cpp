@@ -268,7 +268,7 @@ void CPU::HandleNMI()
 	const uint16_t program_counter = GetRegisterProgramCounter();
 	const uint8_t return_memory_high = program_counter >> 8;
 	const uint8_t return_memory_low = program_counter & 0x00FF;
-	const uint8_t status_register = GetRegisterP().Register;
+	const uint8_t status_register = GetRegisterP().Register | 0x20;
 	// similar to JMP::ExecuteImplementation
 	memory.CPUWriteByte(GetFullStackAddress(), return_memory_high);
 	DecrementStackPointer();
@@ -276,6 +276,7 @@ void CPU::HandleNMI()
 	DecrementStackPointer();
 	memory.CPUWriteByte(GetFullStackAddress(), status_register);
 	DecrementStackPointer();
+	SetInterruptDisableFlag(true);
 
 	const uint8_t jump_address_high = memory.CPUReadByte(0xFFFB);
 	const uint8_t jump_address_low = memory.CPUReadByte(0xFFFA);
