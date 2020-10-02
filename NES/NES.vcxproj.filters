@@ -213,5 +213,8 @@
     <ClInclude Include="PatternTable.h" />
     <ClInclude Include="Nametable.h" />
     <ClInclude Include="Sprites.h" />
+    <ClInclude Include="Source\Instructions\BRK.h">
+      <Filter>Source Files\Instructions</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

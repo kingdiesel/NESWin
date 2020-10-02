@@ -173,6 +173,7 @@
     <ClInclude Include="Source\Instructions\BaseInstruction.h" />
     <ClInclude Include="Source\Instructions\BIT.h" />
     <ClInclude Include="Source\Instructions\BRA.h" />
+    <ClInclude Include="Source\Instructions\BRK.h" />
     <ClInclude Include="Source\Instructions\CLC.h" />
     <ClInclude Include="Source\Instructions\CLD.h" />
     <ClInclude Include="Source\Instructions\CLV.h" />

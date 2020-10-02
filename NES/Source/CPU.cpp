@@ -6,6 +6,7 @@
 #include "Instructions/NOP.h"
 #include "Instructions/SEC.h"
 #include "Instructions/BRA.h"
+#include "Instructions/BRK.h"
 #include "Instructions/CLC.h"
 #include "Instructions/LDA.h"
 #include "Instructions/STA.h"
@@ -62,7 +63,7 @@ public:
 	{
 		InitializeArray<JMPAbsolute, JSR, LDXAbsolute, LDXImmediate, LDXAbsolute, LDXAbsoluteY, LDXZeroPage, LDXZeroPageY,
 				STXZeroPage, STXAbsolute, STXZeroPageY, NOP, NOP1A, NOP3A, NOP5A, NOPDA, NOPFA,
-				SEC, BCS, BPL, BNE, BEQ, BCC, BVS, BVC, BMI, CLC, LDAImmediate, LDAAbsolute,
+				SEC, BCS, BPL, BNE, BEQ, BCC, BVS, BVC, BMI, BRK, CLC, LDAImmediate, LDAAbsolute,
 				LDAAbsoluteX, LDAAbsoluteY, LDAZeroPage, LDAZeroPageX, LDAIndexedIndirect, LDAIndirectIndexed,
 				STXAbsolute, STAAbsoluteX, STAAbsoluteY, STAZeroPage, STAZeroPageX, STAIndexedIndirect, STAIndirectIndexed, STAAbsolute,
 				BITAbsolute, BITZeroPage, RTS, SEI, SED, PHP, PLA, ANDImmediate, ANDAbsolute, ANDAbsoluteX,
