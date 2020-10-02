@@ -57,14 +57,14 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 			{
 				// https://wiki.nesdev.com/w/index.php/PPU_scrolling#.242002_read
 				// https://wiki.nesdev.com/w/index.php/PPU_registers#PPUSTATUS
-				// Reading the status register will clear bit 7 mentioned 
-				// above and also the address latch used by PPUSCROLL 
-				// and PPUADDR. It does not clear the sprite 0 hit 
-				// or overflow bit.
-				const uint8_t register_value = ppu.GetStatusRegister().Register;
-
+				uint8_t register_value = ppu.GetStatusRegister().Register;
 				if (!GetReadyOnlyMode())
 				{
+					// Reading the status register will clear bit 7 mentioned 
+					// above and also the address latch used by PPUSCROLL 
+					// and PPUADDR. It does not clear the sprite 0 hit 
+					// or overflow bit.
+
 					// reset latch
 					ppu.ResetWriteToggle();
 

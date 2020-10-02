@@ -15,7 +15,7 @@ std::shared_ptr<NESConsole> NESConsole::GetInstance(void)
 
 NESConsole::NESConsole()
 {
-	std::string filename = "C:/Users/Public/logs/example";
+	std::string filename = "C:/Users/Public/logs/nes_";
 	time_t rawtime;
 	struct tm timeinfo;
 	char buffer[80];
@@ -25,7 +25,7 @@ NESConsole::NESConsole()
 
 	strftime(buffer, 80, "%Y_%m_%d_%H_%M_%S", &timeinfo);
 	filename += buffer;
-	filename += ".txt";
+	filename += ".log";
 	m_log_file.open(filename);
 }
 
