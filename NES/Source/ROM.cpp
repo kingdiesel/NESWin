@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include <iomanip>
+#include "Mappers/Mapper000.h"
 
 using namespace std;
 
@@ -44,7 +45,11 @@ void ROM::Load(const std::string &path)
 	}
 	m_chr_buffer = new uint8_t[m_chr_size];
 	std::memcpy(m_chr_buffer, &m_rom_buffer[HEADER_SIZE + m_prg_size], m_chr_size);
-	if (GetHeaderData().GetMapperNumber() != 0)
+	if (GetHeaderData().GetMapperNumber() == 0)
+	{
+		m_mapper = new Mapper000(m_header_data);
+	}
+	else
 	{
 		std::cout << "Unsupported mapper: " << GetHeaderData().GetMapperNumber() << std::endl;
 		exit(1);
@@ -62,58 +67,25 @@ void ROM::Reset()
 	memset(m_header_data.raw_data, 0, 16);
 }
 
-uint16_t ROM::GetMappedPosition(const uint16_t position) const
-{
-	//std::cout << "Getting 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0') << position << std::endl;
-	// https://wiki.nesdev.com/w/index.php/NROM
-	if (m_header_data.GetMapperNumber() == 0)
-	{
-		// CPU $6000-$7FFF: Family Basic only: PRG RAM, mirrored as necessary to 
-		//				fill entire 8 KiB window, write protectable with an external switch
-		// CPU $8000-$BFFF: First 16 KB of ROM.
-		// CPU $C000-$FFFF: Last 16 KB of ROM (NROM-256) or mirror of $8000-$BFFF (NROM-128).
-
-		// m_header_data.prg_rom_size_16
-		if (position > 0x6000 && position <= 0x7FFF)
-		{
-			// no PRG RAM on mapper 000
-			assert(false);
-		}
-		else if (position >= 0x8000 && position <= 0xFFFF)
-		{
-			return position & (m_header_data.prg_rom_size_16 > 1 ? 0x7FFF : 0x3FFF);
-		}
-		else
-		{
-			return position;
-		}
-	}
-	else
-	{
-		std::cout << "Unknown mapper type: " << m_header_data.GetMapperNumber() << std::endl;
-		exit(1);
-	}
-	return 0;
-}
-
-void ROM::SetChrByte(const uint16_t position, const uint8_t value)
+void ROM::PPUWriteByte(const uint16_t position, const uint8_t value)
 {
 	assert(position >= 0 && position < m_chr_size);
 	m_chr_buffer[position] = value;
 }
 
-uint8_t ROM::GetChrByte(const uint16_t position) const
+uint8_t ROM::PPUReadByte(const uint16_t position) const
 {
 	assert(position >= 0 && position < m_chr_size);
 	return m_chr_buffer[position];
 }
 
-uint8_t ROM::GetByte(const uint16_t position) const
+uint8_t ROM::CPUReadByte(const uint16_t position) const
 {
 	assert(position >= 0 && position <= 0xFFFF);
 	assert(m_prg_buffer != nullptr);
 	// https://wiki.nesdev.com/w/index.php/NROM
-	const uint16_t mapped_position = GetMappedPosition(position);
+	uint16_t mapped_position;
+	m_mapper->CPUReadByte(position, mapped_position);
 	if (mapped_position > m_prg_size)
 	{
 		// TODO: this needs to return whatever is on the bus from the last

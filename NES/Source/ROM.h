@@ -55,17 +55,17 @@ class ROM
 public:
 	void Load(const std::string &path);
 
-	uint8_t GetByte(const uint16_t position) const;
-	uint8_t GetChrByte(const uint16_t position) const;
-	void SetChrByte(const uint16_t position, const uint8_t value);
+	uint8_t CPUReadByte(const uint16_t position) const;
+	uint8_t PPUReadByte(const uint16_t position) const;
+	void PPUWriteByte(const uint16_t position, const uint8_t value);
 	void Reset();
 	bool HasChrRam() const { return m_header_data.chr_rom_size_8 == 0; }
 	int GetMapperNumber() const { return m_header_data.GetMapperNumber(); }
 	const iNESHeader &GetHeaderData() const;
+	class IMapper* GetMapper() { return m_mapper; }
 
 private:
-	uint16_t GetMappedPosition(const uint16_t position) const;
-
+	class IMapper* m_mapper = nullptr;
 	uint8_t *m_rom_buffer = nullptr;
 	uint8_t *m_prg_buffer = nullptr;
 	uint8_t *m_chr_buffer = nullptr;
@@ -73,6 +73,5 @@ private:
 	int m_chr_size = 0;
 	iNESHeader m_header_data;
 };
-
 
 #endif //NES_ROM_H

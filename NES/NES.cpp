@@ -20,7 +20,8 @@ int main(int argv, char** args)
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
 	NESConsole::GetInstance()->LoadROM(
-		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nesstress.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nesstress.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/power_up_palette.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/sprite_ram.nes"
@@ -33,6 +34,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_dummy_reads.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/instr_misc.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/color_test.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/zelda.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/shadowgate.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
