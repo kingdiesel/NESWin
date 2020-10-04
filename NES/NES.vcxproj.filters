@@ -55,6 +55,9 @@
     <ClCompile Include="Source\Mappers\Mapper000.cpp">
       <Filter>Source Files\Mappers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Mappers\Mapper001.cpp">
+      <Filter>Source Files\Mappers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Addressing\AddressingMode.h">
@@ -227,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="Source\Mappers\Mapper000.h">
       <Filter>Source Files\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mappers\Mapper001.h">
+      <Filter>Source Files\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BitMask.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
