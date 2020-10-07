@@ -1,7 +1,7 @@
 #include "Mapper000.h"
 #include <cassert>
 
-bool Mapper000::CPUReadByte(const uint16_t position, uint16_t& mapped_position)
+bool Mapper000::CPUReadByte(const uint16_t position, uint16_t& mapped_position, uint8_t& value)
 {
 	//	CPU $6000 - $7FFF: 
 	//		Family Basic only : PRG RAM, mirrored as necessary to fill entire 8 KiB window, 
@@ -20,10 +20,11 @@ bool Mapper000::CPUReadByte(const uint16_t position, uint16_t& mapped_position)
 
 bool Mapper000::CPUWriteByte(const uint16_t position, uint16_t& mapped_position, const uint8_t value)
 {
-	return CPUReadByte(position, mapped_position);
+	uint8_t dummy = 0x00;
+	return CPUReadByte(position, mapped_position, dummy);
 }
 
-bool Mapper000::PPUReadByte(const uint16_t position, uint16_t& mapped_position)
+bool Mapper000::PPUReadByte(const uint16_t position, uint16_t& mapped_position, uint8_t& value)
 {
 	return false;
 }
