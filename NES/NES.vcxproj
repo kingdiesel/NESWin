@@ -154,7 +154,6 @@
     <ClCompile Include="Source\Addressing\AddressingMode.cpp" />
     <ClCompile Include="Source\CPU.cpp" />
     <ClCompile Include="Source\Instructions\BaseInstruction.cpp" />
-    <ClCompile Include="Source\Mappers\Mapper000.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
     <ClCompile Include="Source\NESConsole.cpp" />
     <ClCompile Include="Source\PatternTableTile.cpp" />
@@ -214,8 +213,6 @@
     <ClInclude Include="Source\Instructions\TXA.h" />
     <ClInclude Include="Source\Instructions\TXS.h" />
     <ClInclude Include="Source\Instructions\TYA.h" />
-    <ClInclude Include="Source\Mappers\IMapper.h" />
-    <ClInclude Include="Source\Mappers\Mapper000.h" />
     <ClInclude Include="Source\Memory.h" />
     <ClInclude Include="Source\NESConsole.h" />
     <ClInclude Include="Source\PatternTableTile.h" />

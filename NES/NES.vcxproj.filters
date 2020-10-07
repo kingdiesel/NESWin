@@ -11,9 +11,6 @@
     <Filter Include="Source Files\Instructions">
       <UniqueIdentifier>{430a9396-659b-4e57-8379-c544d1449526}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Mappers">
-      <UniqueIdentifier>{07cbb128-09f3-49d0-ae60-5b4b33fcc516}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NES.cpp">
@@ -51,9 +48,6 @@
     </ClCompile>
     <ClCompile Include="Sprites.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Mappers\Mapper000.cpp">
-      <Filter>Source Files\Mappers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,12 +215,6 @@
     <ClInclude Include="Sprites.h" />
     <ClInclude Include="Source\Instructions\BRK.h">
       <Filter>Source Files\Instructions</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Mappers\IMapper.h">
-      <Filter>Source Files\Mappers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Mappers\Mapper000.h">
-      <Filter>Source Files\Mappers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

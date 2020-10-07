@@ -157,7 +157,7 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 	}
 	else if (position >= 0x4020 && position <= 0xFFFF)
 	{
-		return m_rom.CPUReadByte(position);
+		return m_rom.GetByte(position);
 	}
 	std::cout << "Unknown memory location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
 				<< position << std::endl;
@@ -346,7 +346,7 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 	position &= 0x3FFF;
 	if (position >= 0x0000 && position <= 0x1FFF)
 	{
-		return m_rom.PPUReadByte(position);
+		return m_rom.GetChrByte(position);
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
@@ -425,7 +425,7 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 	position &= 0x3FFF;
 	if (position >= 0x0000 && position <= 0x1FFF)
 	{
-		m_rom.PPUWriteByte(position, value);
+		m_rom.SetChrByte(position, value);
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
