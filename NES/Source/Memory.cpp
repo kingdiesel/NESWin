@@ -3,6 +3,7 @@
 #include <iomanip>
 #include "Memory.h"
 #include "NESConsole.h"
+#include "Mappers/IMapper.h"
 const int ppu_ram_size = 16 * 1024;
 Memory::Memory()
 {
@@ -487,7 +488,7 @@ uint16_t Memory::GetMirroredPosition(const uint16_t position) const
 	// https://wiki.nesdev.com/w/index.php/INES#Flags_6
 	//  0: horizontal (vertical arrangement)
 	//	1: vertical (horizontal arrangement)
-	if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
+	if (m_rom.GetMapper()->GetMirrorMode() == MirrorMode::Horizontal)
 	{
 		if (mirrored_position >= 0x2400 && mirrored_position < 0x2800)
 		{
@@ -498,7 +499,7 @@ uint16_t Memory::GetMirroredPosition(const uint16_t position) const
 			mirrored_position &= 0x2BFF;
 		}
 	}
-	else
+	else if (m_rom.GetMapper()->GetMirrorMode() == MirrorMode::Vertical)
 	{
 		if (mirrored_position >= 0x2800 && mirrored_position < 0x2C00)
 		{
