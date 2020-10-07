@@ -95,9 +95,8 @@ uint8_t ROM::CPUReadByte(const uint16_t position) const
 	assert(position >= 0 && position <= 0xFFFF);
 	assert(m_prg_buffer != nullptr);
 	// https://wiki.nesdev.com/w/index.php/NROM
-	uint16_t mapped_position = position;
-	uint8_t mapped_value = 0x00;
-	m_mapper->CPUReadByte(position, mapped_position, mapped_value);
+	uint16_t mapped_position;
+	m_mapper->CPUReadByte(position, mapped_position);
 	if (mapped_position > m_prg_size)
 	{
 		// TODO: this needs to return whatever is on the bus from the last
