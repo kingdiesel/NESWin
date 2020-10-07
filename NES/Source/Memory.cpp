@@ -300,10 +300,7 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 	}
 	else if (position >= 0x4020 && position <= 0xFFFF)
 	{
-		std::cout << "Unsupported write location: 0x" << std::uppercase << std::hex << std::setw(4) << std::setfill('0')
-			<< position << std::endl;
-		assert(false);
-		exit(1);
+		m_rom.CPUWriteByte(position, value);
 	}
 	else
 	{

@@ -58,6 +58,7 @@ public:
 	uint8_t CPUReadByte(const uint16_t position) const;
 	uint8_t PPUReadByte(const uint16_t position) const;
 	void PPUWriteByte(const uint16_t position, const uint8_t value);
+	void CPUWriteByte(const uint16_t position, const uint8_t value);
 	void Reset();
 	bool HasChrRam() const { return m_header_data.chr_rom_size_8 == 0; }
 	int GetMapperNumber() const { return m_header_data.GetMapperNumber(); }
