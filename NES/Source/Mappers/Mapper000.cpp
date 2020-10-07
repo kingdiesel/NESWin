@@ -26,20 +26,10 @@ bool Mapper000::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 
 bool Mapper000::PPUReadByte(const uint16_t position, uint16_t& mapped_position, uint8_t& value)
 {
-	mapped_position = position;
-	return true;
+	return false;
 }
 
 bool Mapper000::PPUWriteByte(const uint16_t position, uint16_t& mapped_position, const uint8_t value)
 {
 	return false;
-}
-
-MirrorMode Mapper000::GetMirrorMode()
-{
-	if (m_header_data.m_flags_6.Bits.m_mirroring == 0)
-	{
-		return MirrorMode::Horizontal;
-	}
-	return MirrorMode::Vertical;
 }

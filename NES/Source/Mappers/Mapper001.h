@@ -11,7 +11,6 @@ public:
 
 	virtual bool PPUReadByte(const uint16_t position, uint16_t& mapped_position, uint8_t& value) override;
 	virtual bool PPUWriteByte(const uint16_t position, uint16_t& mapped_position, const uint8_t value) override;
-	virtual MirrorMode GetMirrorMode() override;
 private:
 	// https://wiki.nesdev.com/w/index.php/MMC1#Registers
 	uint8_t m_load_shift_register = 0x00;

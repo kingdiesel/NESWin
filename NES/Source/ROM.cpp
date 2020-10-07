@@ -74,32 +74,20 @@ void ROM::Reset()
 
 void ROM::PPUWriteByte(const uint16_t position, const uint8_t value)
 {
-	uint16_t mapped_position = position;
-	m_mapper->PPUWriteByte(position, mapped_position, value);
-	assert(mapped_position >= 0 && mapped_position < m_chr_size);
-	m_chr_buffer[mapped_position] = value;
+	assert(position >= 0 && position < m_chr_size);
+	m_chr_buffer[position] = value;
 }
 
 void ROM::CPUWriteByte(const uint16_t position, const uint8_t value)
 {
 	uint16_t mapped_position = 0x0000;
-	if (m_mapper->CPUWriteByte(position, mapped_position, value))
-	{
-		if (mapped_position != 0xFFFF)
-		{
-			assert(mapped_position < m_prg_size);
-			m_prg_buffer[mapped_position] = value;
-		}
-	}
+	m_mapper->CPUWriteByte(position, mapped_position, value);
 }
 
 uint8_t ROM::PPUReadByte(const uint16_t position) const
 {
-	uint16_t mapped_position = position;
-	uint8_t value = 0x00;
-	m_mapper->PPUReadByte(position, mapped_position, value);
-	assert(mapped_position >= 0 && mapped_position < m_chr_size);
-	return m_chr_buffer[mapped_position];
+	assert(position >= 0 && position < m_chr_size);
+	return m_chr_buffer[position];
 }
 
 uint8_t ROM::CPUReadByte(const uint16_t position) const

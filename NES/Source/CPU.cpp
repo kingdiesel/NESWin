@@ -220,6 +220,7 @@ void CPU::PowerUp()
 	// https://wiki.nesdev.com/w/index.php/CPU_power_up_state#At_power-up
 	m_instruction_count = 0;
 	m_cycles = 0;
+	m_logging_enabled = false;
 	m_last_instruction_str.clear();
 	m_reg_x = m_reg_y = m_reg_a = 0x00;
 	m_reg_s = 0xFD;

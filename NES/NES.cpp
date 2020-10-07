@@ -19,7 +19,6 @@ int main(int argv, char** args)
 
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
-	NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
 	NESConsole::GetInstance()->LoadROM(
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nesstress.nes"

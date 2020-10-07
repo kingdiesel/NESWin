@@ -15,7 +15,7 @@ bool Mapper001::CPUReadByte(const uint16_t position, uint16_t& mapped_position, 
 	// CPU $6000-$7FFF: 8 KB PRG RAM bank, (optional)
 	if (position >= 0x6000 && position <= 0x7FFF)
 	{
-		mapped_position = 0xFFFF;
+		mapped_position = 0xFFFFFFFF;
 		value = m_prg_ram_bank[position & ADDR_8K_MAX];
 		return true;
 	}
@@ -51,7 +51,7 @@ bool Mapper001::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 	// CPU $6000-$7FFF: 8 KB PRG RAM bank, (optional)
 	if (position >= 0x6000 && position <= 0x7FFF)
 	{
-		mapped_position = 0xFFFF;
+		mapped_position = 0xFFFFFFFF;
 		m_prg_ram_bank[position & ADDR_8K_MAX] = value;
 		return true;
 	}
@@ -93,14 +93,15 @@ bool Mapper001::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 			{
 				uint16_t target_register = position >> 13;
 				target_register &= BIT_0_1;
+				target_register <<= 13;
 
 				// Control (internal, $8000-$9FFF)
-				if (target_register == 0)
+				if (target_register >= 0x8000 && target_register <= 0x9FFF)
 				{
 					m_control_register.Register = m_load_shift_register & BIT_0_1_2_3_4;
 				}
 				// CHR bank 0 (internal, $A000-$BFFF)
-				else if (target_register == 1)
+				else if (target_register >= 0xA000 && target_register <= 0xBFFF)
 				{
 					m_chr_bank_0_register.Register = m_load_shift_register & BIT_0_1_2_3_4;
 					if (m_control_register.Bits.m_chr_rom_bank == 1)
@@ -113,7 +114,7 @@ bool Mapper001::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 					}
 				}
 				// CHR bank 1 (internal, $C000-$DFFF)
-				else if (target_register == 2)
+				else if (target_register >= 0xC000 && target_register <= 0xDFFF)
 				{
 					m_chr_bank_1_register.Register = m_load_shift_register & BIT_0_1_2_3_4;
 					if (m_control_register.Bits.m_chr_rom_bank == 1)
@@ -122,7 +123,7 @@ bool Mapper001::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 					}
 				}
 				// PRG bank (internal, $E000-$FFFF)
-				else if (target_register == 3)
+				else if (target_register >= 0xE000 && target_register <= 0xFFFF)
 				{
 					m_prg_bank_register.Register = m_load_shift_register & BIT_0_1_2_3_4;
 
@@ -148,26 +149,9 @@ bool Mapper001::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 				m_load_shift_register_count = 0;
 			}
 		}
+		return true;
 	}
 	return false;
-}
-
-MirrorMode Mapper001::GetMirrorMode()
-{
-	// (0: one-screen, lower bank; 1: one-screen, upper bank;2: vertical; 3: horizontal)
-	if (m_control_register.Bits.m_mirroring == 0)
-	{
-		return MirrorMode::OneScreenLower;
-	}
-	else if (m_control_register.Bits.m_mirroring == 1)
-	{
-		return MirrorMode::OneScreenUpper;
-	}
-	else if (m_control_register.Bits.m_mirroring == 2)
-	{
-		return MirrorMode::Vertical;
-	}
-	return MirrorMode::Horizontal;
 }
 
 bool Mapper001::PPUReadByte(const uint16_t position, uint16_t& mapped_position, uint8_t& value)

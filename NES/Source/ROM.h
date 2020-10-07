@@ -64,7 +64,6 @@ public:
 	int GetMapperNumber() const { return m_header_data.GetMapperNumber(); }
 	const iNESHeader &GetHeaderData() const;
 	class IMapper* GetMapper() { return m_mapper; }
-	class IMapper* GetMapper() const { return m_mapper; }
 
 private:
 	class IMapper* m_mapper = nullptr;
