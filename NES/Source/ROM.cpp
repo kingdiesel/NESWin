@@ -5,7 +5,6 @@
 #include <iostream>
 #include <iomanip>
 #include "Mappers/Mapper000.h"
-#include "Mappers/Mapper001.h"
 
 using namespace std;
 
@@ -46,18 +45,14 @@ void ROM::Load(const std::string &path)
 	}
 	m_chr_buffer = new uint8_t[m_chr_size];
 	std::memcpy(m_chr_buffer, &m_rom_buffer[HEADER_SIZE + m_prg_size], m_chr_size);
-	switch (GetHeaderData().GetMapperNumber())
+	if (GetHeaderData().GetMapperNumber() == 0)
 	{
-	case 0:
 		m_mapper = new Mapper000(m_header_data);
-		break;
-	case 1:
-		m_mapper = new Mapper001(m_header_data);
-		break;
-	default:
+	}
+	else
+	{
 		std::cout << "Unsupported mapper: " << GetHeaderData().GetMapperNumber() << std::endl;
 		exit(1);
-		break;
 	}
 }
 
@@ -76,12 +71,6 @@ void ROM::PPUWriteByte(const uint16_t position, const uint8_t value)
 {
 	assert(position >= 0 && position < m_chr_size);
 	m_chr_buffer[position] = value;
-}
-
-void ROM::CPUWriteByte(const uint16_t position, const uint8_t value)
-{
-	uint16_t mapped_position = 0x0000;
-	m_mapper->CPUWriteByte(position, mapped_position, value);
 }
 
 uint8_t ROM::PPUReadByte(const uint16_t position) const

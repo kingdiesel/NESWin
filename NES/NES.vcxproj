@@ -155,7 +155,6 @@
     <ClCompile Include="Source\CPU.cpp" />
     <ClCompile Include="Source\Instructions\BaseInstruction.cpp" />
     <ClCompile Include="Source\Mappers\Mapper000.cpp" />
-    <ClCompile Include="Source\Mappers\Mapper001.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
     <ClCompile Include="Source\NESConsole.cpp" />
     <ClCompile Include="Source\PatternTableTile.cpp" />
@@ -168,7 +167,6 @@
     <ClInclude Include="PatternTable.h" />
     <ClInclude Include="PPU.h" />
     <ClInclude Include="Source\Addressing\AddressingMode.h" />
-    <ClInclude Include="Source\BitMask.h" />
     <ClInclude Include="Source\CPU.h" />
     <ClInclude Include="Source\Instructions\ADC.h" />
     <ClInclude Include="Source\Instructions\AND.h" />
@@ -218,7 +216,6 @@
     <ClInclude Include="Source\Instructions\TYA.h" />
     <ClInclude Include="Source\Mappers\IMapper.h" />
     <ClInclude Include="Source\Mappers\Mapper000.h" />
-    <ClInclude Include="Source\Mappers\Mapper001.h" />
     <ClInclude Include="Source\Memory.h" />
     <ClInclude Include="Source\NESConsole.h" />
     <ClInclude Include="Source\PatternTableTile.h" />
