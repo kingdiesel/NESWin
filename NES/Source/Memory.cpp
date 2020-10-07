@@ -386,16 +386,39 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
+#if olc
+		PPU& ppu = NESConsole::GetInstance()->GetPPU();
+		position &= 0x001F;
+		if (position == 0x0010) position = 0x0000;
+		if (position == 0x0014) position = 0x0004;
+		if (position == 0x0018) position = 0x0008;
+		if (position == 0x001C) position = 0x000C;
+		return m_palette_buffer[position] & (ppu.GetMaskRegister().Bits.m_grayscale ? 0x30 : 0x3F);
+#else
 		PPU& ppu = NESConsole::GetInstance()->GetPPU();
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
-		const uint16_t mirrored_position = position & 0x3F1F;
-		if (IsBackgroundFallthrough(mirrored_position))
+		uint16_t mirrored_position = position & 0x3F1F;
+		if (mirrored_position == 0x3F10)
 		{
-			return m_palette_buffer[0];
+			mirrored_position = 0x3F00;
+		}
+		else if (mirrored_position == 0x3F14)
+		{
+			mirrored_position = 0x3F04;
+		}
+		else if (mirrored_position == 0x3F18)
+		{
+			mirrored_position = 0x3F08;
+		}
+		else if (mirrored_position == 0x3F1C)
+		{
+			mirrored_position = 0x3F0C;
 		}
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		return m_palette_buffer[shifted_down];
+#endif
+		
 	}
 	else
 	{
@@ -460,17 +483,36 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
+#if olc
+		position &= 0x001F;
+		if (position == 0x0010) position = 0x0000;
+		if (position == 0x0014) position = 0x0004;
+		if (position == 0x0018) position = 0x0008;
+		if (position == 0x001C) position = 0x000C;
+		m_palette_buffer[position] = value;
+#else
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
-		const uint16_t mirrored_position = position & 0x3F1F;
-		if (IsBackgroundFallthrough(mirrored_position))
+		uint16_t mirrored_position = position & 0x3F1F;
+		if (mirrored_position == 0x3F10)
 		{
-			// is writing to the fallthrough byte supported?
-			// if so -- remove this assert
-			//assert(false);
+			mirrored_position = 0x3F00;
+		}
+		else if (mirrored_position == 0x3F14)
+		{
+			mirrored_position = 0x3F04;
+		}
+		else if (mirrored_position == 0x3F18)
+		{
+			mirrored_position = 0x3F08;
+		}
+		else if (mirrored_position == 0x3F1C)
+		{
+			mirrored_position = 0x3F0C;
 		}
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		m_palette_buffer[shifted_down] = value;
+#endif
 	}
 	else
 	{

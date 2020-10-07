@@ -19,7 +19,7 @@ int main(int argv, char** args)
 
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
-	NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
+	//NESConsole::GetInstance()->GetCPU().SetLoggingEnabled(true);
 	NESConsole::GetInstance()->LoadROM(
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nesstress.nes"
@@ -35,10 +35,10 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu_dummy_reads.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/instr_misc.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/color_test.nes"
-		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/zelda.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/zelda.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/shadowgate.nes"
-		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/arkanoid.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/skydestroyer.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/1942.nes"
