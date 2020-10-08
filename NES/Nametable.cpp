@@ -43,6 +43,7 @@ void Nametable::Run()
 		m_attribute_table_data[i - attribute_memory_start] = memory.PPUReadByte(i);
 	}
 
+
 	// https://wiki.nesdev.com/w/index.php/PPU_nametables
 	for (uint16_t i = m_base_address; i < attribute_memory_start; ++i)
 	{
