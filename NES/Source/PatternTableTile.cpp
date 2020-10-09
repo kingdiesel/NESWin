@@ -40,41 +40,11 @@ void PatternTableTile::FillTextureData(const FillData& _data)
 		0x676767,
 	};
 
-	int start_address = 0;
-	switch (_data.m_palette_index)
-	{
-	case 0:
-		start_address = 0x3F01;
-		break;
-	case 1:
-		start_address = 0x3F05;
-		break;
-	case 2:
-		start_address = 0x3F09;
-		break;
-	case 3:
-		start_address = 0x3F0D;
-		break;
-	case 4:
-		start_address = 0x3F11;
-		break;
-	case 5:
-		start_address = 0x3F15;
-		break;
-	case 6:
-		start_address = 0x3F19;
-		break;
-	case 7:
-		start_address = 0x3F1D;
-		break;
-	default:
-		break;
-	}
-
+	const uint16_t start_address = 0x3F00 + _data.m_palette_index * 4;
 	Memory& memory = m_console->GetMemory();
-	for (int i = 1; i <= 3 && _data.m_palette_index != -1; ++i)
+	for (int i = 0; i < 3 && _data.m_palette_index != -1; ++i)
 	{
-		uint8_t color = memory.PPUReadByte(start_address + i - 1);
+		uint8_t color = memory.PPUReadByte(start_address + i);
 		uint32_t palette_color = PaletteColors[color];
 		COLOR_PALETTE[i] = palette_color;
 	}

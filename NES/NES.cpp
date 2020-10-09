@@ -261,17 +261,17 @@ int main(int argv, char** args)
 				&pattern_rect
 			);
 
+			static const int num_palette_entries = 0x3F1F - 0x3F00;
 			for (int i = 0x3F00; i <= 0x3F1F; ++i)
 			{
-				static const int num_palettes = 0x3F1F - 0x3F00;
 				SDL_Rect palette_rect;
 				palette_rect.y = pattern_render_area_y;
 				palette_rect.h = palette_height;
-				palette_rect.w = pattern_render_area_x / num_palettes;
+				palette_rect.w = pattern_render_area_x / num_palette_entries;
 				palette_rect.x = (i - 0x3F00) * palette_rect.w;
 
-				uint8_t color = memory.PPUReadByte(i);
-				uint32_t palette_color = PaletteColors[color];
+				const uint8_t color = memory.PPUReadByte(i);
+				const uint32_t palette_color = PaletteColors[color];
 
 				const uint8_t r = (palette_color & 0xFF0000) >> 16;
 				const uint8_t g = (palette_color & 0x00FF00) >> 8;

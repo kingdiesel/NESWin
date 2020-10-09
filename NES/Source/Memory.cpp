@@ -312,22 +312,6 @@ void Memory::CPUWriteByte(const uint16_t position, uint8_t value)
 	}
 }
 
-bool IsBackgroundFallthrough(const uint16_t position)
-{
-	if (position == 0x3F04
-		|| position == 0x3F08
-		|| position == 0x3F0C
-		|| position == 0x3F10
-		|| position == 0x3F14
-		|| position == 0x3F18
-		|| position == 0x3F1C
-		)
-	{
-		return true;
-	}
-	return false;
-}
-
 uint8_t Memory::PPUReadByte(uint16_t position) const
 {
 	/*
