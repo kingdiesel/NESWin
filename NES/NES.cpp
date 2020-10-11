@@ -52,7 +52,7 @@ int main(int argv, char** args)
 	);
 
 #define debug true
-	const int screen_scale = debug ? 1 : 2;
+	const int screen_scale = debug ? 1 : 3;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
 	const int pattern_render_area_x = 128;
@@ -411,7 +411,7 @@ int main(int argv, char** args)
 			}
 		}
 		
-		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 0x10, 0x10, 0x10, 0xFF);
 		SDL_RenderPresent(renderer);
 
 		const Uint32 frame_time = SDL_GetTicks() - frame_start;

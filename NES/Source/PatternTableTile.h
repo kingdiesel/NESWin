@@ -1,10 +1,7 @@
-//
-//
-
-#ifndef NES_PATTERNTABLETILE_H
-#define NES_PATTERNTABLETILE_H
-
+#pragma once
+#include <memory>
 #include <cstdint>
+#include "NESConsole.h"
 
 struct FillData
 {
@@ -40,14 +37,10 @@ public:
 	const uint32_t* GetTextureTileData() const { return m_texture_tile_data; }
 
 	void FillTextureData(const FillData& _data);
-	void GetTextureDataRow(int row, uint32_t* row_data, const FillData& _data);
-	static const int TILE_SIZE = 16;
+	static constexpr int TILE_SIZE = 16;
+	static constexpr int TILE_TEXTURE_SIZE = 64;
 private:
-	PatternTableTile(const PatternTableTile &other)
-	{}
 	uint8_t m_tile_data[TILE_SIZE];
-	uint32_t m_texture_tile_data[64];
-	class NESConsole* m_console = nullptr;
+	uint32_t m_texture_tile_data[TILE_TEXTURE_SIZE];
+	std::shared_ptr<NESConsole> m_console;
 };
-
-#endif //NES_PATTERNTABLETILE_H

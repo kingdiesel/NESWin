@@ -16,13 +16,6 @@ public:
 	void Run();
 	struct SDL_Texture* GetTexture() { return m_nametable_texture; }
 private:
-	uint8_t GetAttributeByte(const int row, const int col);
-	uint8_t GetAttributeIndex(
-		const int row,
-		const int col,
-		int& out_row,
-		int& out_col
-	);
 	uint8_t GetPaletteIndexFromAttributeByte(
 		const int row, 
 		const int col, 

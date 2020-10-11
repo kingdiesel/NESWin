@@ -1,5 +1,6 @@
 #include "Nametable.h"
 #include "Source/NESConsole.h"
+#include "Source/Globals.h"
 #include "PatternTable.h"
 #include "Source/PatternTableTile.h"
 #include <assert.h>
@@ -10,10 +11,10 @@ Nametable::Nametable(const uint16_t address, PatternTable* pattern_table) :
 	m_pattern_table(pattern_table)
 {
 	// https://wiki.nesdev.com/w/index.php/PPU_nametables
-	m_texture_nametable_data = new uint32_t[256*240];
-	m_attribute_table_data = new uint8_t[64];
-	memset(m_texture_nametable_data, 0x0, 256 * 240 * sizeof(uint32_t));
-	memset(m_attribute_table_data, 0x0, 64);
+	m_texture_nametable_data = new uint32_t[NES_RES];
+	m_attribute_table_data = new uint8_t[ATTR_BYTES];
+	memset(m_texture_nametable_data, 0x0, NES_RES * sizeof(uint32_t));
+	memset(m_attribute_table_data, 0x0, ATTR_BYTES);
 }
 
 void Nametable::Initialize(SDL_Renderer* renderer)
@@ -41,26 +42,34 @@ void Nametable::Run()
 	for (uint16_t i = attribute_memory_start; i < attribute_memory_end; ++i)
 	{
 		const int attribute_index = i - attribute_memory_start;
-		assert(attribute_index >= 0 && attribute_index < 64);
-		m_attribute_table_data[i - attribute_memory_start] = memory.PPUReadByte(i);
+		assert(attribute_index >= 0 && attribute_index < ATTR_BYTES);
+		m_attribute_table_data[attribute_index] = memory.PPUReadByte(i);
 	}
 
 	// https://wiki.nesdev.com/w/index.php/PPU_nametables
 	for (uint16_t i = m_base_address; i < attribute_memory_start; ++i)
 	{
-		int row = (i - m_base_address) / 32;
-		int col = (i - m_base_address) % 32;
+		const int nametable_row = (i - m_base_address) / 32;
+		const int nametable_col = (i - m_base_address) % 32;
+		const int attribute_row = nametable_row / 4;
+		const int attribute_col = nametable_col / 4;
+		const int attribute_index = (attribute_row * 8) + attribute_col;
+		assert(attribute_index >= 0 && attribute_index < ATTR_BYTES);
+		uint8_t attribute_byte = m_attribute_table_data[attribute_index];
+		const int attribute_sub_row = nametable_row / 2;
+		const int attribute_sub_col = nametable_col / 2;;
+		uint8_t palette_index = GetPaletteIndexFromAttributeByte(attribute_sub_row, attribute_sub_col, attribute_byte);
+
 		uint8_t tile_id = memory.PPUReadByte(i);
 		uint16_t tile_offset = pattern_table_id == 0 ? 0 : 256;
 		PatternTableTile* tile = m_pattern_table->GetTile(tile_id + tile_offset);
-		uint8_t attribute_byte = GetAttributeByte(row, col);
-		uint8_t palette_index = GetPaletteIndexFromAttributeByte(row, col, attribute_byte);
 		tile->FillTextureData(FillData(palette_index));
 		const uint32_t* tile_texture_data = tile->GetTextureTileData();
 		for (int i = 0; i < 8; ++i)
 		{
-			const int address = (8 * row * 256 + col * 8) + (i * 256);
-			assert(address >= 0 && address < 256 * 240);
+			const int address = (8 * nametable_row * 256 + nametable_col * 8) + (i * 256);
+			assert(address >= 0 && address < NES_RES);
+			assert(i * 8 >= 0 && i * 8 < PatternTableTile::TILE_TEXTURE_SIZE);
 			memcpy(&m_texture_nametable_data[address], &tile_texture_data[i*8], 8*sizeof(uint32_t));
 		}
 	}
@@ -71,29 +80,6 @@ void Nametable::Run()
 		m_texture_nametable_data,
 		256 * sizeof(Uint32)
 	);
-}
-
-uint8_t Nametable::GetAttributeIndex(
-	const int row,
-	const int col,
-	int& out_row,
-	int& out_col
-)
-{
-	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
-	out_row = 8 * (row / 4);
-	out_col = col / 4;
-	const int attribute_index = out_row + out_col;
-	return attribute_index;
-}
-
-uint8_t Nametable::GetAttributeByte(const int row, const int col)
-{
-	int out_row = 0;
-	int out_col = 0;
-	const int attribute_index = GetAttributeIndex(row, col, out_row, out_col);
-	assert(attribute_index >= 0 && attribute_index < 64);
-	return m_attribute_table_data[attribute_index];
 }
 
 uint8_t Nametable::GetPaletteIndexFromAttributeByte(
@@ -136,15 +122,15 @@ Nametable::Quadrant Nametable::GetQuadrantFromAttributeByte(
 {
 	// https://wiki.nesdev.com/w/index.php/PPU_attribute_tables
 	Nametable::Quadrant quadrant = Nametable::Quadrant::BOTTOM_RIGHT;
-	if ((row / 2) % 2 == 0 && (col / 2) % 2 == 0)
+	if (row  % 2 == 0 && col % 2 == 0)
 	{
 		quadrant = Nametable::Quadrant::TOP_LEFT;
 	}
-	else if ((row / 2) % 2 == 1 && (col / 2) % 2 == 0)
+	else if (row % 2 == 1 && col % 2 == 0)
 	{
 		quadrant = Nametable::Quadrant::BOTTOM_LEFT;
 	}
-	else if ((row / 2) % 2 == 0 && (col / 2) % 2 == 1)
+	else if (row % 2 == 0 && col % 2 == 1)
 	{
 		quadrant = Nametable::Quadrant::TOP_RIGHT;
 	}

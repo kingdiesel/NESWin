@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <iostream>
 #include <iomanip>
+#include "Globals.h"
 #include "Mappers/Mapper000.h"
 #include "Mappers/Mapper001.h"
 
@@ -34,7 +35,6 @@ void ROM::Load(const std::string &path)
 	m_header_data.flags_10 = m_header_data.raw_data[10];
 
 	//HEADER_SIZE + (16 * KB_SIZE * self.num_prg_blocks
-	const int KB = 1024;
 	m_prg_size = (16 * KB * m_header_data.prg_rom_size_16);
 	m_prg_buffer = new uint8_t[m_prg_size];
 	std::memcpy(m_prg_buffer, &m_rom_buffer[HEADER_SIZE], m_prg_size);

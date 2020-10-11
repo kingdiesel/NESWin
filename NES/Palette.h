@@ -1,8 +1,8 @@
 #pragma once
 #include <cstdint>
-
+#include "Source/Globals.h"
 // http://www.thealmightyguru.com/Games/Hacking/Wiki/index.php/NES_Palette
-static uint32_t PaletteColors[64] = {
+static uint32_t PaletteColors[NUM_COLORS] = {
         0xFF7C7C7C, 
         0xFF0000FC, 
         0xFF0000BC, 

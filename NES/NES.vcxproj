@@ -170,6 +170,7 @@
     <ClInclude Include="Source\Addressing\AddressingMode.h" />
     <ClInclude Include="Source\BitMask.h" />
     <ClInclude Include="Source\CPU.h" />
+    <ClInclude Include="Source\Globals.h" />
     <ClInclude Include="Source\Instructions\ADC.h" />
     <ClInclude Include="Source\Instructions\AND.h" />
     <ClInclude Include="Source\Instructions\ASL.h" />
