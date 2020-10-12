@@ -49,6 +49,8 @@ void PatternTableTile::FillTextureData(const FillData& _data)
 		uint32_t palette_color = PaletteColors[color];
 		COLOR_PALETTE[i] = palette_color;
 	}
+	// background always universal
+	COLOR_PALETTE[0] = PaletteColors[memory.PPUReadByte(0x3F00)];
 
 	// https://wiki.nesdev.com/w/index.php/PPU_pattern_tables
 	for (int row = 0; row < 8; ++row)

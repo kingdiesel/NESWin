@@ -38,7 +38,7 @@ void Nametable::Run()
 
 	// fill attribute memory
 	const uint16_t attribute_memory_start = m_base_address + 960;
-	const uint16_t attribute_memory_end = m_base_address + 1024;
+	const uint16_t attribute_memory_end = attribute_memory_start + ATTR_BYTES;
 	for (uint16_t i = attribute_memory_start; i < attribute_memory_end; ++i)
 	{
 		const int attribute_index = i - attribute_memory_start;
@@ -58,19 +58,24 @@ void Nametable::Run()
 		uint8_t attribute_byte = m_attribute_table_data[attribute_index];
 		const int attribute_sub_row = nametable_row / 2;
 		const int attribute_sub_col = nametable_col / 2;;
-		uint8_t palette_index = GetPaletteIndexFromAttributeByte(attribute_sub_row, attribute_sub_col, attribute_byte);
+		const uint8_t palette_index = GetPaletteIndexFromAttributeByte(attribute_sub_row, attribute_sub_col, attribute_byte);
+		assert(palette_index >= 0 && palette_index < 4);
 
 		uint8_t tile_id = memory.PPUReadByte(i);
 		uint16_t tile_offset = pattern_table_id == 0 ? 0 : 256;
 		PatternTableTile* tile = m_pattern_table->GetTile(tile_id + tile_offset);
 		tile->FillTextureData(FillData(palette_index));
 		const uint32_t* tile_texture_data = tile->GetTextureTileData();
-		for (int i = 0; i < 8; ++i)
+		for (int j = 0; j < 8; ++j)
 		{
-			const int address = (8 * nametable_row * 256 + nametable_col * 8) + (i * 256);
+			const int address = (8 * nametable_row * 256 + nametable_col * 8) + (j * 256);
 			assert(address >= 0 && address < NES_RES);
-			assert(i * 8 >= 0 && i * 8 < PatternTableTile::TILE_TEXTURE_SIZE);
-			memcpy(&m_texture_nametable_data[address], &tile_texture_data[i*8], 8*sizeof(uint32_t));
+			assert(j * 8 >= 0 && j * 8 < PatternTableTile::TILE_TEXTURE_SIZE);
+			// TODO: why
+			//if (address + 8 * sizeof(uint32_t) <= NES_RES)
+			{
+				memcpy(&m_texture_nametable_data[address], &tile_texture_data[j * 8], 8 * sizeof(uint32_t));
+			}
 		}
 	}
 
