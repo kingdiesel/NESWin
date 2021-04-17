@@ -48,10 +48,6 @@ private:
 	uint8_t m_primary_oam[256];
 	uint8_t m_secondary_oam[64];
 	bool m_read_only_mode = false;
-#define olc 0
-#if olc
-	uint8_t     tblName[2][1024];
-#endif
 	mutable uint8_t m_controller_poll = 0;
 };
 

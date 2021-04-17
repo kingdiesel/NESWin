@@ -24,9 +24,6 @@ Memory::Memory()
 	memset(m_palette_buffer, 0x00, 32);
 	memset(m_primary_oam, 0x00, 256);
 	memset(m_secondary_oam, 0x00, 64);
-#if olc
-	memset(tblName, 0x00, 2048);
-#endif
 }
 
 uint8_t Memory::CPUReadByte(const uint16_t position) const
@@ -335,53 +332,12 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
-#if olc
-		uint16_t addr = position;
-		addr &= 0x0FFF;
-		uint8_t data = 0x00;
-		//  0: horizontal (vertical arrangement)
-		//	1: vertical (horizontal arrangement)
-		if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
-		{
-			if (addr >= 0x0000 && addr <= 0x03FF)
-				data = tblName[0][addr & 0x03FF];
-			if (addr >= 0x0400 && addr <= 0x07FF)
-				data = tblName[0][addr & 0x03FF];
-			if (addr >= 0x0800 && addr <= 0x0BFF)
-				data = tblName[1][addr & 0x03FF];
-			if (addr >= 0x0C00 && addr <= 0x0FFF)
-				data = tblName[1][addr & 0x03FF];
-			return data;
-		}
-		else
-		{
-			if (addr >= 0x0000 && addr <= 0x03FF)
-				data = tblName[0][addr & 0x03FF];
-			if (addr >= 0x0400 && addr <= 0x07FF)
-				data = tblName[1][addr & 0x03FF];
-			if (addr >= 0x0800 && addr <= 0x0BFF)
-				data = tblName[0][addr & 0x03FF];
-			if (addr >= 0x0C00 && addr <= 0x0FFF)
-				data = tblName[1][addr & 0x03FF];
-			return data;
-		}
-#else
 		uint16_t mirrored_position = GetMirroredPosition(position & 0x2FFF);
 		assert(mirrored_position >= 0 && mirrored_position < PPU_RAM_SIZE);
 		return m_ppu_ram_buffer[mirrored_position];
-#endif
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
-#if olc
-		PPU& ppu = NESConsole::GetInstance()->GetPPU();
-		position &= 0x001F;
-		if (position == 0x0010) position = 0x0000;
-		if (position == 0x0014) position = 0x0004;
-		if (position == 0x0018) position = 0x0008;
-		if (position == 0x001C) position = 0x000C;
-		return m_palette_buffer[position] & (ppu.GetMaskRegister().Bits.m_grayscale ? 0x30 : 0x3F);
-#else
 		PPU& ppu = NESConsole::GetInstance()->GetPPU();
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
 		uint16_t mirrored_position = position & 0x3F1F;
@@ -404,8 +360,6 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		return m_palette_buffer[shifted_down];
-#endif
-		
 	}
 	else
 	{
@@ -437,47 +391,12 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 	}
 	else if (position >= 0x2000 && position <= 0x3EFF)
 	{
-#if olc
-		uint16_t addr = position;
-		addr &= 0x0FFF;
-		if (GetROM().GetHeaderData().m_flags_6.Bits.m_mirroring == 0)
-		{
-			if (addr >= 0x0000 && addr <= 0x03FF)
-				tblName[0][addr & 0x03FF] = value;
-			if (addr >= 0x0400 && addr <= 0x07FF)
-				tblName[0][addr & 0x03FF] = value;
-			if (addr >= 0x0800 && addr <= 0x0BFF)
-				tblName[1][addr & 0x03FF] = value;
-			if (addr >= 0x0C00 && addr <= 0x0FFF)
-				tblName[1][addr & 0x03FF] = value;
-		}
-		else
-		{
-			if (addr >= 0x0000 && addr <= 0x03FF)
-				tblName[0][addr & 0x03FF] = value;
-			if (addr >= 0x0400 && addr <= 0x07FF)
-				tblName[1][addr & 0x03FF] = value;
-			if (addr >= 0x0800 && addr <= 0x0BFF)
-				tblName[0][addr & 0x03FF] = value;
-			if (addr >= 0x0C00 && addr <= 0x0FFF)
-				tblName[1][addr & 0x03FF] = value;
-		}
-#else
 		uint16_t mirrored_position = GetMirroredPosition(position & 0x2FFF);
 		assert(mirrored_position >=0 && mirrored_position < PPU_RAM_SIZE);
 		m_ppu_ram_buffer[mirrored_position] = value;
-#endif
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
-#if olc
-		position &= 0x001F;
-		if (position == 0x0010) position = 0x0000;
-		if (position == 0x0014) position = 0x0004;
-		if (position == 0x0018) position = 0x0008;
-		if (position == 0x001C) position = 0x000C;
-		m_palette_buffer[position] = value;
-#else
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
 		uint16_t mirrored_position = position & 0x3F1F;
 		if (mirrored_position == 0x3F10)
@@ -499,7 +418,6 @@ void Memory::PPUWriteByte(uint16_t position, uint8_t value)
 		const int shifted_down = mirrored_position - 0x3F00;
 		assert(shifted_down >= 0 && shifted_down < 32);
 		m_palette_buffer[shifted_down] = value;
-#endif
 	}
 	else
 	{

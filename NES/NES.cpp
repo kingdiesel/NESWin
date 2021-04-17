@@ -38,11 +38,11 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/zelda.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/shadowgate.nes"
-		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/arkanoid.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/skydestroyer.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/1942.nes"
-		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/iceclimber.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/excitebike.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/defender.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/loderunner.nes"
@@ -51,7 +51,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"
 	);
 
-#define debug true
+#define debug false
 	const int screen_scale = debug ? 1 : 3;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
