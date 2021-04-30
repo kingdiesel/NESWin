@@ -22,7 +22,7 @@ public:
 		this->m_increments_program_counter = true;
 		if (static_cast<_execute *>(this)->ShouldBranch())
 		{
-			uint16_t destination = this->GetAddressingMode().GetMemoryByteValue();
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
 			cpu.SetRegisterProgramCounter(destination);
 			this->m_increments_program_counter = false;
 			this->m_cycles = 3;

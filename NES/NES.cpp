@@ -11,11 +11,15 @@
 #include "Nametable.h"
 #include "Sprites.h"
 
+#define NESTEST_TXT 1
+
 int main(int argv, char** args)
 {	
-	//NESConsole::GetInstance()->RunNesTestTiming();
-	//NESConsole::GetInstance()->RunNesTest();
-	//return 0;
+#if NESTEST_TXT
+	NESConsole::GetInstance()->RunNesTestTiming();
+	NESConsole::GetInstance()->RunNesTest();
+	return 0;
+#endif // NESTEST_TXT
 
 	//NESConsole console;
 	NESConsole::GetInstance()->Initialize();
@@ -23,7 +27,7 @@ int main(int argv, char** args)
 	NESConsole::GetInstance()->LoadROM(
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/cpu.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nesstress.nes"
-		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
+		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/nestest.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/power_up_palette.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/sprite_ram.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/palette_ram.nes"
@@ -38,7 +42,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/zelda.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/dk.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/shadowgate.nes"
-		"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
+		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/smb.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/arkanoid.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/skydestroyer.nes"
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/1942.nes"
