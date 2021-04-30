@@ -11,12 +11,12 @@
 #include "Nametable.h"
 #include "Sprites.h"
 
-#define NESTEST_TXT 1
+#define NESTEST_TXT 0
 
 int main(int argv, char** args)
 {	
 #if NESTEST_TXT
-	NESConsole::GetInstance()->RunNesTestTiming();
+	//NESConsole::GetInstance()->RunNesTestTiming();
 	NESConsole::GetInstance()->RunNesTest();
 	return 0;
 #endif // NESTEST_TXT

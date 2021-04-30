@@ -6,9 +6,10 @@
 #include "../NESConsole.h"
 
 template<class _T>
-concept AddressingConcept = requires(_T AddressStrategy, std::string & out_string)
+concept AddressingConcept = requires(_T AddressStrategy, std::string & out_string, uint8_t value)
 {
 	AddressStrategy.ToString(out_string);
+	AddressStrategy.SetMemoryByteValue(value);
 	AddressStrategy.GetSetAddress();
 	{AddressStrategy.GetMemoryByte()} -> std::same_as<uint8_t>;
 	{AddressStrategy.GetMemoryShort()} -> std::same_as<uint16_t>;
@@ -25,11 +26,7 @@ public:
 
 	void SetMemoryByteValue(uint8_t value)
 	{
-		// TODO: push this down to the addressing strategy, there's a potential bug here with LSRA
-		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		const uint16_t address = m_addressing_strategy.GetSetAddress();
-		memory.CPUWriteByte(address, value);
+		m_addressing_strategy.SetMemoryByteValue(value);
 	}
 
 	uint8_t GetMemoryByte() const
@@ -85,6 +82,7 @@ class AbsoluteAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -96,6 +94,7 @@ class RelativeAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -107,6 +106,7 @@ class AbsoluteYAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -118,6 +118,7 @@ class AbsoluteXAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -129,6 +130,7 @@ class ZeroPageAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -140,6 +142,7 @@ class ZeroPageXAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -151,6 +154,7 @@ class ZeroPageYAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -162,6 +166,7 @@ class IndexedIndirectAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -173,6 +178,7 @@ class IndirectIndexedAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -184,6 +190,14 @@ class ImpliedAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+
+	void SetMemoryByteValue(uint8_t value) const
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		const uint16_t address = GetSetAddress();
+		memory.CPUWriteByte(address, value);
+	}
 
 	uint8_t GetMemoryByte() const
 	{
@@ -215,6 +229,7 @@ class IndirectAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -226,6 +241,7 @@ class ImmediateAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -249,6 +265,7 @@ class JMPAbsoluteAddressingImpl : public BaseAddressingImpl
 {
 public:
 	void ToString(std::string& out_string) const;
+	void SetMemoryByteValue(uint8_t value) const;
 	uint8_t GetMemoryByte() const;
 	uint16_t GetMemoryShort() const;
 	uint8_t GetMemoryByteValue() const;
@@ -269,4 +286,4 @@ typedef BaseAddressingStrategy2<ImpliedAddressingImpl, 0> ImpliedAddressingStrat
 typedef BaseAddressingStrategy2<IndirectAddressingImpl, 2> IndirectAddressingStrategy;
 typedef BaseAddressingStrategy2<ImmediateAddressingImpl, 1> ImmediateAddressingStrategy;
 typedef BaseAddressingStrategy2<AccumulatorAddressingImpl, 0> AccumulatorAddressingStrategy;
-typedef BaseAddressingStrategy2<JMPAbsoluteAddressingImpl, 0> JMPAbsoluteAddressingStrategy;
+typedef BaseAddressingStrategy2<JMPAbsoluteAddressingImpl, 2> JMPAbsoluteAddressingStrategy;
