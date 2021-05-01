@@ -68,7 +68,7 @@ public:
 
 	void SetDmaPage(const uint8_t page) { m_dma_page = page; }
 	void SetDmaAddr(const uint8_t addr) { m_dma_addr = addr; }
-	void SetDmaTransfer(const bool transfer) { dma_transfer = true; }
+	void SetDmaTransfer(const bool transfer) { dma_transfer = transfer; }
 
 private:
 	CPU* m_cpu = nullptr;

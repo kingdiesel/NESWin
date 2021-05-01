@@ -15,7 +15,9 @@ void PatternTable::Run()
 		int tile_count = i / 16;
 		for (int j = 0; j < PatternTableTile::TILE_SIZE; ++j)
 		{
-			m_tiles[tile_count].GetTileData()[j] = memory.PPUReadByte(i + j);
+			assert(i + j <= std::numeric_limits<uint16_t>::max());
+			const uint16_t tile_index = static_cast<uint16_t>(i + j);
+			m_tiles[tile_count].GetTileData()[j] = memory.PPUReadByte(tile_index);
 		}
 		m_tiles[tile_count].FillTextureData(fill_data);
 		uint32_t* texture_tile_data = m_tiles[tile_count].GetTextureTileData();

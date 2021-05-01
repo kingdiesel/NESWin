@@ -11,7 +11,7 @@
 #include "Nametable.h"
 #include "Sprites.h"
 
-#define NESTEST_TXT 0
+#define NESTEST_TXT 1
 
 int main(int argv, char** args)
 {	
@@ -102,9 +102,10 @@ int main(int argv, char** args)
 
 	Uint32 format = SDL_PIXELFORMAT_RGB888;
 	SDL_PixelFormat* mapping_format = SDL_AllocFormat(format);
-	const ROM& rom = NESConsole::GetInstance()->GetROM();
+#if debug
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	PPU& ppu = NESConsole::GetInstance()->GetPPU();
+#endif
 	// Pattern tables
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
 #if debug
@@ -142,7 +143,6 @@ int main(int argv, char** args)
 	bool quit = false;
 	bool paused = false;
 	int show_lines = 0;
-	int show_nametable = 0;
 	SDL_Event event;
 	while (!quit)
 	{
@@ -387,7 +387,7 @@ int main(int argv, char** args)
 			draw_lines = false;
 		}
 
-		if (debug && draw_lines)
+		if constexpr (debug && draw_lines)
 		{
 			int grid_width = 256 / max_x;
 			int grid_height = 256 / max_y;

@@ -22,9 +22,6 @@
     <ClCompile Include="Source\Addressing\AddressingMode.cpp">
       <Filter>Source Files\Addressing</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Instructions\BaseInstruction.cpp">
-      <Filter>Source Files\Instructions</Filter>
-    </ClCompile>
     <ClCompile Include="Source\CPU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

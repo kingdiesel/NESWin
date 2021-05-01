@@ -120,6 +120,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\aspiv\source\repos\kingdiesel\NESWin\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +140,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\aspiv\source\repos\kingdiesel\NESWin\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <ExceptionHandling>Sync</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -155,7 +159,6 @@
     <ClCompile Include="PPU.cpp" />
     <ClCompile Include="Source\Addressing\AddressingMode.cpp" />
     <ClCompile Include="Source\CPU.cpp" />
-    <ClCompile Include="Source\Instructions\BaseInstruction.cpp" />
     <ClCompile Include="Source\Mappers\Mapper000.cpp" />
     <ClCompile Include="Source\Mappers\Mapper001.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
