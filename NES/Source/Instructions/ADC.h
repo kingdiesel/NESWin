@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#ADC
 template<class _addressing_strategy>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Addressing/AddressingMode.h"
+#include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#SBC
 template<class _addressing_strategy>
