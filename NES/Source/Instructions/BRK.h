@@ -1,11 +1,11 @@
 #pragma once
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 // http://www.obelisk.me.uk/6502/reference.html#BRK
-class BRK : public BaseInstruction<ImpliedAddressingStrategy, BRK, 0x00>
+template<class _addressing_strategy>
+class BRKBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BRK() : BaseInstruction(7, "BRK")
+	BRKBase() : OpCodeBase<_addressing_strategy>("BRK")
 	{
 	}
 
@@ -24,13 +24,13 @@ public:
 		cpu.DecrementStackPointer();
 		memory.CPUWriteByte(cpu.GetFullStackAddress(), return_memory_low);
 		cpu.DecrementStackPointer();
-		
+
 		const uint8_t status_register = cpu.GetRegisterP().Register | 0x30;
 		memory.CPUWriteByte(cpu.GetFullStackAddress(), status_register);
 		cpu.DecrementStackPointer();
-		
+
 		cpu.SetInterruptDisableFlag(true);
-		
+
 		const uint8_t jump_address_high = memory.CPUReadByte(ppu.GetNMIRequest() ? 0xFFFB : 0xFFFF);
 		const uint8_t jump_address_low = memory.CPUReadByte(ppu.GetNMIRequest() ? 0xFFFA : 0xFFFE);
 
@@ -41,3 +41,5 @@ public:
 		cpu.SetRegisterProgramCounter(jump_address);
 	}
 };
+
+typedef BaseInstruction2<BRKBase<ImpliedAddressingStrategy>, 0x00, 7> BRK;

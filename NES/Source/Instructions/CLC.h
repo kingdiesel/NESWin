@@ -1,26 +1,20 @@
-//
-// Created by kingdiesel on 12/30/17.
-//
+#pragma once
 
-#ifndef NES_CLC_H
-#define NES_CLC_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 // http://www.obelisk.me.uk/6502/reference.html#CLC
-class CLC : public BaseInstruction<ImpliedAddressingStrategy, CLC, 0x18>
+template<class _addressing_strategy>
+class CLCBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	CLC() : BaseInstruction(2, "CLC")
+	CLCBase() : OpCodeBase<_addressing_strategy>("CLC")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetCarryFlag(false);
 	}
 };
 
-#endif //NES_CLC_H
+typedef BaseInstruction2<CLCBase<ImpliedAddressingStrategy>, 0x18, 2> CLC;

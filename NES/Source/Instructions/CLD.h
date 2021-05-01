@@ -1,26 +1,20 @@
-//
-//
-
-#ifndef NES_CLD_H
-#define NES_CLD_H
-
-#include "../Addressing/AddressingMode.h"
+#pragma once
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#CLD
-class CLD : public BaseInstruction<ImpliedAddressingStrategy, CLD, 0xD8>
+template<class _addressing_strategy>
+class CLDBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	CLD() : BaseInstruction(2, "CLD")
+	CLDBase() : OpCodeBase<_addressing_strategy>("CLD")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetDecimalFlag(false);
 	}
 };
 
-#endif //NES_CLD_H
+typedef BaseInstruction2<CLDBase<ImpliedAddressingStrategy>, 0xD8, 2> CLD;

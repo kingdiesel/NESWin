@@ -1,26 +1,20 @@
-//
-//
-
-#ifndef NES_CLV_H
-#define NES_CLV_H
-
-#include "../Addressing/AddressingMode.h"
+#pragma once
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#CLV
-class CLV : public BaseInstruction<ImpliedAddressingStrategy, CLV, 0xB8>
+template<class _addressing_strategy>
+class CLVBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	CLV() : BaseInstruction(2, "CLV")
+	CLVBase() : OpCodeBase<_addressing_strategy>("CLV")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetOverflowFlag(false);
 	}
 };
 
-#endif //NES_CLV_H
+typedef BaseInstruction2<CLVBase<ImpliedAddressingStrategy>, 0xB8, 2> CLV;
