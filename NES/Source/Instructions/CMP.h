@@ -1,25 +1,21 @@
-//
-//
-
-#ifndef NES_CMP_H
-#define NES_CMP_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
-template<typename _addressing_mode, typename _execute, int _op_code>
-class CMPBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+// http://www.obelisk.me.uk/6502/reference.html#CPX
+template<class _addressing_strategy>
+class CPXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	CMPBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "CMP")
+	CPXBase() : OpCodeBase<_addressing_strategy>("CPX")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
-		CPU& cpu = BaseInstruction<_addressing_mode, _execute, _op_code>::m_console->GetCPU();
-		uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue();
-		uint8_t compare_value = static_cast<_execute *>(this)->GetCompareValue(cpu);
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		const uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue();
+		const uint8_t compare_value = cpu.GetRegisterX();
 		uint8_t value = compare_value - memory_value;
 		cpu.SetCarryFlag(compare_value >= memory_value);
 		cpu.SetZeroFlag(value == 0);
@@ -27,195 +23,59 @@ public:
 	}
 };
 
-// http://www.obelisk.me.uk/6502/reference.html#CPX
-class CPXImmediate : public CMPBase<ImmediateAddressingStrategy, CPXImmediate, 0xE0>
-{
-public:
-	CPXImmediate() : CMPBase(2)
-	{
-		m_name = "CPX";
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterX();
-	}
-};
-
-class CPXZeroPage : public CMPBase<ZeroPageAddressingStrategy, CPXZeroPage, 0xE4>
-{
-public:
-	CPXZeroPage() : CMPBase(3)
-	{
-		m_name = "CPX";
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterX();
-	}
-};
-
-class CPXAbsolute : public CMPBase<AbsoluteAddressingStrategy, CPXAbsolute, 0xEC>
-{
-public:
-	CPXAbsolute() : CMPBase(4)
-	{
-		m_name = "CPX";
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterX();
-	}
-};
-
 // http://www.obelisk.me.uk/6502/reference.html#CPY
-class CPYImmediate : public CMPBase<ImmediateAddressingStrategy, CPYImmediate, 0xC0>
+template<class _addressing_strategy>
+class CPYBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	CPYImmediate() : CMPBase(2)
+	CPYBase() : OpCodeBase<_addressing_strategy>("CPY")
 	{
-		m_name = "CPY";
 	}
 
-	uint8_t GetCompareValue(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		return cpu.GetRegisterY();
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		const uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue();
+		const uint8_t compare_value = cpu.GetRegisterY();
+		uint8_t value = compare_value - memory_value;
+		cpu.SetCarryFlag(compare_value >= memory_value);
+		cpu.SetZeroFlag(value == 0);
+		cpu.SetNegativeFlagForValue(value);
 	}
 };
 
-class CPYZeroPage : public CMPBase<ZeroPageAddressingStrategy, CPYZeroPage, 0xC4>
+// http://www.obelisk.me.uk/6502/reference.html#CMP
+template<class _addressing_strategy>
+class CMPBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	CPYZeroPage() : CMPBase(3)
+	CMPBase() : OpCodeBase<_addressing_strategy>("CMP")
 	{
-		m_name = "CPY";
 	}
 
-	uint8_t GetCompareValue(CPU &cpu)
+	void ExecuteImplementation()
 	{
-		return cpu.GetRegisterY();
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		const uint8_t memory_value = this->GetAddressingMode().GetMemoryByteValue();
+		const uint8_t compare_value = cpu.GetRegisterA();
+		uint8_t value = compare_value - memory_value;
+		cpu.SetCarryFlag(compare_value >= memory_value);
+		cpu.SetZeroFlag(value == 0);
+		cpu.SetNegativeFlagForValue(value);
 	}
 };
 
-class CPYAbsolute : public CMPBase<AbsoluteAddressingStrategy, CPYAbsolute, 0xCC>
-{
-public:
-	CPYAbsolute() : CMPBase(4)
-	{
-		m_name = "CPY";
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterY();
-	}
-};
-
-// // http://www.obelisk.me.uk/6502/reference.html#CMP
-class CMPImmediate : public CMPBase<ImmediateAddressingStrategy, CMPImmediate, 0xC9>
-{
-public:
-	CMPImmediate() : CMPBase(2)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPAbsolute : public CMPBase<AbsoluteAddressingStrategy, CMPAbsolute, 0xCD>
-{
-public:
-	CMPAbsolute() : CMPBase(4)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPAbsoluteX : public CMPBase<AbsoluteXAddressingStrategy, CMPAbsoluteX, 0xDD>
-{
-public:
-	CMPAbsoluteX() : CMPBase(4)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPAbsoluteY : public CMPBase<AbsoluteYAddressingStrategy, CMPAbsoluteY, 0xD9>
-{
-public:
-	CMPAbsoluteY() : CMPBase(4)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPZeroPage : public CMPBase<ZeroPageAddressingStrategy, CMPZeroPage, 0xC5>
-{
-public:
-	CMPZeroPage() : CMPBase(3)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPZeroPageX : public CMPBase<ZeroPageXAddressingStrategy, CMPZeroPageX, 0xD5>
-{
-public:
-	CMPZeroPageX() : CMPBase(4)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPIndexedIndirect : public CMPBase<IndexedIndirectAddressingStrategy, CMPIndexedIndirect, 0xC1>
-{
-public:
-	CMPIndexedIndirect() : CMPBase(6)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-class CMPIndirectIndexed : public CMPBase<IndirectIndexedAddressingStrategy, CMPIndirectIndexed, 0xD1>
-{
-public:
-	CMPIndirectIndexed() : CMPBase(5)
-	{
-	}
-
-	uint8_t GetCompareValue(CPU &cpu)
-	{
-		return cpu.GetRegisterA();
-	}
-};
-
-#endif //NES_CMP_H
+typedef BaseInstruction2<CMPBase<ImmediateAddressingStrategy>, 0xC9, 2> CMPImmediate;
+typedef BaseInstruction2<CMPBase<AbsoluteAddressingStrategy>, 0xCD, 4> CMPAbsolute;
+typedef BaseInstruction2<CMPBase<AbsoluteXAddressingStrategy>, 0xDD, 4> CMPAbsoluteX;
+typedef BaseInstruction2<CMPBase<AbsoluteYAddressingStrategy>, 0xD9, 4> CMPAbsoluteY;
+typedef BaseInstruction2<CMPBase<ZeroPageAddressingStrategy>, 0xC5, 3> CMPZeroPage;
+typedef BaseInstruction2<CMPBase<ZeroPageXAddressingStrategy>, 0xD5, 4> CMPZeroPageX;
+typedef BaseInstruction2<CMPBase<IndexedIndirectAddressingStrategy>, 0xC1, 6> CMPIndexedIndirect;
+typedef BaseInstruction2<CMPBase<IndirectIndexedAddressingStrategy>, 0xD1, 5> CMPIndirectIndexed;
+typedef BaseInstruction2<CPYBase<ImmediateAddressingStrategy>, 0xC0, 2> CPYImmediate;
+typedef BaseInstruction2<CPYBase<ZeroPageAddressingStrategy>, 0xC4, 3> CPYZeroPage;
+typedef BaseInstruction2<CPYBase<AbsoluteAddressingStrategy>, 0xCC, 4> CPYAbsolute;
+typedef BaseInstruction2<CPXBase<ImmediateAddressingStrategy>, 0xE0, 2> CPXImmediate;
+typedef BaseInstruction2<CPXBase<ZeroPageAddressingStrategy>, 0xE4, 3> CPXZeroPage;
+typedef BaseInstruction2<CPXBase<AbsoluteAddressingStrategy>, 0xEC, 4> CPXAbsolute;
