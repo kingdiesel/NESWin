@@ -1,17 +1,16 @@
 //
 //
 
-#ifndef NES_BIT_H
-#define NES_BIT_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
-template<typename _addressing_mode, typename _execute, int _op_code>
-class BITBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+// http://www.obelisk.me.uk/6502/reference.html#BIT
+template<class _addressing_strategy>
+class BITBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BITBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "BIT")
+	BITBase() : OpCodeBase<_addressing_strategy>("BIT")
 	{
 	}
 
@@ -27,20 +26,5 @@ public:
 	}
 };
 
-class BITAbsolute : public BITBase<AbsoluteAddressingStrategy, BITAbsolute, 0x2C>
-{
-public:
-	BITAbsolute() : BITBase(4)
-	{
-	}
-};
-
-class BITZeroPage : public BITBase<ZeroPageAddressingStrategy, BITZeroPage, 0x24>
-{
-public:
-	BITZeroPage() : BITBase(3)
-	{
-	}
-};
-
-#endif //NES_BIT_H
+typedef BaseInstruction2<BITBase<AbsoluteAddressingStrategy>, 0x2C, 4> BITAbsolute;
+typedef BaseInstruction2<BITBase<ZeroPageAddressingStrategy>, 0x24, 3> BITZeroPage;
