@@ -72,7 +72,7 @@ public:
 				CPXAbsolute, CPXImmediate, CPXZeroPage, CPYAbsolute, CPYImmediate, CPYZeroPage, CLD, PHA, PLP,
 				ORAImmediate, ORAAbsolute, ORAAbsoluteX, ORAAbsoluteY, ORAZeroPage, ORAZeroPageX, ORAIndexedIndirect,
 				ORAIndirectIndexed, CLV, EORAbsolute, EORAbsoluteX, EORAbsoluteY, EORImmediate, EORIndexedIndirect, EORIndirectIndexed,
-				EORZeroPage, EORZeroPageX, ADCImmediate2, ADCAbsolute, ADCAbsoluteX, ADCAbsoluteY, ADCZeroPage, ADCZeroPageX,
+				EORZeroPage, EORZeroPageX, ADCImmediate, ADCAbsolute, ADCAbsoluteX, ADCAbsoluteY, ADCZeroPage, ADCZeroPageX,
 				ADCIndexedIndirect, ADCIndirectIndexed, LDYAbsolute, LDYAbsoluteX, LDYImmediate, LDYZeroPage, LDYZeroPageX,
 				SBCAbsolute, SBCAbsoluteX, SBCAbsoluteY, SBCImmediate, SBCZeroPage, SBCZeroPageX, SBCIndexedIndirect, SBCIndirectIndexed,
 				INY, INX, DEX, DEY, TAX, TAY, TYA, TXA, TSX, TXS, RTI, LSRAbsolute, LSRAbsoluteX, LSRAccumulator, LSRZeroPage,
