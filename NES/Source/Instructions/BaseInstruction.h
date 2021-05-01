@@ -123,6 +123,11 @@ public:
 		return m_addressing_strategy;
 	}
 
+	_addressing_strategy& GetAddressingMode()
+	{
+		return m_addressing_strategy;
+	}
+
 	uint8_t GetOperandLength() const
 	{
 		return m_addressing_strategy.GetOperandLength();
