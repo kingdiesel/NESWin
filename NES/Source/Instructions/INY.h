@@ -1,16 +1,12 @@
-//
-//
+#pragma once
 
-#ifndef NES_INY_H
-#define NES_INY_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-// http://www.obelisk.me.uk/6502/reference.html#INY
-class INY : public BaseInstruction<ImpliedAddressingStrategy, INY, 0xC8>
+
+template<class _addressing_strategy>
+class INYBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	INY() : BaseInstruction(2, "INY")
+	INYBase() : OpCodeBase<_addressing_strategy>("INY")
 	{
 	}
 
@@ -18,10 +14,10 @@ public:
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		cpu.SetRegisterY(cpu.GetRegisterY() + (uint8_t) 1);
+		cpu.SetRegisterY(cpu.GetRegisterY() + (uint8_t)1);
 		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
 	}
 };
 
-#endif //NES_INY_H
+typedef BaseInstruction2<INYBase<ImpliedAddressingStrategy>, 0xC8, 2> INY;

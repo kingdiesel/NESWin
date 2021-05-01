@@ -1,16 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_INX_H
-#define NES_INX_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
+
 // http://www.obelisk.me.uk/6502/reference.html#INX
-class INX : public BaseInstruction<ImpliedAddressingStrategy, INX, 0xE8>
+template<class _addressing_strategy>
+class INXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	INX() : BaseInstruction(2, "INX")
+	INXBase() : OpCodeBase<_addressing_strategy>("INX")
 	{
 	}
 
@@ -18,10 +15,10 @@ public:
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		cpu.SetRegisterX(cpu.GetRegisterX() + (uint8_t) 1);
+		cpu.SetRegisterX(cpu.GetRegisterX() + (uint8_t)1);
 		cpu.SetZeroFlag(cpu.GetRegisterX() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
 	}
 };
 
-#endif //NES_INX_H
+typedef BaseInstruction2<INXBase<ImpliedAddressingStrategy>, 0xE8, 2> INX;

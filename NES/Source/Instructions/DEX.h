@@ -1,27 +1,25 @@
-//
-//
+#pragma once
 
-#ifndef NES_DEX_H
-#define NES_DEX_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
+
 // http://www.obelisk.me.uk/6502/reference.html#DEX
-class DEX : public BaseInstruction<ImpliedAddressingStrategy, DEX, 0xCA>
+template<class _addressing_strategy>
+class DEXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	DEX() : BaseInstruction(2, "DEX")
+	DEXBase() : OpCodeBase<_addressing_strategy>("DEX")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		cpu.SetRegisterX(cpu.GetRegisterX() - (uint8_t) 1);
-		cpu.SetZeroFlag(cpu.GetRegisterX() == 0);
-		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
+		uint8_t value = cpu.GetRegisterX();
+		value -= (uint8_t)1;
+		cpu.SetRegisterX(value);
+		cpu.SetZeroFlag(value == 0);
+		cpu.SetNegativeFlagForValue(value);
 	}
 };
 
-#endif //NES_DEX_H
+typedef BaseInstruction2<DEXBase<ImpliedAddressingStrategy>, 0xCA, 2> DEX;

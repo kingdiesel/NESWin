@@ -1,17 +1,13 @@
-//
-//
-
-#ifndef NES_INC_H
-#define NES_INC_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
+
 // http://www.obelisk.me.uk/6502/reference.html#INC
-template<typename _addressing_mode, typename _execute, int _op_code>
-class INCBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class INCBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	INCBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "INC")
+	INCBase() : OpCodeBase<_addressing_strategy>("INC")
 	{
 	}
 
@@ -20,43 +16,14 @@ public:
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
-		value += (uint8_t) 1;
+		value += (uint8_t)1;
 		this->GetAddressingMode().SetMemoryByteValue(value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 	}
 };
 
-class INCAbsolute : public INCBase<AbsoluteAddressingStrategy, INCAbsolute, 0xEE>
-{
-public:
-	INCAbsolute() : INCBase(6)
-	{
-	}
-};
-
-class INCAbsoluteX : public INCBase<AbsoluteXAddressingStrategy, INCAbsoluteX, 0xFE>
-{
-public:
-	INCAbsoluteX() : INCBase(7)
-	{
-	}
-};
-
-class INCZeroPage : public INCBase<ZeroPageAddressingStrategy, INCZeroPage, 0xE6>
-{
-public:
-	INCZeroPage() : INCBase(5)
-	{
-	}
-};
-
-class INCZeroPageX : public INCBase<ZeroPageXAddressingStrategy, INCZeroPageX, 0xF6>
-{
-public:
-	INCZeroPageX() : INCBase(6)
-	{
-	}
-};
-
-#endif //NES_INC_H
+typedef BaseInstruction2<INCBase<AbsoluteAddressingStrategy>, 0xEE, 6> INCAbsolute;
+typedef BaseInstruction2<INCBase<AbsoluteXAddressingStrategy>, 0xFE, 7> INCAbsoluteX;
+typedef BaseInstruction2<INCBase<ZeroPageAddressingStrategy>, 0xE6, 5> INCZeroPage;
+typedef BaseInstruction2<INCBase<ZeroPageXAddressingStrategy>, 0xF6, 6> INCZeroPageX;

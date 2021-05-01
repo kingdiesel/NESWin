@@ -1,27 +1,25 @@
-//
-//
+#pragma once
 
-#ifndef NES_DEY_H
-#define NES_DEY_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
+
 // http://www.obelisk.me.uk/6502/reference.html#DEY
-class DEY : public BaseInstruction<ImpliedAddressingStrategy, DEY, 0x88>
+template<class _addressing_strategy>
+class DEYBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	DEY() : BaseInstruction(2, "DEY")
+	DEYBase() : OpCodeBase<_addressing_strategy>("DEY")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
-		cpu.SetRegisterY(cpu.GetRegisterY() - (uint8_t) 1);
-		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);
-		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
+		uint8_t value = cpu.GetRegisterY();
+		value -= (uint8_t)1;
+		cpu.SetRegisterY(value);
+		cpu.SetZeroFlag(value == 0);
+		cpu.SetNegativeFlagForValue(value);
 	}
 };
 
-#endif //NES_DEY_H
+typedef BaseInstruction2<DEYBase<ImpliedAddressingStrategy>, 0x88, 2> DEY;

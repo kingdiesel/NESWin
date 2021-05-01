@@ -1,17 +1,13 @@
-//
-//
-
-#ifndef NES_DEC_H
-#define NES_DEC_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
+
 // http://www.obelisk.me.uk/6502/reference.html#DEC
-template<typename _addressing_mode, typename _execute, int _op_code>
-class DECBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class DECBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	DECBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "DEC")
+	DECBase() : OpCodeBase<_addressing_strategy>("DEC")
 	{
 	}
 
@@ -20,43 +16,13 @@ public:
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
-		value -= (uint8_t) 1;
+		value -= (uint8_t)1;
 		this->GetAddressingMode().SetMemoryByteValue(value);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 	}
 };
-
-class DECAbsolute : public DECBase<AbsoluteAddressingStrategy, DECAbsolute, 0xCE>
-{
-public:
-	DECAbsolute() : DECBase(6)
-	{
-	}
-};
-
-class DECAbsoluteX : public DECBase<AbsoluteXAddressingStrategy, DECAbsoluteX, 0xDE>
-{
-public:
-	DECAbsoluteX() : DECBase(7)
-	{
-	}
-};
-
-class DECZeroPage : public DECBase<ZeroPageAddressingStrategy, DECZeroPage, 0xC6>
-{
-public:
-	DECZeroPage() : DECBase(5)
-	{
-	}
-};
-
-class DECZeroPageX : public DECBase<ZeroPageXAddressingStrategy, DECZeroPageX, 0xD6>
-{
-public:
-	DECZeroPageX() : DECBase(6)
-	{
-	}
-};
-
-#endif //NES_DEC_H
+typedef BaseInstruction2<DECBase<AbsoluteAddressingStrategy>, 0xCE, 6> DECAbsolute;
+typedef BaseInstruction2<DECBase<AbsoluteXAddressingStrategy>, 0xDE, 7> DECAbsoluteX;
+typedef BaseInstruction2<DECBase<ZeroPageAddressingStrategy>, 0xC6, 5> DECZeroPage;
+typedef BaseInstruction2<DECBase<ZeroPageXAddressingStrategy>, 0xD6, 6> DECZeroPageX;

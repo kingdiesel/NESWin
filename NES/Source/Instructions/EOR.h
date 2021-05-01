@@ -1,24 +1,17 @@
-//
-//
-
-#ifndef NES_EOR_H
-#define NES_EOR_H
-
+#pragma once
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 // http://www.obelisk.me.uk/6502/reference.html#EOR
-template<typename _addressing_mode, typename _execute, int _op_code>
-class EORBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class EORBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	EORBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "EOR")
+	EORBase() : OpCodeBase<_addressing_strategy>("EOR")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		cpu.SetRegisterA(value ^ cpu.GetRegisterA());
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
@@ -26,68 +19,11 @@ public:
 	}
 };
 
-class EORImmediate : public EORBase<ImmediateAddressingStrategy, EORImmediate, 0x49>
-{
-public:
-	EORImmediate() : EORBase(2)
-	{
-	}
-};
-
-class EORAbsolute : public EORBase<AbsoluteAddressingStrategy, EORAbsolute, 0x4D>
-{
-public:
-	EORAbsolute() : EORBase(4)
-	{
-	}
-};
-
-class EORAbsoluteX : public EORBase<AbsoluteXAddressingStrategy, EORAbsoluteX, 0x5D>
-{
-public:
-	EORAbsoluteX() : EORBase(4)
-	{
-	}
-};
-
-class EORAbsoluteY : public EORBase<AbsoluteYAddressingStrategy, EORAbsoluteY, 0x59>
-{
-public:
-	EORAbsoluteY() : EORBase(4)
-	{
-	}
-};
-
-class EORZeroPage : public EORBase<ZeroPageAddressingStrategy, EORZeroPage, 0x45>
-{
-public:
-	EORZeroPage() : EORBase(3)
-	{
-	}
-};
-
-class EORZeroPageX : public EORBase<ZeroPageXAddressingStrategy, EORZeroPageX, 0x55>
-{
-public:
-	EORZeroPageX() : EORBase(4)
-	{
-	}
-};
-
-class EORIndexedIndirect : public EORBase<IndexedIndirectAddressingStrategy, EORIndexedIndirect, 0x41>
-{
-public:
-	EORIndexedIndirect() : EORBase(6)
-	{
-	}
-};
-
-class EORIndirectIndexed : public EORBase<IndirectIndexedAddressingStrategy, EORIndirectIndexed, 0x51>
-{
-public:
-	EORIndirectIndexed() : EORBase(5)
-	{
-	}
-};
-
-#endif //NES_EOR_H
+typedef BaseInstruction2<EORBase<ImmediateAddressingStrategy>, 0x49, 2> EORImmediate;
+typedef BaseInstruction2<EORBase<AbsoluteAddressingStrategy>, 0x4D, 4> EORAbsolute;
+typedef BaseInstruction2<EORBase<AbsoluteXAddressingStrategy>, 0x5D, 4> EORAbsoluteX;
+typedef BaseInstruction2<EORBase<AbsoluteYAddressingStrategy>, 0x59, 4> EORAbsoluteY;
+typedef BaseInstruction2<EORBase<ZeroPageAddressingStrategy>, 0x45, 3> EORZeroPage;
+typedef BaseInstruction2<EORBase<ZeroPageXAddressingStrategy>, 0x55, 4> EORZeroPageX;
+typedef BaseInstruction2<EORBase<IndexedIndirectAddressingStrategy>, 0x41, 6> EORIndexedIndirect;
+typedef BaseInstruction2<EORBase<IndirectIndexedAddressingStrategy>, 0x51, 5> EORIndirectIndexed;
