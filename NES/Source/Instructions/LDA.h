@@ -1,93 +1,30 @@
-//
-//
-
-#ifndef NES_LDA_H
-#define NES_LDA_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#LDA
-template<typename _addressing_mode, typename _execute, int _op_code>
-class LDABase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class LDABase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	LDABase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "LDA")
+	LDABase() : OpCodeBase<_addressing_strategy>("LDA")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterA(this->GetAddressingMode().GetMemoryByteValue());
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterA());
 	}
 };
 
-class LDAImmediate : public LDABase<ImmediateAddressingStrategy, LDAImmediate, 0xA9>
-{
-public:
-	LDAImmediate() : LDABase(2)
-	{
-	}
-};
-
-class LDAAbsolute : public LDABase<AbsoluteAddressingStrategy, LDAAbsolute, 0xAD>
-{
-public:
-	LDAAbsolute() : LDABase(4)
-	{
-	}
-};
-
-class LDAAbsoluteX : public LDABase<AbsoluteXAddressingStrategy, LDAAbsoluteX, 0xBD>
-{
-public:
-	LDAAbsoluteX() : LDABase(4)
-	{
-	}
-};
-
-class LDAAbsoluteY : public LDABase<AbsoluteYAddressingStrategy, LDAAbsoluteY, 0xB9>
-{
-public:
-	LDAAbsoluteY() : LDABase(4)
-	{
-	}
-};
-
-class LDAZeroPage : public LDABase<ZeroPageAddressingStrategy, LDAZeroPage, 0xA5>
-{
-public:
-	LDAZeroPage() : LDABase(3)
-	{
-	}
-};
-
-class LDAZeroPageX : public LDABase<ZeroPageXAddressingStrategy, LDAZeroPageX, 0xB5>
-{
-public:
-	LDAZeroPageX() : LDABase(4)
-	{
-	}
-};
-
-class LDAIndexedIndirect : public LDABase<IndexedIndirectAddressingStrategy, LDAIndexedIndirect, 0xA1>
-{
-public:
-	LDAIndexedIndirect() : LDABase(6)
-	{
-	}
-};
-
-class LDAIndirectIndexed : public LDABase<IndirectIndexedAddressingStrategy, LDAIndirectIndexed, 0xB1>
-{
-public:
-	LDAIndirectIndexed() : LDABase(5)
-	{
-	}
-};
-
-#endif //NES_LDA_H
+typedef BaseInstruction2<LDABase<ImmediateAddressingStrategy>, 0xA9, 2> LDAImmediate;
+typedef BaseInstruction2<LDABase<AbsoluteAddressingStrategy>, 0xAD, 4> LDAAbsolute;
+typedef BaseInstruction2<LDABase<AbsoluteXAddressingStrategy>, 0xBD, 4> LDAAbsoluteX;
+typedef BaseInstruction2<LDABase<AbsoluteYAddressingStrategy>, 0xB9, 4> LDAAbsoluteY;
+typedef BaseInstruction2<LDABase<ZeroPageAddressingStrategy>, 0xA5, 3> LDAZeroPage;
+typedef BaseInstruction2<LDABase<ZeroPageXAddressingStrategy>, 0xB5, 4> LDAZeroPageX;
+typedef BaseInstruction2<LDABase<IndexedIndirectAddressingStrategy>, 0xA1, 6> LDAIndexedIndirect;
+typedef BaseInstruction2<LDABase<IndirectIndexedAddressingStrategy>, 0xB1, 5> LDAIndirectIndexed;
