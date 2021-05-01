@@ -1,163 +1,294 @@
-//
-// Created by kingdiesel on 12/30/17.
-//
 #pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
-template<typename _addressing_mode, typename _execute, int _op_code>
-class BRABase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+// http://www.obelisk.me.uk/6502/reference.html#BCS
+template<class _addressing_strategy>
+class BCSBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BRABase(uint8_t cycles,
-			const std::string &name) :
-			BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, name)
+	BCSBase() : OpCodeBase<_addressing_strategy>("BCS")
 	{
+		this->m_has_dynamic_cycles = true;
 	}
 
 	void ExecuteImplementation()
 	{
-		CPU& cpu = BaseInstruction<_addressing_mode, _execute, _op_code>::m_console->GetCPU();
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		this->m_increments_program_counter = true;
-		if (static_cast<_execute *>(this)->ShouldBranch())
+		if (ShouldBranch())
 		{
 			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
 			cpu.SetRegisterProgramCounter(destination);
 			this->m_increments_program_counter = false;
-			this->m_cycles = 3;
+			this->m_dynamic_cycles = 3;
 		}
 		else
 		{
 			this->m_increments_program_counter = true;
-			this->m_cycles = 2;
+			this->m_dynamic_cycles = 2;
 		}
-
-	}
-};
-
-// http://www.obelisk.me.uk/6502/reference.html#BCS
-class BCS : public BRABase<RelativeAddressingStrategy, BCS, 0xB0>
-{
-public:
-	BCS() : BRABase(2, "BCS")
-	{
 	}
 
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsCarryFlagSet();
 	}
 };
 
+
 // http://www.obelisk.me.uk/6502/reference.html#BPL
-class BPL : public BRABase<RelativeAddressingStrategy, BPL, 0x10>
+template<class _addressing_strategy>
+class BPLBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BPL() : BRABase(2, "BPL")
+	BPLBase() : OpCodeBase<_addressing_strategy>("BPL")
 	{
+		this->m_has_dynamic_cycles = true;
+	}
+
+	void ExecuteImplementation()
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
 	}
 
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return !cpu.IsNegativeFlagSet();
 	}
 };
 
 // http://www.obelisk.me.uk/6502/reference.html#BNE
-class BNE : public BRABase<RelativeAddressingStrategy, BNE, 0xD0>
+template<class _addressing_strategy>
+class BNEBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BNE() : BRABase(2, "BNE")
+	BNEBase() : OpCodeBase<_addressing_strategy>("BNE")
 	{
+		this->m_has_dynamic_cycles = true;
+	}
+
+	void ExecuteImplementation()
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
 	}
 
 	bool ShouldBranch() const
 	{
-		CPU& cpu = BRABase<RelativeAddressingStrategy, BNE, 0xD0>::m_console->GetCPU();
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		return !cpu.IsZeroFlagSet();
 	}
 };
 
 // http://www.obelisk.me.uk/6502/reference.html#BEQ
-class BEQ : public BRABase<RelativeAddressingStrategy, BEQ, 0xF0>
+template<class _addressing_strategy>
+class BEQBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BEQ() : BRABase(2, "BEQ")
+	BEQBase() : OpCodeBase<_addressing_strategy>("BEQ")
 	{
+		this->m_has_dynamic_cycles = true;
 	}
 
-	bool ShouldBranch() const
+	void ExecuteImplementation()
 	{
-		CPU& cpu = BRABase<RelativeAddressingStrategy, BEQ, 0xF0>::m_console->GetCPU();
-		return cpu.IsZeroFlagSet();
-	}
-};
-
-// http://www.obelisk.me.uk/6502/reference.html#BCC
-class BCC : public BRABase<RelativeAddressingStrategy, BCC, 0x90>
-{
-public:
-	BCC() : BRABase(2, "BCC")
-	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
 	}
 
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
+		return cpu.IsZeroFlagSet();
+	}
+};
+
+
+// http://www.obelisk.me.uk/6502/reference.html#BCC
+template<class _addressing_strategy>
+class BCCBase : public OpCodeBase<_addressing_strategy>
+{
+public:
+	BCCBase() : OpCodeBase<_addressing_strategy>("BCC")
+	{
+		this->m_has_dynamic_cycles = true;
+	}
+
+	void ExecuteImplementation()
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
+	}
+
+	bool ShouldBranch() const
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		return !cpu.IsCarryFlagSet();
 	}
 };
 
 // http://www.obelisk.me.uk/6502/reference.html#BVS
-class BVS : public BRABase<RelativeAddressingStrategy, BVS, 0x70>
+template<class _addressing_strategy>
+class BVSBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BVS() : BRABase(2, "BVS")
+	BVSBase() : OpCodeBase<_addressing_strategy>("BVS")
 	{
+		this->m_has_dynamic_cycles = true;
+	}
+
+	void ExecuteImplementation()
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
 	}
 
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsOverflowFlagSet();
 	}
 };
 
 // http://www.obelisk.me.uk/6502/reference.html#BVC
-class BVC : public BRABase<RelativeAddressingStrategy, BVC, 0x50>
+template<class _addressing_strategy>
+class BVCBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BVC() : BRABase(2, "BVC")
+	BVCBase() : OpCodeBase<_addressing_strategy>("BVC")
 	{
+		this->m_has_dynamic_cycles = true;
+	}
+
+	void ExecuteImplementation()
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
 	}
 
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return !cpu.IsOverflowFlagSet();
 	}
 };
 
 // http://www.obelisk.me.uk/6502/reference.html#BMI
-class BMI : public BRABase<RelativeAddressingStrategy, BMI, 0x30>
+template<class _addressing_strategy>
+class BMIBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	BMI() : BRABase(2, "BMI")
+	BMIBase() : OpCodeBase<_addressing_strategy>("BMI")
 	{
+		this->m_has_dynamic_cycles = true;
+	}
+
+	void ExecuteImplementation()
+	{
+		CPU& cpu = NESConsole::GetInstance()->GetCPU();
+		this->m_increments_program_counter = true;
+		if (ShouldBranch())
+		{
+			uint16_t destination = this->GetAddressingMode().GetMemoryShortValue();
+			cpu.SetRegisterProgramCounter(destination);
+			this->m_increments_program_counter = false;
+			this->m_dynamic_cycles = 3;
+		}
+		else
+		{
+			this->m_increments_program_counter = true;
+			this->m_dynamic_cycles = 2;
+		}
 	}
 
 	bool ShouldBranch() const
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		return cpu.IsNegativeFlagSet();
 	}
 };
+
+typedef BaseInstruction2<BVCBase<RelativeAddressingStrategy>, 0x50, 2> BVC;
+typedef BaseInstruction2<BMIBase<RelativeAddressingStrategy>, 0x30, 2> BMI;
+typedef BaseInstruction2<BCSBase<RelativeAddressingStrategy>, 0xB0, 2> BCS;
+typedef BaseInstruction2<BPLBase<RelativeAddressingStrategy>, 0x10, 2> BPL;
+typedef BaseInstruction2<BNEBase<RelativeAddressingStrategy>, 0xD0, 2> BNE;
+typedef BaseInstruction2<BEQBase<RelativeAddressingStrategy>, 0xF0, 2> BEQ;
+typedef BaseInstruction2<BCCBase<RelativeAddressingStrategy>, 0x90, 2> BCC;
+typedef BaseInstruction2<BVSBase<RelativeAddressingStrategy>, 0x70, 2> BVS;

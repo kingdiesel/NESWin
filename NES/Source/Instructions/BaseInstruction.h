@@ -138,9 +138,29 @@ public:
 		return m_addressing_strategy.GetAddressingCycles();
 	}
 
+	bool GetIncrementsProgramCounter() const
+	{
+		return m_increments_program_counter;
+	}
+
+	bool GetHasDynamicCycles() const
+	{
+		return m_has_dynamic_cycles;
+	}
+
+	int GetDynamicCycles() const
+	{
+		assert(GetHasDynamicCycles());
+		return m_dynamic_cycles;
+	}
+
 private:
 	_addressing_strategy m_addressing_strategy;
 	std::string m_name;
+protected:
+	bool m_increments_program_counter = true;
+	bool m_has_dynamic_cycles = false;
+	int m_dynamic_cycles = 0;
 };
 
 template<OpCodeExecuteConcept _op_code_execute, int _op_code, int _cycles>
@@ -179,7 +199,7 @@ public:
 
 	int GetCycles() const
 	{
-		return m_cycles + m_execute.GetAddressingCycles();
+		return (m_execute.GetHasDynamicCycles() ? m_execute.GetDynamicCycles() : _cycles) + m_execute.GetAddressingCycles();
 	}
 
 	uint16_t GetProgramCounterIncrement() const
@@ -198,7 +218,7 @@ public:
 
 	bool GetIncrementsProgramCounter() const
 	{
-		return m_increments_program_counter;
+		return m_execute.GetIncrementsProgramCounter();
 	}
 
 	const _op_code_execute& GetExecute() const
@@ -209,8 +229,6 @@ public:
 	static const int OP_CODE = _op_code;
 
 protected:
-	int m_cycles = _cycles;
-	bool m_increments_program_counter = true;
 	std::shared_ptr<NESConsole> m_console;
 	_op_code_execute m_execute;
 };
