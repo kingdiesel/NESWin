@@ -1,17 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_PLP_H
-#define NES_PLP_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#PLP
-class PLP : public BaseInstruction<ImpliedAddressingStrategy, PLP, 0x28>
+template<class _addressing_strategy>
+class PLPBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	PLP() : BaseInstruction(4, "PLP")
+	PLPBase() : OpCodeBase<_addressing_strategy>("PLP")
 	{
 	}
 
@@ -27,4 +23,4 @@ public:
 	}
 };
 
-#endif //NES_PLP_H
+typedef BaseInstruction2<PLPBase<ImpliedAddressingStrategy>, 0x28, 4> PLP;

@@ -1,17 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_PHP_H
-#define NES_PHP_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#PHP
-class PHP : public BaseInstruction<ImpliedAddressingStrategy, PHP, 0x08>
+template<class _addressing_strategy>
+class PHPBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	PHP() : BaseInstruction(3, "PHP")
+	PHPBase() : OpCodeBase<_addressing_strategy>("PHP")
 	{
 	}
 
@@ -26,4 +22,4 @@ public:
 	}
 };
 
-#endif //NES_PHP_H
+typedef BaseInstruction2<PHPBase<ImpliedAddressingStrategy>, 0x08, 3> PHP;

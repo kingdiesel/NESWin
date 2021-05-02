@@ -1,17 +1,13 @@
-//
-//
-
-#ifndef NES_LSR_H
-#define NES_LSR_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
-// http://www.6502.org/tutorials/6502opcodes.html#LSR
-template<typename _addressing_mode, typename _execute, int _op_code>
-class LSRBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+
+// http://www.obelisk.me.uk/6502/reference.html#LSR
+template<class _addressing_strategy>
+class LSRBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	LSRBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "LSR")
+	LSRBase() : OpCodeBase<_addressing_strategy>("LSR")
 	{
 	}
 
@@ -20,55 +16,18 @@ public:
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
-		uint8_t bit_zero = value & (uint8_t) 0x01;
+		uint8_t bit_zero = value & (uint8_t)0x01;
 		cpu.SetCarryFlag(bit_zero != 0);
 		value = value >> 1;
 		// makes sure a 0 gets inserted into msb
-		value &= (uint8_t) 0x7F;
+		value &= (uint8_t)0x7F;
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 		this->GetAddressingMode().SetMemoryByteValue(value);
 	}
 };
-
-class LSRAccumulator : public LSRBase<AccumulatorAddressingStrategy, LSRAccumulator, 0x4A>
-{
-public:
-	LSRAccumulator() : LSRBase(2)
-	{
-	}
-};
-
-class LSRAbsolute : public LSRBase<AbsoluteAddressingStrategy, LSRAbsolute, 0x4E>
-{
-public:
-	LSRAbsolute() : LSRBase(6)
-	{
-	}
-};
-
-class LSRAbsoluteX : public LSRBase<AbsoluteXAddressingStrategy, LSRAbsoluteX, 0x5E>
-{
-public:
-	LSRAbsoluteX() : LSRBase(7)
-	{
-	}
-};
-
-class LSRZeroPage : public LSRBase<ZeroPageAddressingStrategy, LSRZeroPage, 0x46>
-{
-public:
-	LSRZeroPage() : LSRBase(5)
-	{
-	}
-};
-
-class LSRZeroPageX : public LSRBase<ZeroPageXAddressingStrategy, LSRZeroPageX, 0x56>
-{
-public:
-	LSRZeroPageX() : LSRBase(6)
-	{
-	}
-};
-
-#endif //NES_LSR_H
+typedef BaseInstruction2<LSRBase<AccumulatorAddressingStrategy>, 0x4A, 2> LSRAccumulator;
+typedef BaseInstruction2<LSRBase<AbsoluteAddressingStrategy>, 0x4E, 6> LSRAbsolute;
+typedef BaseInstruction2<LSRBase<AbsoluteXAddressingStrategy>, 0x5E, 7> LSRAbsoluteX;
+typedef BaseInstruction2<LSRBase<ZeroPageAddressingStrategy>, 0x46, 5> LSRZeroPage;
+typedef BaseInstruction2<LSRBase<ZeroPageXAddressingStrategy>, 0x56, 6> LSRZeroPageX;

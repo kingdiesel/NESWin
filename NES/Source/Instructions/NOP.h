@@ -1,18 +1,13 @@
-//
-//
-
-#ifndef NES_NOP_H
-#define NES_NOP_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#NOP
-template<typename _addressing_mode, typename _execute, int _op_code>
-class NOPBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class NOPBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	NOPBase() : BaseInstruction<_addressing_mode, _execute, _op_code>(2, "NOP")
+	NOPBase() : OpCodeBase<_addressing_strategy>("NOP")
 	{
 	}
 
@@ -20,29 +15,9 @@ public:
 	{
 	}
 };
-
-class NOP : public NOPBase<ImpliedAddressingStrategy, NOP, 0xEA>
-{
-};
-
-class NOP1A : public NOPBase<ImpliedAddressingStrategy, NOP1A, 0x1A>
-{
-};
-
-class NOP3A : public NOPBase<ImpliedAddressingStrategy, NOP3A, 0x3A>
-{
-};
-
-class NOP5A : public NOPBase<ImpliedAddressingStrategy, NOP5A, 0x5A>
-{
-};
-
-class NOPDA : public NOPBase<ImpliedAddressingStrategy, NOPDA, 0xDA>
-{
-};
-
-class NOPFA : public NOPBase<ImpliedAddressingStrategy, NOPFA, 0xFA>
-{
-};
-
-#endif //NES_NOP_H
+typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0xEA, 2> NOP;
+typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0x1A, 2> NOP1A;
+typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0x3A, 2> NOP3A;
+typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0x5A, 2> NOP5A;
+typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0xDA, 2> NOPDA;
+typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0xFA, 2> NOPFA;

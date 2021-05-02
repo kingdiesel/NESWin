@@ -1,17 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_PLA_H
-#define NES_PLA_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#PLA
-class PLA : public BaseInstruction<ImpliedAddressingStrategy, PLA, 0x68>
+template<class _addressing_strategy>
+class PLABase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	PLA() : BaseInstruction(4, "PLA")
+	PLABase() : OpCodeBase<_addressing_strategy>("PLA")
 	{
 	}
 
@@ -27,4 +23,4 @@ public:
 	}
 };
 
-#endif //NES_PLA_H
+typedef BaseInstruction2<PLABase<ImpliedAddressingStrategy>, 0x68, 4> PLA;

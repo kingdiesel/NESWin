@@ -1,17 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_PHA_H
-#define NES_PHA_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#PHA
-class PHA : public BaseInstruction<ImpliedAddressingStrategy, PHA, 0x48>
+template<class _addressing_strategy>
+class PHABase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	PHA() : BaseInstruction(3, "PHA")
+	PHABase() : OpCodeBase<_addressing_strategy>("PHA")
 	{
 	}
 
@@ -24,4 +20,4 @@ public:
 	}
 };
 
-#endif //NES_PHA_H
+typedef BaseInstruction2<PHABase<ImpliedAddressingStrategy>, 0x48, 3> PHA;
