@@ -1,18 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_LDX_H
-#define NES_LDX_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#LDX
-template<typename _addressing_mode, typename _execute, int _op_code>
-class LDXBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class LDXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	LDXBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "LDX")
+	LDXBase() : OpCodeBase<_addressing_strategy>("LDX")
 	{
 	}
 
@@ -25,44 +20,8 @@ public:
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
 	}
 };
-
-class LDXImmediate : public LDXBase<ImmediateAddressingStrategy, LDXImmediate, 0xA2>
-{
-public:
-	LDXImmediate() : LDXBase(2)
-	{
-	}
-};
-
-class LDXAbsolute : public LDXBase<AbsoluteAddressingStrategy, LDXAbsolute, 0xAE>
-{
-public:
-	LDXAbsolute() : LDXBase(4)
-	{
-	}
-};
-
-class LDXAbsoluteY : public LDXBase<AbsoluteYAddressingStrategy, LDXAbsoluteY, 0xBE>
-{
-public:
-	LDXAbsoluteY() : LDXBase(4)
-	{
-	}
-};
-
-class LDXZeroPage : public LDXBase<ZeroPageAddressingStrategy, LDXZeroPage, 0xA6>
-{
-public:
-	LDXZeroPage() : LDXBase(3)
-	{
-	}
-};
-
-class LDXZeroPageY : public LDXBase<ZeroPageYAddressingStrategy, LDXZeroPageY, 0xB6>
-{
-public:
-	LDXZeroPageY() : LDXBase(4)
-	{
-	}
-};
-#endif //NES_LDX_H
+typedef BaseInstruction2<LDXBase<ImmediateAddressingStrategy>, 0xA2, 2> LDXImmediate;
+typedef BaseInstruction2<LDXBase<AbsoluteAddressingStrategy>, 0xAE, 4> LDXAbsolute;
+typedef BaseInstruction2<LDXBase<AbsoluteYAddressingStrategy>, 0xBE, 4> LDXAbsoluteY;
+typedef BaseInstruction2<LDXBase<ZeroPageAddressingStrategy>, 0xA6, 3> LDXZeroPage;
+typedef BaseInstruction2<LDXBase<ZeroPageYAddressingStrategy>, 0xB6, 4> LDXZeroPageY;

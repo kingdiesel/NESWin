@@ -1,18 +1,16 @@
 //
 //
 
-#ifndef NES_LDY_H
-#define NES_LDY_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#LDY
-template<typename _addressing_mode, typename _execute, int _op_code>
-class LDYBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class LDYBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	LDYBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "LDY")
+	LDYBase() : OpCodeBase<_addressing_strategy>("LDY")
 	{
 	}
 
@@ -25,45 +23,8 @@ public:
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
 	}
 };
-
-class LDYImmediate : public LDYBase<ImmediateAddressingStrategy, LDYImmediate, 0xA0>
-{
-public:
-	LDYImmediate() : LDYBase(2)
-	{
-	}
-};
-
-class LDYAbsolute : public LDYBase<AbsoluteAddressingStrategy, LDYAbsolute, 0xAC>
-{
-public:
-	LDYAbsolute() : LDYBase(4)
-	{
-	}
-};
-
-class LDYAbsoluteX : public LDYBase<AbsoluteXAddressingStrategy, LDYAbsoluteX, 0xBC>
-{
-public:
-	LDYAbsoluteX() : LDYBase(4)
-	{
-	}
-};
-
-class LDYZeroPage : public LDYBase<ZeroPageAddressingStrategy, LDYZeroPage, 0xA4>
-{
-public:
-	LDYZeroPage() : LDYBase(3)
-	{
-	}
-};
-
-class LDYZeroPageX : public LDYBase<ZeroPageXAddressingStrategy, LDYZeroPageX, 0xB4>
-{
-public:
-	LDYZeroPageX() : LDYBase(4)
-	{
-	}
-};
-
-#endif //NES_LDY_H
+typedef BaseInstruction2<LDYBase<ImmediateAddressingStrategy>, 0xA0, 2> LDYImmediate;
+typedef BaseInstruction2<LDYBase<AbsoluteAddressingStrategy>, 0xAC, 4> LDYAbsolute;
+typedef BaseInstruction2<LDYBase<AbsoluteXAddressingStrategy>, 0xBC, 4> LDYAbsoluteX;
+typedef BaseInstruction2<LDYBase<ZeroPageAddressingStrategy>, 0xA4, 3> LDYZeroPage;
+typedef BaseInstruction2<LDYBase<ZeroPageXAddressingStrategy>, 0xB4, 4> LDYZeroPageX;
