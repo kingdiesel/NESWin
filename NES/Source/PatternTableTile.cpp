@@ -5,7 +5,7 @@
 #include "PatternTableTile.h"
 #include "SDL.h"
 #include "NESConsole.h"
-#include "../Palette.h"
+#include "Palette.h"
 
 PatternTableTile::PatternTableTile()
 {

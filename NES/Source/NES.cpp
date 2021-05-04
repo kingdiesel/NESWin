@@ -2,8 +2,8 @@
 //
 
 #include <iostream>
-#include "Source/NESConsole.h"
-#include "Source/PatternTableTile.h"
+#include "NESConsole.h"
+#include "PatternTableTile.h"
 #include "PatternTable.h"
 #include "Palette.h"
 #include "SDL.h"

@@ -153,25 +153,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Nametable.cpp" />
-    <ClCompile Include="NES.cpp" />
-    <ClCompile Include="PatternTable.cpp" />
-    <ClCompile Include="PPU.cpp" />
     <ClCompile Include="Source\Addressing\AddressingMode.cpp" />
     <ClCompile Include="Source\CPU.cpp" />
     <ClCompile Include="Source\Mappers\Mapper000.cpp" />
     <ClCompile Include="Source\Mappers\Mapper001.cpp" />
     <ClCompile Include="Source\Memory.cpp" />
+    <ClCompile Include="Source\Nametable.cpp" />
+    <ClCompile Include="Source\NES.cpp" />
     <ClCompile Include="Source\NESConsole.cpp" />
+    <ClCompile Include="Source\PatternTable.cpp" />
     <ClCompile Include="Source\PatternTableTile.cpp" />
+    <ClCompile Include="Source\PPU.cpp" />
     <ClCompile Include="Source\ROM.cpp" />
-    <ClCompile Include="Sprites.cpp" />
+    <ClCompile Include="Source\Sprites.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Nametable.h" />
-    <ClInclude Include="Palette.h" />
-    <ClInclude Include="PatternTable.h" />
-    <ClInclude Include="PPU.h" />
     <ClInclude Include="Source\Addressing\AddressingMode.h" />
     <ClInclude Include="Source\BitMask.h" />
     <ClInclude Include="Source\CPU.h" />
@@ -226,10 +222,14 @@
     <ClInclude Include="Source\Mappers\Mapper000.h" />
     <ClInclude Include="Source\Mappers\Mapper001.h" />
     <ClInclude Include="Source\Memory.h" />
+    <ClInclude Include="Source\Nametable.h" />
     <ClInclude Include="Source\NESConsole.h" />
+    <ClInclude Include="Source\Palette.h" />
+    <ClInclude Include="Source\PatternTable.h" />
     <ClInclude Include="Source\PatternTableTile.h" />
+    <ClInclude Include="Source\PPU.h" />
     <ClInclude Include="Source\ROM.h" />
-    <ClInclude Include="Sprites.h" />
+    <ClInclude Include="Source\Sprites.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

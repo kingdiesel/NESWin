@@ -1,7 +1,7 @@
 #include "Sprites.h"
-#include "Source/NESConsole.h"
+#include "NESConsole.h"
 #include "PatternTable.h"
-#include "Source/PatternTableTile.h"
+#include "PatternTableTile.h"
 #include <assert.h>
 #include "SDL.h"
 

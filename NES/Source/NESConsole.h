@@ -4,7 +4,7 @@
 #include <fstream>
 #include "CPU.h"
 #include "Memory.h"
-#include "../PPU.h"
+#include "PPU.h"
 
 class NESConsole
 {

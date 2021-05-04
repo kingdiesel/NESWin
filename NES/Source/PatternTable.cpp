@@ -1,6 +1,6 @@
 #include "PatternTable.h"
-#include "Source/PatternTableTile.h"
-#include "Source/NESConsole.h"
+#include "PatternTableTile.h"
+#include "NESConsole.h"
 #include <assert.h>
 #include "SDL.h"
 static const int TILE_COUNT = 512;

@@ -16,9 +16,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NES.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Addressing\AddressingMode.cpp">
       <Filter>Source Files\Addressing</Filter>
     </ClCompile>
@@ -37,23 +34,26 @@
     <ClCompile Include="Source\PatternTableTile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PPU.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PatternTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Nametable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprites.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Mappers\Mapper000.cpp">
       <Filter>Source Files\Mappers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Mappers\Mapper001.cpp">
       <Filter>Source Files\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Nametable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\NES.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PatternTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PPU.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sprites.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -210,15 +210,6 @@
     <ClInclude Include="Source\PatternTableTile.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="PPU.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Palette.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PatternTable.h" />
-    <ClInclude Include="Nametable.h" />
-    <ClInclude Include="Sprites.h" />
     <ClInclude Include="Source\Instructions\BRK.h">
       <Filter>Source Files\Instructions</Filter>
     </ClInclude>
@@ -235,6 +226,21 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Globals.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Nametable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Palette.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PatternTable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PPU.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sprites.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
