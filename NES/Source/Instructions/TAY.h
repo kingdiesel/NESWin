@@ -1,28 +1,23 @@
-//
-//
+#pragma once
 
-#ifndef NES_TAY_H
-#define NES_TAY_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
-// http://www.obelisk.me.uk/6502/reference.html#TAY
-class TAY : public BaseInstruction<ImpliedAddressingStrategy, TAY, 0xA8>
+// http://www.obelisk.me.uk/6502/reference.html#TAX
+template<class _addressing_strategy>
+class TAYase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	TAY() : BaseInstruction(2, "TAY")
+	TAYase() : OpCodeBase<_addressing_strategy>("TAY")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterY(cpu.GetRegisterA());
 		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
 	}
 };
 
-#endif //NES_TAY_H
+typedef BaseInstruction2<TAYase<ImpliedAddressingStrategy>, 0xA8, 2> TAY;

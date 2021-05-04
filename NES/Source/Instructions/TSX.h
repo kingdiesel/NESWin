@@ -1,28 +1,23 @@
-//
-//
+#pragma once
 
-#ifndef NES_TSX_H
-#define NES_TSX_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#TSX
-class TSX : public BaseInstruction<ImpliedAddressingStrategy, TSX, 0xBA>
+template<class _addressing_strategy>
+class TSXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	TSX() : BaseInstruction(2, "TSX")
+	TSXBase() : OpCodeBase<_addressing_strategy>("TSX")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterX(cpu.GetRegisterStack());
 		cpu.SetZeroFlag(cpu.GetRegisterX() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
 	}
 };
 
-#endif //NES_TSX_H
+typedef BaseInstruction2<TSXBase<ImpliedAddressingStrategy>, 0xBA, 2> TSX;

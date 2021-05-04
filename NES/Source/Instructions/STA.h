@@ -1,83 +1,27 @@
-//
-//
-
-#ifndef NES_STA_H
-#define NES_STA_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#STA
-template<typename _addressing_mode, typename _execute, int _op_code>
-class STABase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class STABase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	STABase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STA")
+	STABase() : OpCodeBase<_addressing_strategy>("STA")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		this->GetAddressingMode().SetMemoryByteValue(cpu.GetRegisterA());
 	}
 };
 
-class STAAbsolute : public STABase<AbsoluteAddressingStrategy, STAAbsolute, 0x8D>
-{
-public:
-	STAAbsolute() : STABase(4)
-	{
-	}
-};
-
-class STAAbsoluteX : public STABase<AbsoluteXAddressingStrategy, STAAbsoluteX, 0x9D>
-{
-public:
-	STAAbsoluteX() : STABase(5)
-	{
-	}
-};
-
-class STAAbsoluteY : public STABase<AbsoluteYAddressingStrategy, STAAbsoluteY, 0x99>
-{
-public:
-	STAAbsoluteY() : STABase(5)
-	{
-	}
-};
-
-class STAZeroPage : public STABase<ZeroPageAddressingStrategy, STAZeroPage, 0x85>
-{
-public:
-	STAZeroPage() : STABase(3)
-	{
-	}
-};
-
-class STAZeroPageX : public STABase<ZeroPageXAddressingStrategy, STAZeroPageX, 0x95>
-{
-public:
-	STAZeroPageX() : STABase(4)
-	{
-	}
-};
-
-class STAIndexedIndirect : public STABase<IndexedIndirectAddressingStrategy, STAIndexedIndirect, 0x81>
-{
-public:
-	STAIndexedIndirect() : STABase(6)
-	{
-	}
-};
-
-class STAIndirectIndexed : public STABase<IndirectIndexedAddressingStrategy, STAIndirectIndexed, 0x91>
-{
-public:
-	STAIndirectIndexed() : STABase(6)
-	{
-	}
-};
-
-#endif //NES_STA_H
+typedef BaseInstruction2<STABase<AbsoluteAddressingStrategy>, 0x8D, 4> STAAbsolute;
+typedef BaseInstruction2<STABase<AbsoluteXAddressingStrategy>, 0x9D, 5> STAAbsoluteX;
+typedef BaseInstruction2<STABase<AbsoluteYAddressingStrategy>, 0x99, 5> STAAbsoluteY;
+typedef BaseInstruction2<STABase<ZeroPageAddressingStrategy>, 0x85, 3> STAZeroPage;
+typedef BaseInstruction2<STABase<ZeroPageXAddressingStrategy>, 0x95, 4> STAZeroPageX;
+typedef BaseInstruction2<STABase<IndexedIndirectAddressingStrategy>, 0x81, 6> STAIndexedIndirect;
+typedef BaseInstruction2<STABase<IndirectIndexedAddressingStrategy>, 0x91, 6> STAIndirectIndexed;

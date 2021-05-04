@@ -1,18 +1,14 @@
-//
-// Created by kingdiesel on 12/31/17.
-//
-
-#ifndef NES_ROL_H
-#define NES_ROL_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
-// http://www.6502.org/tutorials/6502opcodes.html#ROL
-template<typename _addressing_mode, typename _execute, int _op_code>
-class ROLBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+
+// http://www.obelisk.me.uk/6502/reference.html#ROL
+
+template<class _addressing_strategy>
+class ROLBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	ROLBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ROL")
+	ROLBase() : OpCodeBase<_addressing_strategy>("ROL")
 	{
 	}
 
@@ -21,64 +17,26 @@ public:
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
-		uint8_t bit_seven = value & (uint8_t) 0x80;
+		uint8_t bit_seven = value & (uint8_t)0x80;
 		bool carry_flag = cpu.IsCarryFlagSet();
 		value = value << 1;
 		if (carry_flag)
 		{
-			value |= (uint8_t) 0x01;
+			value |= (uint8_t)0x01;
 		}
 		else
 		{
-			value &= (uint8_t) ~0x01;
+			value &= (uint8_t)~0x01;
 		}
 		cpu.SetCarryFlag(bit_seven != 0);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 		this->GetAddressingMode().SetMemoryByteValue(value);
-
-
 	}
 };
 
-class ROLAccumulator : public ROLBase<AccumulatorAddressingStrategy, ROLAccumulator, 0x2A>
-{
-public:
-	ROLAccumulator() : ROLBase(2)
-	{
-	}
-};
-
-class ROLAbsolute : public ROLBase<AbsoluteAddressingStrategy, ROLAbsolute, 0x2E>
-{
-public:
-	ROLAbsolute() : ROLBase(6)
-	{
-	}
-};
-
-class ROLAbsoluteX : public ROLBase<AbsoluteXAddressingStrategy, ROLAbsoluteX, 0x3E>
-{
-public:
-	ROLAbsoluteX() : ROLBase(7)
-	{
-	}
-};
-
-class ROLZeroPage : public ROLBase<ZeroPageAddressingStrategy, ROLZeroPage, 0x26>
-{
-public:
-	ROLZeroPage() : ROLBase(5)
-	{
-	}
-};
-
-class ROLZeroPageX : public ROLBase<ZeroPageXAddressingStrategy, ROLZeroPageX, 0x36>
-{
-public:
-	ROLZeroPageX() : ROLBase(6)
-	{
-	}
-};
-
-#endif //NES_ROL_H
+typedef BaseInstruction2<ROLBase<AccumulatorAddressingStrategy>, 0x2A, 2> ROLAccumulator;
+typedef BaseInstruction2<ROLBase<AbsoluteAddressingStrategy>, 0x2E, 6> ROLAbsolute;
+typedef BaseInstruction2<ROLBase<AbsoluteXAddressingStrategy>, 0x3E, 7> ROLAbsoluteX;
+typedef BaseInstruction2<ROLBase<ZeroPageAddressingStrategy>, 0x26, 5> ROLZeroPage;
+typedef BaseInstruction2<ROLBase<ZeroPageXAddressingStrategy>, 0x36, 6> ROLZeroPageX;

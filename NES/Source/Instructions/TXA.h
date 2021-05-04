@@ -1,17 +1,13 @@
-//
-//
+#pragma once
 
-#ifndef NES_TXA_H
-#define NES_TXA_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#TXA
-class TXA : public BaseInstruction<ImpliedAddressingStrategy, TXA, 0x8A>
+template<class _addressing_strategy>
+class TXABase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	TXA() : BaseInstruction(2, "TXA")
+	TXABase() : OpCodeBase<_addressing_strategy>("TXA")
 	{
 	}
 
@@ -25,4 +21,4 @@ public:
 	}
 };
 
-#endif //NES_TXA_H
+typedef BaseInstruction2<TXABase<ImpliedAddressingStrategy>, 0x8A, 2> TXA;

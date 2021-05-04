@@ -1,19 +1,15 @@
-//
-//
-
-#ifndef NES_RTS_H
-#define NES_RTS_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#RTS
-class RTS : public BaseInstruction<ImpliedAddressingStrategy, RTS, 0x60>
+template<class _addressing_strategy>
+class RTSBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	RTS() : BaseInstruction(6, "RTS")
+	RTSBase() : OpCodeBase<_addressing_strategy>("RTS")
 	{
-		m_increments_program_counter = false;
+		this->m_increments_program_counter = false;
 	}
 
 	void ExecuteImplementation()
@@ -29,4 +25,4 @@ public:
 	}
 };
 
-#endif //NES_RTS_H
+typedef BaseInstruction2<RTSBase<ImpliedAddressingStrategy>, 0x60, 6> RTS;

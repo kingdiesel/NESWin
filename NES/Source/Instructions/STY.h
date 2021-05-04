@@ -1,52 +1,23 @@
-//
-//
+#pragma once
 
-#ifndef NES_STY_H
-#define NES_STY_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
-#include "../CPU.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#STY
-template<typename _addressing_mode, typename _execute, int _op_code>
-class STYBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class STYBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	STYBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STY")
+	STYBase() : OpCodeBase<_addressing_strategy>("STY")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		this->GetAddressingMode().SetMemoryByteValue(cpu.GetRegisterY());
 	}
 };
 
-class STYAbsolute : public STYBase<AbsoluteAddressingStrategy, STYAbsolute, 0x8C>
-{
-public:
-	STYAbsolute() : STYBase(4)
-	{
-	}
-};
-
-class STYZeroPage : public STYBase<ZeroPageAddressingStrategy, STYZeroPage, 0x84>
-{
-public:
-	STYZeroPage() : STYBase(3)
-	{
-	}
-};
-
-class STYZeroPageX : public STYBase<ZeroPageXAddressingStrategy, STYZeroPageX, 0x94>
-{
-public:
-	STYZeroPageX() : STYBase(4)
-	{
-	}
-};
-
-#endif //NES_STY_H
+typedef BaseInstruction2<STYBase<AbsoluteAddressingStrategy>, 0x8C, 4> STYAbsolute;
+typedef BaseInstruction2<STYBase<ZeroPageAddressingStrategy>, 0x84, 3> STYZeroPage;
+typedef BaseInstruction2<STYBase<ZeroPageXAddressingStrategy>, 0x94, 4> STYZeroPageX;

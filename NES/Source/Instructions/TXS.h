@@ -1,26 +1,21 @@
-//
-//
+#pragma once
 
-#ifndef NES_TXS_H
-#define NES_TXS_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#TXS
-class TXS : public BaseInstruction<ImpliedAddressingStrategy, TXS, 0x9A>
+template<class _addressing_strategy>
+class TXSBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	TXS() : BaseInstruction(2, "TXS")
+	TXSBase() : OpCodeBase<_addressing_strategy>("TXS")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterStack(cpu.GetRegisterX());
 	}
 };
 
-#endif //NES_TXS_H
+typedef BaseInstruction2<TXSBase<ImpliedAddressingStrategy>, 0x9A, 2> TXS;

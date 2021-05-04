@@ -1,26 +1,21 @@
-//
-//
+#pragma once
 
-#ifndef NES_SED_H
-#define NES_SED_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#SED
-class SED : public BaseInstruction<ImpliedAddressingStrategy, SED, 0xF8>
+template<class _addressing_strategy>
+class SEDBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	SED() : BaseInstruction(2, "SED")
+	SEDBase() : OpCodeBase<_addressing_strategy>("SED")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetDecimalFlag(true);
 	}
 };
 
-#endif //NES_SED_H
+typedef BaseInstruction2<SEDBase<ImpliedAddressingStrategy>, 0xF8, 2> SED;

@@ -1,51 +1,23 @@
-//
-//
+#pragma once
 
-#ifndef NES_STX_H
-#define NES_STX_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#STX
-template<typename _addressing_mode, typename _execute, int _op_code>
-class STXBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+template<class _addressing_strategy>
+class STXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	STXBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "STX")
+	STXBase() : OpCodeBase<_addressing_strategy>("STX")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		this->GetAddressingMode().SetMemoryByteValue(cpu.GetRegisterX());
 	}
 };
 
-class STXAbsolute : public STXBase<AbsoluteAddressingStrategy, STXAbsolute, 0x8E>
-{
-public:
-	STXAbsolute() : STXBase(4)
-	{
-	}
-};
-
-class STXZeroPage : public STXBase<ZeroPageAddressingStrategy, STXZeroPage, 0x86>
-{
-public:
-	STXZeroPage() : STXBase(3)
-	{
-	}
-};
-
-class STXZeroPageY : public STXBase<ZeroPageYAddressingStrategy, STXZeroPageY, 0x96>
-{
-public:
-	STXZeroPageY() : STXBase(4)
-	{
-	}
-};
-
-#endif //NES_STX_H
+typedef BaseInstruction2<STXBase<AbsoluteAddressingStrategy>, 0x8E, 4> STXAbsolute;
+typedef BaseInstruction2<STXBase<ZeroPageAddressingStrategy>, 0x86, 3> STXZeroPage;
+typedef BaseInstruction2<STXBase<ZeroPageYAddressingStrategy>, 0x96, 4> STXZeroPageY;

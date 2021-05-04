@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BaseInstruction.h"
+
 // http://www.obelisk.me.uk/6502/reference.html#CLC
 template<class _addressing_strategy>
 class CLCBase : public OpCodeBase<_addressing_strategy>

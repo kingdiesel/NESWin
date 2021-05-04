@@ -1,28 +1,23 @@
-//
-//
+#pragma once
 
-#ifndef NES_TAX_H
-#define NES_TAX_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#TAX
-class TAX : public BaseInstruction<ImpliedAddressingStrategy, TAX, 0xAA>
+template<class _addressing_strategy>
+class TAXBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	TAX() : BaseInstruction(2, "TAX")
+	TAXBase() : OpCodeBase<_addressing_strategy>("TAX")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterX(cpu.GetRegisterA());
 		cpu.SetZeroFlag(cpu.GetRegisterX() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
 	}
 };
 
-#endif //NES_TAX_H
+typedef BaseInstruction2<TAXBase<ImpliedAddressingStrategy>, 0xAA, 2> TAX;

@@ -1,18 +1,13 @@
-//
-// Created by kingdiesel on 12/31/17.
-//
-
-#ifndef NES_ROR_H
-#define NES_ROR_H
+#pragma once
 
 #include "BaseInstruction.h"
-#include "../Addressing/AddressingMode.h"
-// http://www.6502.org/tutorials/6502opcodes.html#ROR
-template<typename _addressing_mode, typename _execute, int _op_code>
-class RORBase : public BaseInstruction<_addressing_mode, _execute, _op_code>
+
+// http://www.obelisk.me.uk/6502/reference.html#ROR
+template<class _addressing_strategy>
+class RORBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	RORBase(uint8_t cycles) : BaseInstruction<_addressing_mode, _execute, _op_code>(cycles, "ROR")
+	RORBase() : OpCodeBase<_addressing_strategy>("ROR")
 	{
 	}
 
@@ -21,64 +16,26 @@ public:
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
-		uint8_t bit_zero = value & (uint8_t) 0x01;
+		uint8_t bit_zero = value & (uint8_t)0x01;
 		bool carry_flag = cpu.IsCarryFlagSet();
 		value = value >> 1;
 		if (carry_flag)
 		{
-			value |= (uint8_t) 0x80;
+			value |= (uint8_t)0x80;
 		}
 		else
 		{
-			value &= (uint8_t) 0x7F;
+			value &= (uint8_t)0x7F;
 		}
 		cpu.SetCarryFlag(bit_zero != 0);
 		cpu.SetZeroFlag(value == 0);
 		cpu.SetNegativeFlagForValue(value);
 		this->GetAddressingMode().SetMemoryByteValue(value);
-
-
 	}
 };
 
-class RORAccumulator : public RORBase<AccumulatorAddressingStrategy, RORAccumulator, 0x6A>
-{
-public:
-	RORAccumulator() : RORBase(2)
-	{
-	}
-};
-
-class RORAbsolute : public RORBase<AbsoluteAddressingStrategy, RORAbsolute, 0x6E>
-{
-public:
-	RORAbsolute() : RORBase(6)
-	{
-	}
-};
-
-class RORAbsoluteX : public RORBase<AbsoluteXAddressingStrategy, RORAbsoluteX, 0x7E>
-{
-public:
-	RORAbsoluteX() : RORBase(7)
-	{
-	}
-};
-
-class RORZeroPage : public RORBase<ZeroPageAddressingStrategy, RORZeroPage, 0x66>
-{
-public:
-	RORZeroPage() : RORBase(5)
-	{
-	}
-};
-
-class RORZeroPageX : public RORBase<ZeroPageXAddressingStrategy, RORZeroPageX, 0x76>
-{
-public:
-	RORZeroPageX() : RORBase(6)
-	{
-	}
-};
-
-#endif //NES_ROR_H
+typedef BaseInstruction2<RORBase<AccumulatorAddressingStrategy>, 0x6A, 2> RORAccumulator;
+typedef BaseInstruction2<RORBase<AbsoluteAddressingStrategy>, 0x6E, 6> RORAbsolute;
+typedef BaseInstruction2<RORBase<AbsoluteXAddressingStrategy>, 0x7E, 7> RORAbsoluteX;
+typedef BaseInstruction2<RORBase<ZeroPageAddressingStrategy>, 0x66, 5> RORZeroPage;
+typedef BaseInstruction2<RORBase<ZeroPageXAddressingStrategy>, 0x76, 6> RORZeroPageX;

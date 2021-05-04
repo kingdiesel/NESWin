@@ -1,18 +1,15 @@
-//
-//
+#pragma once
 
-#ifndef NES_RTI_H
-#define NES_RTI_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#RTI
-class RTI : public BaseInstruction<ImpliedAddressingStrategy, RTI, 0x40>
+template<class _addressing_strategy>
+class RTIBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	RTI() : BaseInstruction(6, "RTI")
+	RTIBase() : OpCodeBase<_addressing_strategy>("RTI")
 	{
+		// TODO: should this increment the program counter?
 	}
 
 	void ExecuteImplementation()
@@ -25,7 +22,7 @@ public:
 		uint16_t low_byte = memory.CPUReadByte(cpu.GetFullStackAddress());
 		cpu.IncrementStackPointer();
 		uint16_t high_byte = memory.CPUReadByte(cpu.GetFullStackAddress());;
-		uint16_t address = (low_byte | (high_byte << (uint16_t) 8)) - (uint16_t) 1;
+		uint16_t address = (low_byte | (high_byte << (uint16_t)8)) - (uint16_t)1;
 		cpu.SetRegisterProgramCounter(address);
 		flags &= 0xCF;
 		flags |= 0x20;
@@ -33,4 +30,4 @@ public:
 	}
 };
 
-#endif //NES_RTI_H
+typedef BaseInstruction2<RTIBase<ImpliedAddressingStrategy>, 0x40, 6> RTI;

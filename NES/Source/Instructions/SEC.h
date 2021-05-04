@@ -1,27 +1,21 @@
-//
-// Created by kingdiesel on 12/30/17.
-//
+#pragma once
 
-#ifndef NES_SEC_H
-#define NES_SEC_H
-
-#include "../Addressing/AddressingMode.h"
 #include "BaseInstruction.h"
 
 // http://www.obelisk.me.uk/6502/reference.html#SEC
-class SEC : public BaseInstruction<ImpliedAddressingStrategy, SEC, 0x38>
+template<class _addressing_strategy>
+class SECBase : public OpCodeBase<_addressing_strategy>
 {
 public:
-	SEC() : BaseInstruction(2, "SEC")
+	SECBase() : OpCodeBase<_addressing_strategy>("SEC")
 	{
 	}
 
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetCarryFlag(true);
 	}
 };
 
-#endif //NES_SEC_H
+typedef BaseInstruction2<SECBase<ImpliedAddressingStrategy>, 0x38, 2> SEC;
