@@ -2,6 +2,7 @@
 #include <memory>
 #include <mutex>
 #include <fstream>
+#include <vector>
 #include "CPU.h"
 #include "Memory.h"
 #include "PPU.h"
