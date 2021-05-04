@@ -19,10 +19,10 @@ concept AddressingConcept = requires(_T AddressStrategy, std::string & out_strin
 };
 
 template<AddressingConcept _Addressing_Strategy, int _operand_length>
-class BaseAddressingStrategy2
+class BaseAddressingStrategy
 {
 public:
-	BaseAddressingStrategy2() = default;
+	BaseAddressingStrategy() = default;
 
 	void SetMemoryByteValue(uint8_t value)
 	{
@@ -273,32 +273,32 @@ public:
 };
 
 // Fetches the value from a 16-bit address anywhere in memory.
-typedef BaseAddressingStrategy2<AbsoluteAddressingImpl, 2> AbsoluteAddressingStrategy;
-typedef BaseAddressingStrategy2<AbsoluteYAddressingImpl, 2> AbsoluteYAddressingStrategy;
-typedef BaseAddressingStrategy2<AbsoluteXAddressingImpl, 2> AbsoluteXAddressingStrategy;
+typedef BaseAddressingStrategy<AbsoluteAddressingImpl, 2> AbsoluteAddressingStrategy;
+typedef BaseAddressingStrategy<AbsoluteYAddressingImpl, 2> AbsoluteYAddressingStrategy;
+typedef BaseAddressingStrategy<AbsoluteXAddressingImpl, 2> AbsoluteXAddressingStrategy;
 
 // Branch instructions (e.g. BEQ, BCS) have a relative addressing mode that 
 // specifies an 8-bit signed offset relative to the current PC
-typedef BaseAddressingStrategy2<RelativeAddressingImpl, 1> RelativeAddressingStrategy;
+typedef BaseAddressingStrategy<RelativeAddressingImpl, 1> RelativeAddressingStrategy;
 
 // Fetches the value from an 8-bit address on the zero page.
-typedef BaseAddressingStrategy2<ZeroPageAddressingImpl, 1> ZeroPageAddressingStrategy;
-typedef BaseAddressingStrategy2<ZeroPageXAddressingImpl, 1> ZeroPageXAddressingStrategy;
-typedef BaseAddressingStrategy2<ZeroPageYAddressingImpl, 1> ZeroPageYAddressingStrategy;
+typedef BaseAddressingStrategy<ZeroPageAddressingImpl, 1> ZeroPageAddressingStrategy;
+typedef BaseAddressingStrategy<ZeroPageXAddressingImpl, 1> ZeroPageXAddressingStrategy;
+typedef BaseAddressingStrategy<ZeroPageYAddressingImpl, 1> ZeroPageYAddressingStrategy;
 
 // The JMP instruction has a special indirect addressing mode that can 
 // jump to the address stored in a 16-bit pointer anywhere in memory.
-typedef BaseAddressingStrategy2<IndexedIndirectAddressingImpl, 1> IndexedIndirectAddressingStrategy;
-typedef BaseAddressingStrategy2<IndirectIndexedAddressingImpl, 1> IndirectIndexedAddressingStrategy;
-typedef BaseAddressingStrategy2<IndirectAddressingImpl, 2> IndirectAddressingStrategy;
+typedef BaseAddressingStrategy<IndexedIndirectAddressingImpl, 1> IndexedIndirectAddressingStrategy;
+typedef BaseAddressingStrategy<IndirectIndexedAddressingImpl, 1> IndirectIndexedAddressingStrategy;
+typedef BaseAddressingStrategy<IndirectAddressingImpl, 2> IndirectAddressingStrategy;
 
 // Instructions like RTS or CLC have no address operand, the destination of results are implied.
-typedef BaseAddressingStrategy2<ImpliedAddressingImpl, 0> ImpliedAddressingStrategy;
+typedef BaseAddressingStrategy<ImpliedAddressingImpl, 0> ImpliedAddressingStrategy;
 
 // Uses the 8-bit operand itself as the value for the operation, rather than fetching a value from a memory address.
-typedef BaseAddressingStrategy2<ImmediateAddressingImpl, 1> ImmediateAddressingStrategy;
+typedef BaseAddressingStrategy<ImmediateAddressingImpl, 1> ImmediateAddressingStrategy;
 
 // Many instructions can operate on the accumulator, e.g. LSR A. 
 // Some assemblers will treat no operand as an implicit A where applicable
-typedef BaseAddressingStrategy2<AccumulatorAddressingImpl, 0> AccumulatorAddressingStrategy;
-typedef BaseAddressingStrategy2<JMPAbsoluteAddressingImpl, 2> JMPAbsoluteAddressingStrategy;
+typedef BaseAddressingStrategy<AccumulatorAddressingImpl, 0> AccumulatorAddressingStrategy;
+typedef BaseAddressingStrategy<JMPAbsoluteAddressingImpl, 2> JMPAbsoluteAddressingStrategy;
