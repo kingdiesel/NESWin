@@ -1,5 +1,4 @@
-#ifndef NES_MEMORY_H
-#define NES_MEMORY_H
+#pragma once
 
 #include "ROM.h"
 
@@ -50,6 +49,3 @@ private:
 	bool m_read_only_mode = false;
 	mutable uint8_t m_controller_poll = 0;
 };
-
-
-#endif //NES_MEMORY_H

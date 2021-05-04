@@ -1,5 +1,4 @@
-#ifndef NES_CPU_H
-#define NES_CPU_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -233,6 +232,3 @@ private:
 	bool m_logging_enabled = false;
 	class NESConsole* m_console = nullptr;
 };
-
-
-#endif //NES_CPU_H

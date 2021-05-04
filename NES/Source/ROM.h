@@ -1,5 +1,4 @@
-#ifndef NES_ROM_H
-#define NES_ROM_H
+#pragma once
 
 #include <string>
 
@@ -75,5 +74,3 @@ private:
 	int m_chr_size = 0;
 	iNESHeader m_header_data;
 };
-
-#endif //NES_ROM_H
