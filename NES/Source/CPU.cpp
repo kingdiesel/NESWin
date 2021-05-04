@@ -164,7 +164,7 @@ public:
 				PrintLogString<_instruction>();
 			}
 
-			instruction.Execute(cpu);
+			instruction.Execute();
 			if (instruction.GetIncrementsProgramCounter())
 			{
 				cpu.IncrementProgramCounter(instruction.GetProgramCounterIncrement());

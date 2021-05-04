@@ -13,11 +13,10 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterY(cpu.GetRegisterY() + (uint8_t)1);
 		cpu.SetZeroFlag(cpu.GetRegisterY() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterY());
 	}
 };
 
-typedef BaseInstruction2<INYBase<ImpliedAddressingStrategy>, 0xC8, 2> INY;
+typedef BaseInstruction<INYBase<ImpliedAddressingStrategy>, 0xC8, 2> INY;

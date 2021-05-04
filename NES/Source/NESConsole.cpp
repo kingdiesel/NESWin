@@ -162,7 +162,6 @@ void NESConsole::RunNesTestTiming()
 	m_cpu->SetLoggingEnabled(false);
 	auto t1 = std::chrono::high_resolution_clock::now();
 	int times = 10000;
-	int cycles = 0;
 	while (times != 0)
 	{
 		m_cpu->ExecuteInstruction();

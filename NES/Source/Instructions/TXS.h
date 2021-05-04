@@ -18,4 +18,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<TXSBase<ImpliedAddressingStrategy>, 0x9A, 2> TXS;
+typedef BaseInstruction<TXSBase<ImpliedAddressingStrategy>, 0x9A, 2> TXS;

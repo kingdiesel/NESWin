@@ -18,4 +18,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<SEIBase<ImpliedAddressingStrategy>, 0x78, 2> SEI;
+typedef BaseInstruction<SEIBase<ImpliedAddressingStrategy>, 0x78, 2> SEI;

@@ -42,4 +42,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<BRKBase<ImpliedAddressingStrategy>, 0x00, 7> BRK;
+typedef BaseInstruction<BRKBase<ImpliedAddressingStrategy>, 0x00, 7> BRK;

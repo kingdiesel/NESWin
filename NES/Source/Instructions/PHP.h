@@ -22,4 +22,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<PHPBase<ImpliedAddressingStrategy>, 0x08, 3> PHP;
+typedef BaseInstruction<PHPBase<ImpliedAddressingStrategy>, 0x08, 3> PHP;

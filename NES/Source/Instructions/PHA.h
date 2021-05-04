@@ -20,4 +20,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<PHABase<ImpliedAddressingStrategy>, 0x48, 3> PHA;
+typedef BaseInstruction<PHABase<ImpliedAddressingStrategy>, 0x48, 3> PHA;

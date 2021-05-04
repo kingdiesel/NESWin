@@ -23,4 +23,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<PLABase<ImpliedAddressingStrategy>, 0x68, 4> PLA;
+typedef BaseInstruction<PLABase<ImpliedAddressingStrategy>, 0x68, 4> PLA;

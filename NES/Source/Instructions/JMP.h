@@ -61,6 +61,6 @@ public:
 	}
 };
 
-typedef BaseInstruction2<JMPAbsoluteBase<JMPAbsoluteAddressingStrategy>, 0x4C, 3> JMPAbsolute;
-typedef BaseInstruction2<JMPIndirectBase<IndirectAddressingStrategy>, 0x6C, 5> JMPIndirect;
-typedef BaseInstruction2<JSRBase<JMPAbsoluteAddressingStrategy>, 0x20, 6> JSR;
+typedef BaseInstruction<JMPAbsoluteBase<JMPAbsoluteAddressingStrategy>, 0x4C, 3> JMPAbsolute;
+typedef BaseInstruction<JMPIndirectBase<IndirectAddressingStrategy>, 0x6C, 5> JMPIndirect;
+typedef BaseInstruction<JSRBase<JMPAbsoluteAddressingStrategy>, 0x20, 6> JSR;

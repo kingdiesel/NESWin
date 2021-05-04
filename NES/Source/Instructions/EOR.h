@@ -19,11 +19,11 @@ public:
 	}
 };
 
-typedef BaseInstruction2<EORBase<ImmediateAddressingStrategy>, 0x49, 2> EORImmediate;
-typedef BaseInstruction2<EORBase<AbsoluteAddressingStrategy>, 0x4D, 4> EORAbsolute;
-typedef BaseInstruction2<EORBase<AbsoluteXAddressingStrategy>, 0x5D, 4> EORAbsoluteX;
-typedef BaseInstruction2<EORBase<AbsoluteYAddressingStrategy>, 0x59, 4> EORAbsoluteY;
-typedef BaseInstruction2<EORBase<ZeroPageAddressingStrategy>, 0x45, 3> EORZeroPage;
-typedef BaseInstruction2<EORBase<ZeroPageXAddressingStrategy>, 0x55, 4> EORZeroPageX;
-typedef BaseInstruction2<EORBase<IndexedIndirectAddressingStrategy>, 0x41, 6> EORIndexedIndirect;
-typedef BaseInstruction2<EORBase<IndirectIndexedAddressingStrategy>, 0x51, 5> EORIndirectIndexed;
+typedef BaseInstruction<EORBase<ImmediateAddressingStrategy>, 0x49, 2> EORImmediate;
+typedef BaseInstruction<EORBase<AbsoluteAddressingStrategy>, 0x4D, 4> EORAbsolute;
+typedef BaseInstruction<EORBase<AbsoluteXAddressingStrategy>, 0x5D, 4> EORAbsoluteX;
+typedef BaseInstruction<EORBase<AbsoluteYAddressingStrategy>, 0x59, 4> EORAbsoluteY;
+typedef BaseInstruction<EORBase<ZeroPageAddressingStrategy>, 0x45, 3> EORZeroPage;
+typedef BaseInstruction<EORBase<ZeroPageXAddressingStrategy>, 0x55, 4> EORZeroPageX;
+typedef BaseInstruction<EORBase<IndexedIndirectAddressingStrategy>, 0x41, 6> EORIndexedIndirect;
+typedef BaseInstruction<EORBase<IndirectIndexedAddressingStrategy>, 0x51, 5> EORIndirectIndexed;

@@ -14,7 +14,6 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t carry_bit = 0x00;
 		if (cpu.IsCarryFlagSet())
@@ -35,11 +34,11 @@ public:
 	}
 };
 
-typedef BaseInstruction2<ADCBase<ImmediateAddressingStrategy>, 0x69, 2> ADCImmediate;
-typedef BaseInstruction2<ADCBase<AbsoluteAddressingStrategy>, 0x6D, 4> ADCAbsolute;
-typedef BaseInstruction2<ADCBase<AbsoluteXAddressingStrategy>, 0x7D, 4> ADCAbsoluteX;
-typedef BaseInstruction2<ADCBase<AbsoluteYAddressingStrategy>, 0x79, 4> ADCAbsoluteY;
-typedef BaseInstruction2<ADCBase<ZeroPageAddressingStrategy>, 0x65, 3> ADCZeroPage;
-typedef BaseInstruction2<ADCBase<ZeroPageXAddressingStrategy>, 0x75, 4> ADCZeroPageX;
-typedef BaseInstruction2<ADCBase<IndexedIndirectAddressingStrategy>, 0x61, 6> ADCIndexedIndirect;
-typedef BaseInstruction2<ADCBase<IndirectIndexedAddressingStrategy>, 0x71, 5> ADCIndirectIndexed;
+typedef BaseInstruction<ADCBase<ImmediateAddressingStrategy>, 0x69, 2> ADCImmediate;
+typedef BaseInstruction<ADCBase<AbsoluteAddressingStrategy>, 0x6D, 4> ADCAbsolute;
+typedef BaseInstruction<ADCBase<AbsoluteXAddressingStrategy>, 0x7D, 4> ADCAbsoluteX;
+typedef BaseInstruction<ADCBase<AbsoluteYAddressingStrategy>, 0x79, 4> ADCAbsoluteY;
+typedef BaseInstruction<ADCBase<ZeroPageAddressingStrategy>, 0x65, 3> ADCZeroPage;
+typedef BaseInstruction<ADCBase<ZeroPageXAddressingStrategy>, 0x75, 4> ADCZeroPageX;
+typedef BaseInstruction<ADCBase<IndexedIndirectAddressingStrategy>, 0x61, 6> ADCIndexedIndirect;
+typedef BaseInstruction<ADCBase<IndirectIndexedAddressingStrategy>, 0x71, 5> ADCIndirectIndexed;

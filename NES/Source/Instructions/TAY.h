@@ -20,4 +20,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<TAYase<ImpliedAddressingStrategy>, 0xA8, 2> TAY;
+typedef BaseInstruction<TAYase<ImpliedAddressingStrategy>, 0xA8, 2> TAY;

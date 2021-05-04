@@ -193,7 +193,6 @@ public:
 
 	void SetMemoryByteValue(uint8_t value) const
 	{
-		CPU& cpu = NESConsole::GetInstance()->GetCPU();
 		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		const uint16_t address = GetSetAddress();
 		memory.CPUWriteByte(address, value);

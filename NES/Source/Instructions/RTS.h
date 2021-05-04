@@ -25,4 +25,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<RTSBase<ImpliedAddressingStrategy>, 0x60, 6> RTS;
+typedef BaseInstruction<RTSBase<ImpliedAddressingStrategy>, 0x60, 6> RTS;

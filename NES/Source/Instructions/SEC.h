@@ -18,4 +18,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<SECBase<ImpliedAddressingStrategy>, 0x38, 2> SEC;
+typedef BaseInstruction<SECBase<ImpliedAddressingStrategy>, 0x38, 2> SEC;

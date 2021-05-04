@@ -15,9 +15,9 @@ public:
 	{
 	}
 };
-typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0xEA, 2> NOP;
-typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0x1A, 2> NOP1A;
-typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0x3A, 2> NOP3A;
-typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0x5A, 2> NOP5A;
-typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0xDA, 2> NOPDA;
-typedef BaseInstruction2<NOPBase<ImpliedAddressingStrategy>, 0xFA, 2> NOPFA;
+typedef BaseInstruction<NOPBase<ImpliedAddressingStrategy>, 0xEA, 2> NOP;
+typedef BaseInstruction<NOPBase<ImpliedAddressingStrategy>, 0x1A, 2> NOP1A;
+typedef BaseInstruction<NOPBase<ImpliedAddressingStrategy>, 0x3A, 2> NOP3A;
+typedef BaseInstruction<NOPBase<ImpliedAddressingStrategy>, 0x5A, 2> NOP5A;
+typedef BaseInstruction<NOPBase<ImpliedAddressingStrategy>, 0xDA, 2> NOPDA;
+typedef BaseInstruction<NOPBase<ImpliedAddressingStrategy>, 0xFA, 2> NOPFA;

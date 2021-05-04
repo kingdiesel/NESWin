@@ -20,4 +20,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<TAXBase<ImpliedAddressingStrategy>, 0xAA, 2> TAX;
+typedef BaseInstruction<TAXBase<ImpliedAddressingStrategy>, 0xAA, 2> TAX;

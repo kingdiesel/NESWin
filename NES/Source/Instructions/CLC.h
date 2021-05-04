@@ -18,4 +18,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<CLCBase<ImpliedAddressingStrategy>, 0x18, 2> CLC;
+typedef BaseInstruction<CLCBase<ImpliedAddressingStrategy>, 0x18, 2> CLC;

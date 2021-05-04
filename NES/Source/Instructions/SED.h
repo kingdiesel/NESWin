@@ -18,4 +18,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<SEDBase<ImpliedAddressingStrategy>, 0xF8, 2> SED;
+typedef BaseInstruction<SEDBase<ImpliedAddressingStrategy>, 0xF8, 2> SED;

@@ -23,7 +23,6 @@ void AbsoluteAddressingImpl::ToString(std::string& out_string) const
 
 void AbsoluteAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -45,7 +44,6 @@ uint16_t AbsoluteAddressingImpl::GetMemoryShort() const
 
 uint8_t AbsoluteAddressingImpl::GetMemoryByteValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	return memory.CPUReadByte(GetMemoryShort());
 }
@@ -84,7 +82,6 @@ void AbsoluteYAddressingImpl::ToString(std::string& out_string) const
 
 void AbsoluteYAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -155,7 +152,6 @@ void AbsoluteXAddressingImpl::ToString(std::string& out_string) const
 
 void AbsoluteXAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -207,8 +203,6 @@ uint16_t AbsoluteXAddressingImpl::GetSetAddress() const
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void RelativeAddressingImpl::ToString(std::string& out_string) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint16_t destination = GetMemoryShortValue();
 	std::ostringstream os;
 	os << std::hex << "$" << std::uppercase << std::setw(27) << std::left << (int)destination;
@@ -217,7 +211,6 @@ void RelativeAddressingImpl::ToString(std::string& out_string) const
 
 void RelativeAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -245,7 +238,6 @@ uint8_t RelativeAddressingImpl::GetMemoryByteValue() const
 uint16_t RelativeAddressingImpl::GetMemoryShortValue() const
 {
 	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	// The offset is a signed byte, so it can jump a maximum of 127 bytes forward, or 128 bytes backward.
 	int8_t data_byte = static_cast<int8_t>(GetMemoryByte());
 	uint16_t destination = cpu.GetRegisterProgramCounterPlus(2) + (uint16_t)data_byte;
@@ -260,8 +252,6 @@ uint16_t RelativeAddressingImpl::GetSetAddress() const
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void JMPAbsoluteAddressingImpl::ToString(std::string& out_string) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	std::ostringstream os;
 	os << std::hex << "$" << std::uppercase << std::setw(27) << std::left << GetMemoryShort();
 	out_string.append(os.str());
@@ -269,7 +259,6 @@ void JMPAbsoluteAddressingImpl::ToString(std::string& out_string) const
 
 void JMPAbsoluteAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -290,7 +279,6 @@ uint16_t JMPAbsoluteAddressingImpl::GetMemoryShort() const
 
 uint8_t JMPAbsoluteAddressingImpl::GetMemoryByteValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	return memory.CPUReadByte(GetMemoryShort());
 }
@@ -310,8 +298,6 @@ uint16_t JMPAbsoluteAddressingImpl::GetSetAddress() const
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ZeroPageAddressingImpl::ToString(std::string& out_string) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint8_t data_byte = GetMemoryByte();
 	uint8_t data_value = GetMemoryByteValue();
 	std::ostringstream os;
@@ -325,7 +311,6 @@ void ZeroPageAddressingImpl::ToString(std::string& out_string) const
 
 void ZeroPageAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -346,7 +331,6 @@ uint16_t ZeroPageAddressingImpl::GetMemoryShort() const
 
 uint8_t ZeroPageAddressingImpl::GetMemoryByteValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint8_t zero_page_address = GetMemoryByte();
 	uint8_t zero_page_value = memory.CPUReadByte((uint16_t)zero_page_address);
@@ -386,7 +370,6 @@ void ZeroPageXAddressingImpl::ToString(std::string& out_string) const
 
 void ZeroPageXAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -450,7 +433,6 @@ void ZeroPageYAddressingImpl::ToString(std::string& out_string) const
 
 void ZeroPageYAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -523,7 +505,6 @@ void IndexedIndirectAddressingImpl::ToString(std::string& out_string) const
 
 void IndexedIndirectAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -544,7 +525,6 @@ uint16_t IndexedIndirectAddressingImpl::GetMemoryShort() const
 
 uint8_t IndexedIndirectAddressingImpl::GetMemoryByteValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint16_t full_address = GetSetAddress();
 	return memory.CPUReadByte(full_address);
@@ -601,7 +581,6 @@ void IndirectIndexedAddressingImpl::ToString(std::string& out_string) const
 
 void IndirectIndexedAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -616,7 +595,6 @@ uint8_t IndirectIndexedAddressingImpl::GetMemoryByte() const
 
 uint8_t IndirectIndexedAddressingImpl::GetMemoryByteValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint16_t full_address = GetSetAddress();
 	return memory.CPUReadByte(full_address);
@@ -677,7 +655,6 @@ uint16_t AccumulatorAddressingImpl::GetSetAddress() const
 uint8_t AccumulatorAddressingImpl::GetMemoryByteValue() const
 {
 	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	return cpu.GetRegisterA();
 }
 
@@ -702,8 +679,6 @@ void AccumulatorAddressingImpl::SetMemoryByteValue(uint8_t value) const
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ImmediateAddressingImpl::ToString(std::string& out_string) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	std::ostringstream os;
 	os << std::hex << "#$" << std::uppercase << std::setw(2) << std::setfill('0') << (int)GetMemoryByte();
 	os << std::setfill(' ') << std::setw(24) << " ";
@@ -712,7 +687,6 @@ void ImmediateAddressingImpl::ToString(std::string& out_string) const
 
 void ImmediateAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -727,8 +701,6 @@ uint8_t ImmediateAddressingImpl::GetMemoryByte() const
 
 uint8_t ImmediateAddressingImpl::GetMemoryByteValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	return GetMemoryByte();
 }
 
@@ -746,15 +718,11 @@ uint16_t ImmediateAddressingImpl::GetMemoryShort() const
 
 uint16_t ImmediateAddressingImpl::GetSetAddress() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	return GetMemoryShort();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void IndirectAddressingImpl::ToString(std::string& out_string) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
-	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint16_t value = GetMemoryShort();
 	uint16_t full_address = GetMemoryShortValue();
 	std::ostringstream os;
@@ -769,7 +737,6 @@ void IndirectAddressingImpl::ToString(std::string& out_string) const
 }
 void IndirectAddressingImpl::SetMemoryByteValue(uint8_t value) const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	const uint16_t address = GetSetAddress();
 	memory.CPUWriteByte(address, value);
@@ -796,7 +763,6 @@ uint8_t IndirectAddressingImpl::GetMemoryByteValue() const
 
 uint16_t IndirectAddressingImpl::GetMemoryShortValue() const
 {
-	CPU& cpu = NESConsole::GetInstance()->GetCPU();
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
 	uint16_t value = GetMemoryShort();
 	uint8_t lsb = memory.CPUReadByte(value);

@@ -11,7 +11,7 @@
 #include "Nametable.h"
 #include "Sprites.h"
 
-#define NESTEST_TXT 1
+#define NESTEST_TXT 0
 
 int main(int argv, char** args)
 {	

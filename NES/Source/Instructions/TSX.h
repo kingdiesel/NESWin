@@ -20,4 +20,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<TSXBase<ImpliedAddressingStrategy>, 0xBA, 2> TSX;
+typedef BaseInstruction<TSXBase<ImpliedAddressingStrategy>, 0xBA, 2> TSX;

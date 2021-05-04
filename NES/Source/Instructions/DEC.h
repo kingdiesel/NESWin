@@ -14,7 +14,6 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		value -= (uint8_t)1;
 		this->GetAddressingMode().SetMemoryByteValue(value);
@@ -22,7 +21,7 @@ public:
 		cpu.SetNegativeFlagForValue(value);
 	}
 };
-typedef BaseInstruction2<DECBase<AbsoluteAddressingStrategy>, 0xCE, 6> DECAbsolute;
-typedef BaseInstruction2<DECBase<AbsoluteXAddressingStrategy>, 0xDE, 7> DECAbsoluteX;
-typedef BaseInstruction2<DECBase<ZeroPageAddressingStrategy>, 0xC6, 5> DECZeroPage;
-typedef BaseInstruction2<DECBase<ZeroPageXAddressingStrategy>, 0xD6, 6> DECZeroPageX;
+typedef BaseInstruction<DECBase<AbsoluteAddressingStrategy>, 0xCE, 6> DECAbsolute;
+typedef BaseInstruction<DECBase<AbsoluteXAddressingStrategy>, 0xDE, 7> DECAbsoluteX;
+typedef BaseInstruction<DECBase<ZeroPageAddressingStrategy>, 0xC6, 5> DECZeroPage;
+typedef BaseInstruction<DECBase<ZeroPageXAddressingStrategy>, 0xD6, 6> DECZeroPageX;

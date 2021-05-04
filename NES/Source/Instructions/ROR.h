@@ -14,7 +14,6 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		uint8_t value = this->GetAddressingMode().GetMemoryByteValue();
 		uint8_t bit_zero = value & (uint8_t)0x01;
 		bool carry_flag = cpu.IsCarryFlagSet();
@@ -34,8 +33,8 @@ public:
 	}
 };
 
-typedef BaseInstruction2<RORBase<AccumulatorAddressingStrategy>, 0x6A, 2> RORAccumulator;
-typedef BaseInstruction2<RORBase<AbsoluteAddressingStrategy>, 0x6E, 6> RORAbsolute;
-typedef BaseInstruction2<RORBase<AbsoluteXAddressingStrategy>, 0x7E, 7> RORAbsoluteX;
-typedef BaseInstruction2<RORBase<ZeroPageAddressingStrategy>, 0x66, 5> RORZeroPage;
-typedef BaseInstruction2<RORBase<ZeroPageXAddressingStrategy>, 0x76, 6> RORZeroPageX;
+typedef BaseInstruction<RORBase<AccumulatorAddressingStrategy>, 0x6A, 2> RORAccumulator;
+typedef BaseInstruction<RORBase<AbsoluteAddressingStrategy>, 0x6E, 6> RORAbsolute;
+typedef BaseInstruction<RORBase<AbsoluteXAddressingStrategy>, 0x7E, 7> RORAbsoluteX;
+typedef BaseInstruction<RORBase<ZeroPageAddressingStrategy>, 0x66, 5> RORZeroPage;
+typedef BaseInstruction<RORBase<ZeroPageXAddressingStrategy>, 0x76, 6> RORZeroPageX;

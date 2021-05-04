@@ -284,11 +284,11 @@ public:
 	}
 };
 
-typedef BaseInstruction2<BVCBase<RelativeAddressingStrategy>, 0x50, 2> BVC;
-typedef BaseInstruction2<BMIBase<RelativeAddressingStrategy>, 0x30, 2> BMI;
-typedef BaseInstruction2<BCSBase<RelativeAddressingStrategy>, 0xB0, 2> BCS;
-typedef BaseInstruction2<BPLBase<RelativeAddressingStrategy>, 0x10, 2> BPL;
-typedef BaseInstruction2<BNEBase<RelativeAddressingStrategy>, 0xD0, 2> BNE;
-typedef BaseInstruction2<BEQBase<RelativeAddressingStrategy>, 0xF0, 2> BEQ;
-typedef BaseInstruction2<BCCBase<RelativeAddressingStrategy>, 0x90, 2> BCC;
-typedef BaseInstruction2<BVSBase<RelativeAddressingStrategy>, 0x70, 2> BVS;
+typedef BaseInstruction<BVCBase<RelativeAddressingStrategy>, 0x50, 2> BVC;
+typedef BaseInstruction<BMIBase<RelativeAddressingStrategy>, 0x30, 2> BMI;
+typedef BaseInstruction<BCSBase<RelativeAddressingStrategy>, 0xB0, 2> BCS;
+typedef BaseInstruction<BPLBase<RelativeAddressingStrategy>, 0x10, 2> BPL;
+typedef BaseInstruction<BNEBase<RelativeAddressingStrategy>, 0xD0, 2> BNE;
+typedef BaseInstruction<BEQBase<RelativeAddressingStrategy>, 0xF0, 2> BEQ;
+typedef BaseInstruction<BCCBase<RelativeAddressingStrategy>, 0x90, 2> BCC;
+typedef BaseInstruction<BVSBase<RelativeAddressingStrategy>, 0x70, 2> BVS;

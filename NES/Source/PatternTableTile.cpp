@@ -44,7 +44,8 @@ void PatternTableTile::FillTextureData(const FillData& _data)
 	Memory& memory = m_console->GetMemory();
 	for (int i = 0; i <= 3 && _data.m_palette_index != -1; ++i)
 	{
-		uint8_t color = memory.PPUReadByte(start_address + i);
+		assert(start_address + i <= std::numeric_limits<uint16_t>::max());
+		uint8_t color = memory.PPUReadByte(static_cast<uint16_t>(start_address + i));
 		assert(color >= 0 && color < NUM_COLORS);
 		uint32_t palette_color = PaletteColors[color];
 		COLOR_PALETTE[i] = palette_color;

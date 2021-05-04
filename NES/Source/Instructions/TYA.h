@@ -20,4 +20,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<TYABase<ImpliedAddressingStrategy>, 0x98, 2> TYA;
+typedef BaseInstruction<TYABase<ImpliedAddressingStrategy>, 0x98, 2> TYA;

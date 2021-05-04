@@ -14,11 +14,10 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterA(cpu.GetRegisterX());
 		cpu.SetZeroFlag(cpu.GetRegisterA() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterA());
 	}
 };
 
-typedef BaseInstruction2<TXABase<ImpliedAddressingStrategy>, 0x8A, 2> TXA;
+typedef BaseInstruction<TXABase<ImpliedAddressingStrategy>, 0x8A, 2> TXA;

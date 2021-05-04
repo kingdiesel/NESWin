@@ -23,4 +23,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<PLPBase<ImpliedAddressingStrategy>, 0x28, 4> PLP;
+typedef BaseInstruction<PLPBase<ImpliedAddressingStrategy>, 0x28, 4> PLP;

@@ -18,6 +18,6 @@ public:
 	}
 };
 
-typedef BaseInstruction2<STXBase<AbsoluteAddressingStrategy>, 0x8E, 4> STXAbsolute;
-typedef BaseInstruction2<STXBase<ZeroPageAddressingStrategy>, 0x86, 3> STXZeroPage;
-typedef BaseInstruction2<STXBase<ZeroPageYAddressingStrategy>, 0x96, 4> STXZeroPageY;
+typedef BaseInstruction<STXBase<AbsoluteAddressingStrategy>, 0x8E, 4> STXAbsolute;
+typedef BaseInstruction<STXBase<ZeroPageAddressingStrategy>, 0x86, 3> STXZeroPage;
+typedef BaseInstruction<STXBase<ZeroPageYAddressingStrategy>, 0x96, 4> STXZeroPageY;

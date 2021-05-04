@@ -22,4 +22,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<DEYBase<ImpliedAddressingStrategy>, 0x88, 2> DEY;
+typedef BaseInstruction<DEYBase<ImpliedAddressingStrategy>, 0x88, 2> DEY;

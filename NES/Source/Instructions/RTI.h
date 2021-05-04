@@ -30,4 +30,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<RTIBase<ImpliedAddressingStrategy>, 0x40, 6> RTI;
+typedef BaseInstruction<RTIBase<ImpliedAddressingStrategy>, 0x40, 6> RTI;

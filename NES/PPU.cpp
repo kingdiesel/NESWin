@@ -569,7 +569,8 @@ void PPU::SetOAMDMA(const uint8_t value)
 	end_address |= 0x00FF;
 	for (uint16_t i = start_address; i <= end_address; ++i)
 	{
-		memory.PPUWriteOAM(i - start_address, memory.CPUReadByte(i));
+		assert(i - start_address <= std::numeric_limits<uint8_t>::max());
+		memory.PPUWriteOAM(static_cast<uint8_t>(i - start_address), memory.CPUReadByte(i));
 	}
 }
 

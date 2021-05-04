@@ -22,4 +22,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<DEXBase<ImpliedAddressingStrategy>, 0xCA, 2> DEX;
+typedef BaseInstruction<DEXBase<ImpliedAddressingStrategy>, 0xCA, 2> DEX;

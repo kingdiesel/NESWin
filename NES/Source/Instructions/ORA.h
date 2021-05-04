@@ -21,11 +21,11 @@ public:
 	}
 };
 
-typedef BaseInstruction2<ORABase<ImmediateAddressingStrategy>, 0x09, 2> ORAImmediate;
-typedef BaseInstruction2<ORABase<AbsoluteAddressingStrategy>, 0x0D, 4> ORAAbsolute;
-typedef BaseInstruction2<ORABase<AbsoluteXAddressingStrategy>, 0x1D, 4> ORAAbsoluteX;
-typedef BaseInstruction2<ORABase<AbsoluteYAddressingStrategy>, 0x19, 4> ORAAbsoluteY;
-typedef BaseInstruction2<ORABase<ZeroPageAddressingStrategy>, 0x05, 3> ORAZeroPage;
-typedef BaseInstruction2<ORABase<ZeroPageXAddressingStrategy>, 0x15, 4> ORAZeroPageX;
-typedef BaseInstruction2<ORABase<IndexedIndirectAddressingStrategy>, 0x01, 6> ORAIndexedIndirect;
-typedef BaseInstruction2<ORABase<IndirectIndexedAddressingStrategy>, 0x11, 5> ORAIndirectIndexed;
+typedef BaseInstruction<ORABase<ImmediateAddressingStrategy>, 0x09, 2> ORAImmediate;
+typedef BaseInstruction<ORABase<AbsoluteAddressingStrategy>, 0x0D, 4> ORAAbsolute;
+typedef BaseInstruction<ORABase<AbsoluteXAddressingStrategy>, 0x1D, 4> ORAAbsoluteX;
+typedef BaseInstruction<ORABase<AbsoluteYAddressingStrategy>, 0x19, 4> ORAAbsoluteY;
+typedef BaseInstruction<ORABase<ZeroPageAddressingStrategy>, 0x05, 3> ORAZeroPage;
+typedef BaseInstruction<ORABase<ZeroPageXAddressingStrategy>, 0x15, 4> ORAZeroPageX;
+typedef BaseInstruction<ORABase<IndexedIndirectAddressingStrategy>, 0x01, 6> ORAIndexedIndirect;
+typedef BaseInstruction<ORABase<IndirectIndexedAddressingStrategy>, 0x11, 5> ORAIndirectIndexed;

@@ -17,4 +17,4 @@ public:
 	}
 };
 
-typedef BaseInstruction2<CLVBase<ImpliedAddressingStrategy>, 0xB8, 2> CLV;
+typedef BaseInstruction<CLVBase<ImpliedAddressingStrategy>, 0xB8, 2> CLV;

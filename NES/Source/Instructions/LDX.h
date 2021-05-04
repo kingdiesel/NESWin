@@ -14,14 +14,13 @@ public:
 	void ExecuteImplementation()
 	{
 		CPU& cpu = NESConsole::GetInstance()->GetCPU();
-		Memory& memory = NESConsole::GetInstance()->GetMemory();
 		cpu.SetRegisterX(this->GetAddressingMode().GetMemoryByteValue());
 		cpu.SetZeroFlag(cpu.GetRegisterX() == 0);
 		cpu.SetNegativeFlagForValue(cpu.GetRegisterX());
 	}
 };
-typedef BaseInstruction2<LDXBase<ImmediateAddressingStrategy>, 0xA2, 2> LDXImmediate;
-typedef BaseInstruction2<LDXBase<AbsoluteAddressingStrategy>, 0xAE, 4> LDXAbsolute;
-typedef BaseInstruction2<LDXBase<AbsoluteYAddressingStrategy>, 0xBE, 4> LDXAbsoluteY;
-typedef BaseInstruction2<LDXBase<ZeroPageAddressingStrategy>, 0xA6, 3> LDXZeroPage;
-typedef BaseInstruction2<LDXBase<ZeroPageYAddressingStrategy>, 0xB6, 4> LDXZeroPageY;
+typedef BaseInstruction<LDXBase<ImmediateAddressingStrategy>, 0xA2, 2> LDXImmediate;
+typedef BaseInstruction<LDXBase<AbsoluteAddressingStrategy>, 0xAE, 4> LDXAbsolute;
+typedef BaseInstruction<LDXBase<AbsoluteYAddressingStrategy>, 0xBE, 4> LDXAbsoluteY;
+typedef BaseInstruction<LDXBase<ZeroPageAddressingStrategy>, 0xA6, 3> LDXZeroPage;
+typedef BaseInstruction<LDXBase<ZeroPageYAddressingStrategy>, 0xB6, 4> LDXZeroPageY;
