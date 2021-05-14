@@ -56,7 +56,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"
 	);
 
-#define debug true
+#define debug false
 	const int screen_scale = debug ? 1 : 3;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
