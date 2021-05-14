@@ -12,6 +12,7 @@
 #include "Sprites.h"
 
 #define NESTEST_TXT 0
+#pragma warning( disable : 4100 )
 
 int main(int argv, char** args)
 {	
@@ -55,7 +56,7 @@ int main(int argv, char** args)
 		//"C:/Users/aspiv/source/repos/kingdiesel/NESWin/NES/TestRoms/balloonfight.nes"
 	);
 
-#define debug false
+#define debug true
 	const int screen_scale = debug ? 1 : 3;
 	const int nes_resolution_x = 256;
 	const int nes_resolution_y = 240;
@@ -104,7 +105,6 @@ int main(int argv, char** args)
 	SDL_PixelFormat* mapping_format = SDL_AllocFormat(format);
 #if debug
 	Memory& memory = NESConsole::GetInstance()->GetMemory();
-	PPU& ppu = NESConsole::GetInstance()->GetPPU();
 #endif
 	// Pattern tables
 	//const int num_tiles = rom.GetHeaderData().chr_rom_size_8 * 8 * 1024;
@@ -119,7 +119,11 @@ int main(int argv, char** args)
 	Nametable** nametables = new Nametable*[NUM_NAMETABLES];
 	for (int i = 0; i < NUM_NAMETABLES; ++i)
 	{
-		nametables[i] = new Nametable(0x2000 + (1024 * i), &pattern_table);
+		assert((0x2000 + (1024 * i)) <= std::numeric_limits<uint16_t>::max());
+		nametables[i] = new Nametable(
+			static_cast<uint16_t>(0x2000 + (1024 * i)), 
+			&pattern_table
+		);
 		nametables[i]->Initialize(renderer);
 	}
 #endif
@@ -266,7 +270,7 @@ int main(int argv, char** args)
 			);
 
 			static const int num_palette_entries = 0x3F1F - 0x3F00;
-			for (int i = 0x3F00; i <= 0x3F1F; ++i)
+			for (uint16_t i = 0x3F00; i <= 0x3F1F; ++i)
 			{
 				SDL_Rect palette_rect;
 				palette_rect.y = pattern_render_area_y;
@@ -277,9 +281,9 @@ int main(int argv, char** args)
 				const uint8_t color = memory.PPUReadByte(i);
 				const uint32_t palette_color = PaletteColors[color];
 
-				const uint8_t r = (palette_color & 0xFF0000) >> 16;
-				const uint8_t g = (palette_color & 0x00FF00) >> 8;
-				const uint8_t b = (palette_color & 0x0000FF);
+				const uint8_t r = static_cast<uint8_t>((palette_color & 0xFF0000) >> 16);
+				const uint8_t g = static_cast<uint8_t>((palette_color & 0x00FF00) >> 8);
+				const uint8_t b = static_cast<uint8_t>((palette_color & 0x0000FF));
 				const uint8_t a = 0xFF;
 				return_code = SDL_SetRenderDrawColor(renderer, r, g, b, a);
 				SDL_RenderFillRect(renderer, &palette_rect);
@@ -387,7 +391,7 @@ int main(int argv, char** args)
 			draw_lines = false;
 		}
 
-		if constexpr (debug && draw_lines)
+		if (draw_lines)
 		{
 			int grid_width = 256 / max_x;
 			int grid_height = 256 / max_y;

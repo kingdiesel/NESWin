@@ -256,7 +256,8 @@ void PPU::Run()
 			{
 				if (flip_vertically)
 				{
-					sprite_pattern_addr_lo = (GetControlRegister().Bits.m_sprite_pattern_addr << 12)  // Which Pattern Table? 0KB or 4KB offset
+					sprite_pattern_addr_lo = 
+						(GetControlRegister().Bits.m_sprite_pattern_addr << 12)  // Which Pattern Table? 0KB or 4KB offset
 						| (byte1 << 4) | (7 - (scanlines - byte0));
 				}
 				else

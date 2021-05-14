@@ -164,7 +164,6 @@ uint8_t Memory::CPUReadByte(const uint16_t position) const
 				<< position << std::endl;
 	assert(false);
 	exit(1);
-	return 0;
 }
 
 uint16_t Memory::CPUReadShort(const uint16_t position) const
@@ -338,7 +337,6 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 	}
 	else if (position >= 0x3F00 && position <= 0x3FFF)
 	{
-		PPU& ppu = NESConsole::GetInstance()->GetPPU();
 		// https://wiki.nesdev.com/w/index.php/PPU_palettes
 		uint16_t mirrored_position = position & 0x3F1F;
 		if (mirrored_position == 0x3F10)
@@ -368,7 +366,6 @@ uint8_t Memory::PPUReadByte(uint16_t position) const
 		assert(false);
 		exit(1);
 	}
-	return 0;
 }
 
 void Memory::PPUWriteByte(uint16_t position, uint8_t value)

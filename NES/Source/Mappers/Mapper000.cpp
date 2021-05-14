@@ -1,5 +1,6 @@
 #include "Mapper000.h"
 #include <cassert>
+#pragma warning( disable : 4100 )
 
 bool Mapper000::CPUReadByte(const uint16_t position, uint16_t& mapped_position, uint8_t& value)
 {

@@ -1,6 +1,7 @@
 #include "Mapper001.h"
 #include "../BitMask.h"
 #include <cassert>
+#pragma warning( disable : 4100 )
 
 Mapper001::Mapper001(const iNESHeader& header) :
 	IMapper(header)
@@ -138,7 +139,8 @@ bool Mapper001::CPUWriteByte(const uint16_t position, uint16_t& mapped_position,
 						break;
 					case 3:
 						m_prg_bank_selector_16_low_addr = m_prg_bank_register.Bits.m_prg_rom_bank_select;
-						m_prg_bank_selector_16_high_addr = m_header_data.prg_rom_size_16 - 1;
+						assert(m_header_data.prg_rom_size_16 - 1 <= std::numeric_limits<uint8_t>::max());
+						m_prg_bank_selector_16_high_addr = static_cast<uint8_t>(m_header_data.prg_rom_size_16 - 1);
 						break;
 					}
 				}

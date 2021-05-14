@@ -93,33 +93,33 @@ void Sprites::Run()
 				bottom_tile = tile1->GetTextureTileData();
 			}
 
-			for (int i = 0; i < 8; ++i)
+			for (int j = 0; j < 8; ++j)
 			{
-				const int address = (y_pos * 256 + x_pos) + (i * 256);
+				const int address = (y_pos * 256 + x_pos) + (j * 256);
 				assert(address >= 0 && address < 256 * 240);
-				memcpy(&m_texture_sprites_data[address], &top_tile[i * 8], 8 * sizeof(uint32_t));
+				memcpy(&m_texture_sprites_data[address], &top_tile[j * 8], 8 * sizeof(uint32_t));
 			}
 
 			y_pos += 8;
-			for (int i = 0; i < 8; ++i)
+			for (int j = 0; j < 8; ++j)
 			{
-				const int address = (y_pos * 256 + x_pos) + (i * 256);
+				const int address = (y_pos * 256 + x_pos) + (j * 256);
 				assert(address >= 0 && address < 256 * 240);
-				memcpy(&m_texture_sprites_data[address], &bottom_tile[i * 8], 8 * sizeof(uint32_t));
+				memcpy(&m_texture_sprites_data[address], &bottom_tile[j * 8], 8 * sizeof(uint32_t));
 			}
 		}
 		else
 		{
 			const uint32_t* tile_texture_data = tile1->GetTextureTileData();
-			for (int i = 0; i < 8; ++i)
+			for (int j = 0; j < 8; ++j)
 			{
-				const int address = (y_pos * 256 + x_pos) + (i * 256);
+				const int address = (y_pos * 256 + x_pos) + (j * 256);
 				if (address >= 256 * 240)
 				{
 					continue;
 				}
 				assert(address >= 0 && address < 256 * 240);
-				memcpy(&m_texture_sprites_data[address], &tile_texture_data[i * 8], 8 * sizeof(uint32_t));
+				memcpy(&m_texture_sprites_data[address], &tile_texture_data[j * 8], 8 * sizeof(uint32_t));
 			}
 		}
 	}

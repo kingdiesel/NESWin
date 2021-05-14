@@ -18,7 +18,7 @@ concept AddressingConcept = requires(_T AddressStrategy, std::string & out_strin
 	{AddressStrategy.GetAddressingCycles()} -> std::same_as<int>;
 };
 
-template<AddressingConcept _Addressing_Strategy, int _operand_length>
+template<AddressingConcept _Addressing_Strategy, uint8_t _operand_length>
 class BaseAddressingStrategy
 {
 public:
@@ -59,7 +59,7 @@ public:
 		return m_addressing_strategy.GetAddressingCycles();
 	}
 
-	int GetOperandLength() const
+	uint8_t GetOperandLength() const
 	{
 		return _operand_length;
 	}

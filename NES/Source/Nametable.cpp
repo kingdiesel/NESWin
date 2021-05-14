@@ -5,6 +5,7 @@
 #include "PatternTableTile.h"
 #include <assert.h>
 #include "SDL.h"
+#pragma warning( disable : 4100 )
 
 Nametable::Nametable(const uint16_t address, PatternTable* pattern_table) :
 	m_base_address(address),

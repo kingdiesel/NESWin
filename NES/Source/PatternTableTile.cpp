@@ -40,7 +40,9 @@ void PatternTableTile::FillTextureData(const FillData& _data)
 		0x676767,
 	};
 
-	const uint16_t start_address = 0x3F00 + _data.m_palette_index * 4;
+	const int start_address_int = 0x3F00 + _data.m_palette_index * 4;
+	assert(start_address_int <= std::numeric_limits<uint16_t>::max());
+	const uint16_t start_address = static_cast<uint16_t>(start_address_int);
 	Memory& memory = m_console->GetMemory();
 	for (int i = 0; i <= 3 && _data.m_palette_index != -1; ++i)
 	{
